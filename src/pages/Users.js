@@ -1,6 +1,5 @@
 //import { UserModal } from '../modals/UserModal';
 import React, { useState, useEffect } from 'react';
-import { Button } from '@material-ui/core';
 
 export default () => {
     const [usersData, setData] = useState({
@@ -37,13 +36,11 @@ useEffect(()=>{
     {!isLoading && !error &&
         (users != null
           ? users.map(user => <Users user={user} key={user.id}/>)
-          
           : 'Empty list')
     }
     {!isLoading && error && 'Error happens'}
     {UserModal()}
     </>
-
   );
 }
 
@@ -57,17 +54,3 @@ function Users({user}){
   )
 }
 
-const openModal = () => {
-    console.log("Open Modal");
-}
-
-function UserModal(){
-    return (
- //       <Button onClick={openModal}>asdas</Button>
-
-      <div>
-        <button onClick={openModal}>OpenModal</button>
-      </div>
-
-    )
-  }
