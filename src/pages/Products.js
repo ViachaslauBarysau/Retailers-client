@@ -34,7 +34,7 @@ export default () => {
           error: e
         }))
       })
-  }, []);
+  }, [productsData.displayModal]);
 
   const { isLoading, error, products, displayModal } = productsData;
 

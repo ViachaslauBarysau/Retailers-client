@@ -7,7 +7,7 @@ export default () => {
     isLoading: true,
     error: null,
     users: [],
-    displayModal: false
+    displayModal: false,
   });
 
   useEffect(() => {

@@ -34,7 +34,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, []);
+    }, [locationsData.displayModal]);
 
     const { isLoading, error, locations, displayModal } = locationsData;
 
