@@ -1,120 +1,94 @@
-//import { UserModal } from '../modals/UserModal';
-import React, {useState, useEffect} from 'react';
-import {Button} from '@material-ui/core';
+import UserModal from '../modals/UserModal';
+import React, { useState, useEffect } from 'react';
+import { Button, Form } from 'react-bootstrap';
 
 export default () => {
-    const [usersData, setData] = useState({
-        isLoading: false,
-        error: null,
-        users: null
-    });
+  const [usersData, setData] = useState({
+    isLoading: true,
+    error: null,
+    users: [],
+    displayModal: false
+  });
 
-    useEffect(() => {
-        setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/users',
-            {
-                headers: {"Authorization": localStorage.getItem("token")},
-                method: "GET"
-            })
-            .then(res => res.json())
-            .then(users => {
-                setData((prevState) => ({
-                    ...prevState,
-                    isLoading: false,
-                    users
-                }));
-            })
-            .catch(e => {
-                setData((prevState) => ({
-                    ...prevState,
-                    isLoading: false,
-                    error: e
-                }))
-            })
-    }, []);
+  useEffect(() => {
+    fetch('http://localhost:8080/users', {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      },
+      method: "GET"
+    })
+      .then(res => res.json())
+      .then(users => {
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          users
+        }));
+      })
+      .catch(e => {
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          error: e
+        }))
+      })
+  }, [usersData.displayModal]);
 
-    const {isLoading, error, users} = usersData;
-
-    return (
-        <>
-            {isLoading && 'Loading....'}
-            {!isLoading && !error &&
-            (users != null
-                ? users.map(user => <Users user={user} key={user.id}/>)
-
-                : 'Empty list')
-            }
-            {!isLoading && error && 'Error happens'}
-            {UserModal()}
-        </>
-
-    );
-}
-let Users = ({user}) => {
-    return (
-        <div style={{marginTop: 10}}>
-            <li>{user.id}</li>
-            <a href={'/users/' + user.id}
-               style={{fontSize: 10, color: "blue", float: "right", marginRight: 5, marginTop: -5}}>Read more</a>
-            <hr/>
-        </div>
-    )
-}
-
-let as = function() {
-    return 2;
-}
-let i = 2;
-let a = 2;
-let name = "asd";
+  const { isLoading, error, users, displayModal } = usersData;
 
 
-function param() {
-    let name = "Alena";
-    say();
+
+  return (
+    <>
+      {isLoading && 'Loading....'}
+      {!isLoading && !error &&
+        (users.length != 0
+          ? <Form onSubmit={changeUserStatus}>
+            {users.map(user => <Users user={user} key={user.id} />)}
+            <Button onClick={() => setData((prevState) => ({
+              ...prevState,
+              displayModal: true
+            }))}>
+              Add user
+            </Button>
+            <Button type="submit">
+              Enable/Disable
+            </Button>
+          </Form>
+          : 'Empty list')
+      }
+      {!isLoading && error && 'Error happens'}
+      {displayModal && <UserModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
+    </>
+  );
 }
 
-say.call(param);
-say.apply()
-
-function say() {
-    console.log(this.name);
-}
-
-
-let temp = () => {
-    let name = "John";
-    console.log(this.name);
+function changeUserStatus(e) {
+  e.preventDefault();
+  let userIdList = [];
+  e.target.users.forEach(element => {
+    element.checked && userIdList.push(element.value);
+  });
+  fetch('http://localhost:8080/users', {
+    headers: {
+      'Authorization': localStorage.getItem("token"),
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: {
+      body: JSON.stringify({
+        productIds: userIdList
+      })
+    },
+    method: "PUT"
+  });
 }
 
 
-let as = () => {
-    return 2;
+function Users({ user }) {
+  return (
+    <p><label><input type="checkbox" value={user.id} name={"users"} />
+      <span>{user.firstName} {user.lastName} -  {user.birthday}  - {user.userRole}</span></label></p>
+  )
 }
 
-
-// function Users({user}) {
-//     return (
-        {/*<div style={{marginTop: 10}}>*/}
-        {/*    <li>{user.id}</li>*/}
-        {/*    <a href={'/users/' + user.id}*/}
-               // style={{fontSize: 10, color: "blue", float: "right", marginRight: 5, marginTop: -5}}>Read more</a>
-            {/*<hr/>*/}
-        // </div>
-    // )
-// }
-
-const openModal = () => {
-    console.log("Open Modal");
-}
-
-function UserModal() {
-    return (
-        //       <Button onClick={openModal}>asdas</Button>
-
-        <div>
-            <button onClick={openModal}>OpenModal</button>
-        </div>
-
-    )
-}

@@ -22,7 +22,7 @@ export default () => {
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     color="inherit">
                     <AccountCircle/>
-                    <Typography>{user.username}</Typography>
+                    <Typography>{user.email}</Typography>
                 </IconButton>
                 <Menu
                     anchorEl={anchorEl}

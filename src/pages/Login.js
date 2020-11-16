@@ -58,38 +58,28 @@ export default (props) => {
                     variant="contained"
                     onClick={(e) => {
                         e.preventDefault();
-                        fetch("http://localhost:8080/api/v1/auth/login", {
+                        fetch("http://localhost:8080/login", {
                             method: "POST",
                             headers: {
                                 'Content-Type': 'application/json',
                                 Accept: 'application/json',
                             },
                             body: JSON.stringify({
-                                email: "test@test.com",
-                                password: "test1"
+                                email: fields.username,
+                                password: fields.password
                             })
                         })
                             .then(resp => resp.json())
                             .then(data => {
-                                console.log(data);
                                 if (data.message) {
                                     alert("Not work %(")
                                     //Тут прописываем логику
                                 } else {
                                     let prefix = "Bearer_";
                                     localStorage.setItem("token", prefix + data.token);
-                                    // dispatch(loginUser(data.user))
-                                    setUser({
-                                        username: data.username
-                                    });
+                                    setUser(data.user);
                                 }
                             });
-                        // const {username, password} = fields;
-                        // if (username === 'user' && password === 'user') {
-                        //     setUser({
-                        //         username: 'user'
-                        //     });
-                        // }
                     }}>
                     Login
                 </Button>
@@ -99,30 +89,3 @@ export default (props) => {
 
     return user ? <Redirect to={prevPageLocation}/> : loginForm;
 }
-//
-// useEffect(() => {
-//     setData(prevState => ({ ...prevState, isLoading: true }));
-//     fetch('http://localhost:8080/api/v1/auth/login', {
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         method: "POST",
-//         body: JSON.stringify(
-//             {
-//                 email: "address@email.ru",
-//                 password: "test1"
-//             }
-//         ),
-//     })
-//         .then(res => res.json())
-//         .then((data) => {
-//             console.log(data);
-//         })
-//         .catch(e => {
-//             setData((prevState) => ({
-//                 ...prevState,
-//                 isLoading: false,
-//                 error: e
-//             }))
-//         })
-// }, []);

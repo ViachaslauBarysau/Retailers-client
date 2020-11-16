@@ -1,53 +1,90 @@
+import CustomerModal from '../modals/CustomerModal';
 import React, { useState, useEffect } from 'react';
+import { Button, Form } from 'react-bootstrap';
 
 export default () => {
-    const [customersData, setData] = useState({
-        isLoading: false,
-        error: null,
-        customers: null
-    });
+  const [customersData, setData] = useState({
+    isLoading: true,
+    error: null,
+    customers: [],
+    displayModal: false
+  });
 
-useEffect(()=>{
-    setData(prevState => ({...prevState, isLoading: true}));
-       fetch('http://localhost:8080/customers/', Headers={})
-        .then(res => res.json())
-        .then(customers => {
-          setData((prevState)=>({
-            ...prevState,
-            isLoading: false,
-            customers
-          }));
+  useEffect(() => {
+    fetch('http://localhost:8080/customers', {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      },
+      method: "GET"
+    })
+      .then(res => res.json())
+      .then(customers => {
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          customers
+        }));
       })
       .catch(e => {
-        setData((prevState)=>({
+        setData((prevState) => ({
           ...prevState,
           isLoading: false,
           error: e
         }))
       })
-  }, []);
-  
-  const {isLoading, error, customers} = customersData;
-  
-  return  (
+  }, [customersData.displayModal]);
+
+  const { isLoading, error, customers, displayModal } = customersData;
+
+  return (
     <>
-    {isLoading && 'Loading....'}
-    {!isLoading && !error &&
-        (customers != null
-          ? customers.map(customer => <Customers customer={customer} key={customer.id}/>)
+      {isLoading && 'Loading....'}
+      {!isLoading && !error &&
+        (customers.length != 0
+          ? <Form onSubmit={changeCustomerStatus}>
+            {customers.map(customer => <Customers customer={customer} key={customer.id} />)}
+            <Button onClick={() => setData((prevState) => ({
+              ...prevState,
+              displayModal: true
+            }))}>
+              Add customer
+            </Button>
+            <Button type="submit">
+              Enable/Disable
+            </Button>
+          </Form>
           : 'Empty list')
-    }
-    {!isLoading && error && 'Error happens'}
+      }
+      {!isLoading && error && 'Error happens'}
+      {displayModal && <CustomerModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
     </>
   );
 }
 
-function Customers({customer}){
+function changeCustomerStatus(e) {
+  e.preventDefault();
+  let customerIdList = [];
+  e.target.customers.forEach(element => {
+    element.checked && customerIdList.push(element.value);
+  });
+  fetch('http://localhost:8080/customers', {
+    headers: {
+      'Authorization': localStorage.getItem("token"),
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: {
+      body: JSON.stringify({
+        productIds: customerIdList
+      })
+    },
+    method: "PUT"
+  }); 
+}
+
+function Customers({ customer }) {
   return (
-    <div style={{marginTop: 10}}>
-      <li>{customer.id}</li>
-      <a href={'/customers/' + customer.id} style={{fontSize: 10, color: "blue", float: "right", marginRight: 5, marginTop: -5}}>Read more</a>
-      <hr />
-    </div>
+    <p><label><input type="checkbox" value={customer.id} name={"customers"} />
+      <span>{customer.name} - {customer.registrationDate} -  {customer.customerStatus}  - {customer.email}</span></label></p>
   )
 }
