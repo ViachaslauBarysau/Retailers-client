@@ -21,7 +21,7 @@ const BillModal = (props) => {
             </label>
             <br/>
             <label> Registration date and time:
-              <input type="text" name="units" value/>
+              <input type="text" name="units" />
             </label>
             <br/>
             <label> Item UPC:
