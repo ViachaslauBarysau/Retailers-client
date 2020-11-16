@@ -1,53 +1,64 @@
+import ActModal from '../modals/ActModal';
 import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 
 export default () => {
-    const [actsData, setData] = useState({
-        isLoading: false,
-        error: null,
-        acts: null
-    });
+  const [actsData, setData] = useState({
+    isLoading: true,
+    error: null,
+    acts: null,
+    displayModal: false
+  });
 
-useEffect(()=>{
-    setData(prevState => ({...prevState, isLoading: true}));
-       fetch('http://localhost:8080/writeoffacts/')
-        .then(res => res.json())
-        .then(acts => {
-          setData((prevState)=>({
-            ...prevState,
-            isLoading: false,
-            acts
-          }));
+  useEffect(() => {
+    fetch('http://localhost:8080/writeoffacts', {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      },
+      method: "GET"
+    })
+      .then(res => res.json())
+      .then(acts => {
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          acts
+        }));
       })
       .catch(e => {
-        setData((prevState)=>({
+        setData((prevState) => ({
           ...prevState,
           isLoading: false,
           error: e
         }))
       })
   }, []);
-  
-  const {isLoading, error, acts} = actsData;
-  
-  return  (
+
+  const { isLoading, error, acts, displayModal } = actsData;
+
+  return (
     <>
-    {isLoading && 'Loading....'}
-    {!isLoading && !error &&
-        (acts != null
-          ? acts.map(act => <Acts act={act} key={act.id}/>)
+      {isLoading && 'Loading....'}
+      {!isLoading && !error &&
+        (acts.length != 0
+          ? acts.map(act => <Acts act={act} key={act.id} />)
           : 'Empty list')
-    }
-    {!isLoading && error && 'Error happens'}
+      }
+      {!isLoading && error && 'Error happens'}
+      <Button onClick={() => setData({
+        ...actsData,
+        displayModal: true
+      })}>
+        Add write-off act
+      </Button>
+      {displayModal && <ActModal onClick={() => setData({ ...actsData, displayModal: false })} />}
     </>
   );
 }
 
-function Acts({act}){
+function Acts({ act }) {
   return (
-    <div style={{marginTop: 10}}>
-      <li>{act.id}</li>
-      <a href={'/acts/' + act.id} style={{fontSize: 10, color: "blue", float: "right", marginRight: 5, marginTop: -5}}>Read more</a>
-      <hr />
-    </div>
+    <p><label><input type="checkbox" value={act.id} name={"acts"} />
+      <span>{act.id} - {act.actDateTime}</span></label></p>
   )
 }

@@ -58,7 +58,7 @@ export default (props) => {
                     variant="contained"
                     onClick={(e) => {
                         e.preventDefault();
-                        fetch("http://localhost:8080/api/v1/auth/login", {
+                        fetch("http://localhost:8080/login", {
                             method: "POST",
                             headers: {
                                 'Content-Type': 'application/json',
@@ -71,17 +71,13 @@ export default (props) => {
                         })
                             .then(resp => resp.json())
                             .then(data => {
-                                console.log(data);
                                 if (data.message) {
                                     alert("Not work %(")
                                     //Тут прописываем логику
                                 } else {
                                     let prefix = "Bearer_";
                                     localStorage.setItem("token", prefix + data.token);
-                                    // dispatch(loginUser(data.user))
-                                    setUser({
-                                        username: data.username
-                                    });
+                                    setUser(data.user);
                                 }
                             });
                     }}>

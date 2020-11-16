@@ -15,6 +15,7 @@ export default function AuthContextProvider({ children }) {
             },
             logout: () => {
                 localStorage.setItem('user', JSON.stringify(null));
+                localStorage.setItem('token', JSON.stringify(null));
                 setUser(null)
             }
         }}>
