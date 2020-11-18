@@ -1,7 +1,7 @@
 import './Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import StateSelect from './formComponents/StateSelect';
+import StateSelect from './formSelects/StateSelect';
 
 const UserModal = (props) => {
   return (
@@ -77,7 +77,6 @@ function addUser(e) {
       userRole: [e.target.role.value],
       birthday: e.target.date_of_birth.value,
       userStatus: "ACTIVE",
-      password: "qweqw",
       location: {
         id: "2"
       },

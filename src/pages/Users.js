@@ -42,20 +42,28 @@ export default () => {
     <>
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
-        (users.length != 0
-          ? <Form onSubmit={changeUserStatus}>
-            {users.map(user => <Users user={user} key={user.id} />)}
-            <Button onClick={() => setData((prevState) => ({
-              ...prevState,
-              displayModal: true
-            }))}>
-              Add user
+        <Form onSubmit={changeUserStatus}>
+          {(users.length != 0
+            ? <table border="1" width="100%">
+              <tr>
+                <th></th>
+                <th>Full name</th>
+                <th>Birthday</th>
+                <th>Role</th>
+              </tr>
+              {users.map(user => <Users user={user} key={user.id} />)}
+            </table>
+            : 'Empty list')}
+          <Button onClick={() => setData((prevState) => ({
+            ...prevState,
+            displayModal: true
+          }))}>
+            Add user
             </Button>
-            <Button type="submit">
-              Enable/Disable
+          <Button type="submit">
+            Enable/Disable
             </Button>
-          </Form>
-          : 'Empty list')
+        </Form>
       }
       {!isLoading && error && 'Error happens'}
       {displayModal && <UserModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
@@ -76,9 +84,9 @@ function changeUserStatus(e) {
       Accept: 'application/json'
     },
     body: {
-      body: JSON.stringify({
-        productIds: userIdList
-      })
+      body: JSON.stringify(
+        userIdList
+      )
     },
     method: "PUT"
   });
@@ -87,8 +95,12 @@ function changeUserStatus(e) {
 
 function Users({ user }) {
   return (
-    <p><label><input type="checkbox" value={user.id} name={"users"} />
-      <span>{user.firstName} {user.lastName} -  {user.birthday}  - {user.userRole}</span></label></p>
+    <tr id={user.id}>
+      <td><input type="checkbox" value={user.id} name={"users"} /></td>
+      <td>{user.firstName} {user.lastName}</td>
+      <td>{user.birthday}</td>
+      <td>{user.userRole}</td>
+    </tr>
   )
 }
 

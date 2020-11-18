@@ -42,20 +42,29 @@ export default () => {
         <>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-                (locations.length != 0
-                    ? <Form onSubmit={removeLocations}>
-                        {locations.map(location => <Locations location={location} key={location.id} />)}
-                        <Button onClick={() => setData((prevState) => ({
-                            ...prevState,
-                            displayModal: true
-                        }))}>
-                            Add location
+                <Form onSubmit={removeLocations}>
+                    {(locations.length != 0
+                        ? <table border="1" width="100%">
+                            <tr>
+                                <th></th>
+                                <th>Identifier</th>
+                                <th>Type</th>
+                                <th>Full address</th>
+                                <th>Available/Total capacity</th>
+                            </tr>
+                            {locations.map(location => <Locations location={location} key={location.id} />)}
+                        </table>
+                        : 'Empty list')}
+                    <Button onClick={() => setData((prevState) => ({
+                        ...prevState,
+                        displayModal: true
+                    }))}>
+                        Add location
                         </Button>
-                        <Button type="submit">
-                            Remove location
+                    <Button type="submit">
+                        Remove location
                         </Button>
-                    </Form>
-                    : 'Empty list')
+                </Form>
             }
             {!isLoading && error && 'Error happens'}
             {displayModal && <LocationModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
@@ -84,7 +93,13 @@ function removeLocations(e) {
 
 function Locations({ location }) {
     return (
-        <p><label><input type="checkbox" value={location.id} name={"locations"} />
-            <span>{location.identifier} - {location.locationType} - {location.address.state.name}, {location.address.city}, {location.address.firstAddressLine}   {location.availableCapacity}/{location.totalCapacity}-</span></label></p>
+        <tr id={location.id}>
+            <td><input type="checkbox" value={location.id} name={"locations"} /></td>
+            <td>{location.identifier}</td>
+            <td>{location.locationType}</td>
+            <td>{location.address.state.name}, {location.address.city}, {location.address.firstAddressLine}</td>
+            <td>{location.availableCapacity}/{location.totalCapacity}</td>
+        </tr>
+
     )
 }

@@ -13,7 +13,9 @@ export default () => {
   useEffect(() => {
     fetch('http://localhost:8080/customers', {
       headers: {
-        "Authorization": localStorage.getItem("token")
+        "Authorization": localStorage.getItem("token"),
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
       method: "GET"
     })
@@ -40,20 +42,31 @@ export default () => {
     <>
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
-        (customers.length != 0
-          ? <Form onSubmit={changeCustomerStatus}>
-            {customers.map(customer => <Customers customer={customer} key={customer.id} />)}
-            <Button onClick={() => setData((prevState) => ({
-              ...prevState,
-              displayModal: true
-            }))}>
-              Add customer
+        <Form onSubmit={changeCustomerStatus}>
+          {(customers.length != 0
+            ?
+            <table border="1" width="100%">
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Registration date</th>
+                <th>Status</th>
+                <th>Admin's email</th>
+              </tr>
+              {customers.map(customer => <Customers customer={customer} key={customer.id} />)}
+            </table>
+            : 'Empty list')}
+          <Button onClick={() => setData((prevState) => ({
+            ...prevState,
+            displayModal: true
+          }))}>
+            Add customer
             </Button>
-            <Button type="submit">
-              Enable/Disable
+          <Button type="submit">
+            Enable/Disable
             </Button>
-          </Form>
-          : 'Empty list')
+        </Form>
+
       }
       {!isLoading && error && 'Error happens'}
       {displayModal && <CustomerModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
@@ -74,17 +87,22 @@ function changeCustomerStatus(e) {
       Accept: 'application/json'
     },
     body: {
-      body: JSON.stringify({
-        productIds: customerIdList
-      })
+      body: JSON.stringify(
+        customerIdList
+      )
     },
     method: "PUT"
-  }); 
+  });
 }
 
 function Customers({ customer }) {
   return (
-    <p><label><input type="checkbox" value={customer.id} name={"customers"} />
-      <span>{customer.name} - {customer.registrationDate} -  {customer.customerStatus}  - {customer.email}</span></label></p>
+    <tr id={customer.id}>
+      <td><input type="checkbox" value={customer.id} name={"customers"} /></td>
+      <td>{customer.name}</td>
+      <td>{customer.registrationDate}</td>
+      <td>{customer.customerStatus}</td>
+      <td>{customer.email}</td>
+    </tr>
   )
 }

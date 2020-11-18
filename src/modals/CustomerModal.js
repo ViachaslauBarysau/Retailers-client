@@ -1,6 +1,7 @@
 import './Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
+import { getDateStringWithoutTime } from '../util/DateAndTime';
 
 
 const CustomerModal = (props) => {    
@@ -37,16 +38,11 @@ function addCustomer(e) {
             customerStatus: "ACTIVE",
             name: e.target.name.value,
             email: e.target.email.value,
-            registrationDate: getDateStringWithoutTime(new Date())
+            registrationDate: new Date()
         }),
         method: "POST"
     });
     e.target.closeButton.click();
-}
-
-function getDateStringWithoutTime(date) {
-    return date.getFullYear() + "-" + (date.getMonth() < 9 ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1))
-        + "-" + (date.getDate() < 10 ? ('0' + date.getDate()) : (date.getDate()));
 }
 
 export default CustomerModal;
