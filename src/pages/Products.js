@@ -42,20 +42,31 @@ export default () => {
     <>
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
-        (products.length != 0
-          ? <Form onSubmit={removeProducts}>
-            {products.map(product => <Products product={product} key={product.id} />)}
-            <Button onClick={() => setData((prevState) => ({
-              ...prevState,
-              displayModal: true
-            }))}>
-              Add product
+        <Form onSubmit={removeProducts}>
+          {(products.length != 0
+            ?
+            <table border="1" width="100%">
+              <tr>
+                <th></th>
+                <th>UPC</th>
+                <th>Label</th>
+                <th>Category</th>
+                <th>Units</th>
+              </tr>
+              {products.map(product => <Products product={product} key={product.id} />)}
+            </table>
+            : 'Empty list')}
+          <Button onClick={() => setData((prevState) => ({
+            ...prevState,
+            displayModal: true
+          }))}>
+            Add product
             </Button>
-            <Button type="submit">
-              Remove product
+          <Button type="submit">
+            Remove product
             </Button>
-          </Form>
-          : 'Empty list')
+        </Form>
+
       }
       {!isLoading && error && 'Error happens'}
       {displayModal && <ProductModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
@@ -67,7 +78,7 @@ function removeProducts(e) {
   e.preventDefault();
   let productIdList = [];
   e.target.products.forEach(element => {
-    element.checked && productIdList.push({id: element.value});
+    element.checked && productIdList.push({ id: element.value });
   });
   fetch('http://localhost:8080/products', {
     headers: {
@@ -84,7 +95,12 @@ function removeProducts(e) {
 
 function Products({ product }) {
   return (
-    <p><label><input type="checkbox" value={product.id} name={"products"} />
-      <span>{product.upc} - {product.label} - {product.category.name} - {product.volume}</span></label></p>
+    <tr id={product.id}>
+      <td><input type="checkbox" value={product.id} name={"products"} /></td>
+      <td>{product.upc}</td>
+      <td>{product.label}</td>
+      <td>{product.category.name}</td>
+      <td>{product.volume}</td>
+    </tr>
   )
 }

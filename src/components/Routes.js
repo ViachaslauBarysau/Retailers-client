@@ -11,6 +11,7 @@ import WriteOffActs from '../pages/WriteOffActs';
 import Products from '../pages/Products';
 import Bills from '../pages/Bills';
 import Locations from '../pages/Locations';
+import SupplierApplications from '../pages/SupplierApplications';
 
 
 
@@ -30,6 +31,7 @@ export default () => {
                             <Route path={'/products'} component={withAuth(Products)} />
                             <Route path={'/bills'} component={withAuth(Bills)} />
                             <Route path={'/locations'} component={withAuth(Locations)} />
+                            <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                             <Route component={Index} />
                         </Switch>
                     </div>
@@ -132,6 +134,7 @@ export default () => {
                             <Route path={'/products'} component={withAuth(Products)} />
                             <Route path={'/locations'} component={withAuth(Locations)} />
                             <Route path={'/bills'} component={withAuth(Bills)} />
+                            <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                             <Route component={Login} />
                         </Switch>
                     </div>

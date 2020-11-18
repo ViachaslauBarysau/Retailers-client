@@ -1,13 +1,15 @@
 import BillModal from '../modals/BillModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import UpperProductModal from '../modals/upperModals/UpperProductModal';
 
 export default () => {
   const [billsData, setData] = useState({
     isLoading: false,
     error: null,
     bills: [],
-    displayModal: false
+    displayModal: false,
+    displayUpperModal: false
   });
 
   useEffect(() => {
@@ -35,16 +37,25 @@ export default () => {
       })
   }, []);
 
-  const { isLoading, error, bills, displayModal } = billsData;
+  const { isLoading, error, bills, displayModal, displayUpperModal } = billsData;
 
   return (
     <>
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         (bills.length != 0
-          ? bills.map(bill => <Bills bill={bill} key={bill.id} />)
+          ? <table border="1">
+            <tr>
+              <th>Bill number</th>
+              <th>Total amount of items</th>
+              <th>Total sum of items</th>
+              <th>Date and Time</th>
+            </tr>
+            {bills.map(bill => <Bills bill={bill} key={bill.id} />)}
+          </table>
           : 'Empty list')
       }
+      <br />
       {!isLoading && error && 'Error happens'}
       <Button onClick={() => setData((prevState) => ({
         ...prevState,
@@ -52,14 +63,22 @@ export default () => {
       }))}>
         Add bill
       </Button>
-      {displayModal && <BillModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
+      {displayModal && <BillModal onCloseModal={() => setData((prevState) => ({ ...prevState, displayModal: false }))}
+        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))}
+        onOpenUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: true }))} />}
+      {displayUpperModal && <UpperProductModal
+        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))} />}
     </>
   );
 }
 
 function Bills({ bill }) {
   return (
-    <p><label><input type="checkbox" value={bill.id} name={"users"} />
-      <span>{bill.billNumber} {bill.totalProductAmount} -  {bill.totalUnitNumber}  - {bill.registrationDateTime}</span></label></p>
+    <tr id={bill.id}>
+      <td>{bill.billNumber}</td>
+      <td>{bill.totalProductAmount}</td>
+      <td>{bill.totalUnitNumber}</td>
+      <td>{bill.registrationDateTime}</td>
+    </tr>
   )
 }
