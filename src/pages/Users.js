@@ -1,73 +1,106 @@
-//import { UserModal } from '../modals/UserModal';
+import UserModal from '../modals/UserModal';
 import React, { useState, useEffect } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Form } from 'react-bootstrap';
 
 export default () => {
-    const [usersData, setData] = useState({
-        isLoading: false,
-        error: null,
-        users: null
-    });
+  const [usersData, setData] = useState({
+    isLoading: true,
+    error: null,
+    users: [],
+    displayModal: false,
+  });
 
-useEffect(()=>{
-    setData(prevState => ({...prevState, isLoading: true}));
-       fetch('http://localhost:8080/users/')
-        .then(res => res.json())
-        .then(users => {
-          setData((prevState)=>({
-            ...prevState,
-            isLoading: false,
-            users
-          }));
+  useEffect(() => {
+    fetch('http://localhost:8080/users', {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      },
+      method: "GET"
+    })
+      .then(res => res.json())
+      .then(users => {
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          users
+        }));
       })
       .catch(e => {
-        setData((prevState)=>({
+        setData((prevState) => ({
           ...prevState,
           isLoading: false,
           error: e
         }))
       })
-  }, []);
-  
-  const {isLoading, error, users} = usersData;
-  
-  return  (
-    <>
-    {isLoading && 'Loading....'}
-    {!isLoading && !error &&
-        (users != null
-          ? users.map(user => <Users user={user} key={user.id}/>)
-          
-          : 'Empty list')
-    }
-    {!isLoading && error && 'Error happens'}
-    {UserModal()}
-    </>
+  }, [usersData.displayModal]);
 
+  const { isLoading, error, users, displayModal } = usersData;
+
+
+
+  return (
+    <>
+      {isLoading && 'Loading....'}
+      {!isLoading && !error &&
+        <Form onSubmit={changeUserStatus}>
+          {(users.length != 0
+            ? <table border="1" width="100%">
+              <tr>
+                <th></th>
+                <th>Full name</th>
+                <th>Birthday</th>
+                <th>Role</th>
+              </tr>
+              {users.map(user => <Users user={user} key={user.id} />)}
+            </table>
+            : 'Empty list')}
+          <Button onClick={() => setData((prevState) => ({
+            ...prevState,
+            displayModal: true
+          }))}>
+            Add user
+            </Button>
+          <Button type="submit">
+            Enable/Disable
+            </Button>
+        </Form>
+      }
+      {!isLoading && error && 'Error happens'}
+      {displayModal && <UserModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
+    </>
   );
 }
 
-function Users({user}){
+function changeUserStatus(e) {
+  e.preventDefault();
+  let userIdList = [];
+  e.target.users.forEach(element => {
+    element.checked && userIdList.push(element.value);
+  });
+  fetch('http://localhost:8080/users', {
+    headers: {
+      'Authorization': localStorage.getItem("token"),
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: {
+      body: JSON.stringify(
+        userIdList
+      )
+    },
+    method: "PUT"
+  });
+}
+
+
+function Users({ user }) {
   return (
-    <div style={{marginTop: 10}}>
-      <li>{user.id}</li>
-      <a href={'/users/' + user.id} style={{fontSize: 10, color: "blue", float: "right", marginRight: 5, marginTop: -5}}>Read more</a>
-      <hr />
-    </div>
+    <tr id={user.id}>
+      <td><input type="checkbox" value={user.id} name={"users"} /></td>
+      <td>{user.firstName} {user.lastName}</td>
+      <td>{user.birthday}</td>
+      <td>{user.userRole}</td>
+    </tr>
   )
 }
 
-const openModal = () => {
-    console.log("Open Modal");
-}
-
-function UserModal(){
-    return (
- //       <Button onClick={openModal}>asdas</Button>
-
-      <div>
-        <button onClick={openModal}>OpenModal</button>
-      </div>
-
-    )
-  }

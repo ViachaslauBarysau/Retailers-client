@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import InnerAppModal from '../modals/InnerAppModal';
+import SupplierAppModal from '../modals/SupplierAppModal';
+import UpperProductModal from '../modals/upperModals/UpperProductModal';
 
 export default () => {
   const [applicationsData, setData] = useState({
     isLoading: true,
     error: null,
     applications: [],
-    displayModal: false
+    displayModal: false,
+    displayUpperModal: false
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/innerapplications', {
+    fetch('http://localhost:8080/supplierapplications', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -36,7 +38,7 @@ export default () => {
       })
   }, []);
 
-  const { isLoading, error, applications } = applicationsData;
+  const { isLoading, error, applications, displayModal, displayUpperModal } = applicationsData;
 
   return (
     <>
@@ -62,17 +64,21 @@ export default () => {
             ...prevState,
             displayModal: true
           }))}>
-            Add customer
+            Add application
             </Button>
         </Form>
       }
       {!isLoading && error && 'Error happens'}
-      {displayModal && <InnerApplications onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
+      {displayModal && <SupplierAppModal onCloseModal={() => setData((prevState) => ({ ...prevState, displayModal: false }))}
+        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))}
+        onOpenUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: true }))} />}
+              {displayUpperModal && <UpperProductModal
+        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))} />}
     </>
   );
 }
 
-function InnerApplications({ application }) {
+function SupplierApplications({ application }) {
   return (
     <tr id={application.id}>
       <td></td>
