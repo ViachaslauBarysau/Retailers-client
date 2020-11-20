@@ -1,31 +1,54 @@
 import './Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
+import { FormControl, TextField, Button } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const ProductModal = (props) => {
-  return (
+
+  const [categoriesData, setData] = useState({
+    categories: [],
+  });
+
+  useEffect(() => {
+    fetch('http://localhost:8080/categories?size=100000', {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      },
+      method: "GET"
+    })
+      .then(res => res.json())
+      .then(categories => {
+        setData((prevState) => ({
+          ...prevState,
+          categories
+        }));
+      })
+
+  }, []);
+
+  const { categories } = categoriesData;
+
+  return ( 
     <div className={"modal-wrapper"}>
       <div onClick={props.onClick} className={"modal-backdrop"} />
       <div className={"modal-box"}>
         <form onSubmit={addProduct}>
-          <label> UPC:
-              <input type="text" id="upc" />
-          </label>
+          <TextField id="upc" variant="outlined" label="UPC" />
+          <TextField id="label" variant="outlined" label="Label" />
+          <Autocomplete
+            id="category"
+            freeSolo
+            autoSelect
+            options={categories.map((option) => option.name)}
+            renderInput={(params) => (
+              <TextField {...params} label="categories" margin="normal" variant="outlined" />
+            )}
+          />
+          <TextField id="units" variant="outlined" label="Units" />
           <br />
-          <label> Label:
-              <input type="text" id="label" />
-          </label>
-          <br />
-          <label> Category:
-              <input type="text" id="category" />
-          </label>
-          <br />
-          <label> Units:
-              <input type="text" id="units" />
-          </label>
-          <br />
-          <input type="submit" value="Add product" />
-          <input id="closeButton" type="button" onClick={props.onClick} value="Close" />
+          <Button type="submit" variant="contained">Add product</Button>
+          <Button id="closeButton" type="button" onClick={props.onClick} variant="contained">Close</Button>
         </form>
       </div>
     </div>
@@ -34,6 +57,7 @@ const ProductModal = (props) => {
 
 function addProduct(e) {
   e.preventDefault();
+  console.log(e.target)
   fetch('http://localhost:8080/products', {
     headers: {
       'Authorization': localStorage.getItem("token"),
