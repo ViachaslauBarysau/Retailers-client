@@ -80,7 +80,7 @@ function removeProducts(e) {
   e.target.products.forEach(element => {
     element.checked && productIdList.push({ id: element.value });
   });
-  fetch('http://localhost:8080/products', {
+  fetch('http://localhost:8080/api/products', {
     headers: {
       'Authorization': localStorage.getItem("token"),
       'Content-Type': 'application/json',
