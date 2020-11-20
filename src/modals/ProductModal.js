@@ -11,7 +11,7 @@ const ProductModal = (props) => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/categories?size=100000', {
+    fetch('http://localhost:8080/api/categories?size=100000', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },
@@ -34,21 +34,20 @@ const ProductModal = (props) => {
       <div onClick={props.onClick} className={"modal-backdrop"} />
       <div className={"modal-box"}>
         <form onSubmit={addProduct}>
-          <TextField id="upc" variant="outlined" label="UPC" />
-          <TextField id="label" variant="outlined" label="Label" />
+          <TextField fullWidth={true} id="upc" variant="outlined" label="UPC" />
+          <TextField fullWidth={true} id="label" variant="outlined" label="Label" />
           <Autocomplete
             id="category"
             freeSolo
             autoSelect
             options={categories.map((option) => option.name)}
             renderInput={(params) => (
-              <TextField {...params} label="categories" margin="normal" variant="outlined" />
+              <TextField fullWidth={true} {...params} label="categories" margin="normal" variant="outlined" />
             )}
           />
-          <TextField id="units" variant="outlined" label="Units" />
-          <br />
-          <Button type="submit" variant="contained">Add product</Button>
-          <Button id="closeButton" type="button" onClick={props.onClick} variant="contained">Close</Button>
+          <TextField fullWidth={true} id="units" variant="outlined" label="Units" />
+          <Button fullWidth={true} type="submit" variant="contained">Add product</Button>
+          <Button fullWidth={true} id="closeButton" type="button" onClick={props.onClick} variant="contained">Close</Button>
         </form>
       </div>
     </div>
@@ -58,7 +57,7 @@ const ProductModal = (props) => {
 function addProduct(e) {
   e.preventDefault();
   console.log(e.target)
-  fetch('http://localhost:8080/products', {
+  fetch('http://localhost:8080/api/products', {
     headers: {
       'Authorization': localStorage.getItem("token"),
       'Content-Type': 'application/json',

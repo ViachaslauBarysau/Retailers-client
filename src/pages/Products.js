@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/products', {
+    fetch('http://localhost:8080/api/products', {
       headers: {
         'Authorization': localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -46,14 +46,18 @@ export default () => {
           {(products.length != 0
             ?
             <table border="1" width="100%">
-              <tr>
-                <th></th>
-                <th>UPC</th>
-                <th>Label</th>
-                <th>Category</th>
-                <th>Units</th>
-              </tr>
-              {products.map(product => <Products product={product} key={product.id} />)}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>UPC</th>
+                  <th>Label</th>
+                  <th>Category</th>
+                  <th>Units</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map(product => <Products product={product} key={product.id} />)}
+              </tbody>
             </table>
             : 'Empty list')}
           <Button onClick={() => setData((prevState) => ({
@@ -66,7 +70,6 @@ export default () => {
             Remove product
             </Button>
         </Form>
-
       }
       {!isLoading && error && 'Error happens'}
       {displayModal && <ProductModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}

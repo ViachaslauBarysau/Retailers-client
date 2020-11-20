@@ -64,7 +64,7 @@ const UserModal = (props) => {
 //How to set user location? Password generator services.
 function addUser(e) {
   e.preventDefault();
-  fetch('http://localhost:8080/users', {
+  fetch('http://localhost:8080/api/users', {
     headers: {
       'Authorization': localStorage.getItem("token"),
       'Content-Type': 'application/json',

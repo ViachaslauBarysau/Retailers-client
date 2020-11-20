@@ -28,7 +28,7 @@ const CustomerModal = (props) => {
 
 function addCustomer(e) {
     e.preventDefault();
-    fetch('http://localhost:8080/customers', {
+    fetch('http://localhost:8080/api/customers', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',

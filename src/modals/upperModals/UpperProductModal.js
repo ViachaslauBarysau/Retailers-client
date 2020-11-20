@@ -13,7 +13,7 @@ const UpperProductModal = (props) => {
     });
 
     useEffect(() => {
-        fetch('http://localhost:8080/products?size=100000', {
+        fetch('http://localhost:8080/api/products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -45,8 +45,8 @@ const UpperProductModal = (props) => {
                             <TextField {...params} label="products" margin="normal" variant="outlined" />
                         )}
                     />
-                    <TextField id="amount" variant="outlined" label="Amount" />
-                    <TextField id="cost" variant="outlined" label="Cost" />
+                    <TextField fullWidth={true} id="amount" variant="outlined" label="Amount" />
+                    <TextField fullWidth={true} id="cost" variant="outlined" label="Cost" />
                     <br/>
                     <Button type="submit" variant="contained">Add product</Button>
                     <Button id="closeButton" type="button" onClick={props.onCloseUpperModal} variant="contained">Close</Button>

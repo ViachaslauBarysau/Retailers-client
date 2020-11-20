@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/customers', {
+    fetch('http://localhost:8080/api/customers', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -78,19 +78,16 @@ function changeCustomerStatus(e) {
   e.preventDefault();
   let customerIdList = [];
   e.target.customers.forEach(element => {
-    element.checked && customerIdList.push(element.value);
+    element.checked && customerIdList.push(Number(element.value));
   });
-  fetch('http://localhost:8080/customers', {
+  console.log(customerIdList);
+  fetch('http://localhost:8080/api/customers', {
     headers: {
       'Authorization': localStorage.getItem("token"),
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
-    body: {
-      body: JSON.stringify(
-        customerIdList
-      )
-    },
+    body: JSON.stringify(customerIdList),
     method: "PUT"
   });
 }
@@ -98,7 +95,9 @@ function changeCustomerStatus(e) {
 function Customers({ customer }) {
   return (
     <tr id={customer.id}>
-      <td><input type="checkbox" value={customer.id} name={"customers"} /></td>
+      <td><input type="checkbox"
+                 value={customer.id}
+                 name={"customers"} /></td>
       <td>{customer.name}</td>
       <td>{customer.registrationDate}</td>
       <td>{customer.customerStatus}</td>

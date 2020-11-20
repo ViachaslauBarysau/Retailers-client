@@ -14,7 +14,7 @@ export default () => {
 
   useEffect(() => {
     setData(prevState => ({ ...prevState, isLoading: true }));
-    fetch('http://localhost:8080/bills', {
+    fetch('http://localhost:8080/api/bills', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },
