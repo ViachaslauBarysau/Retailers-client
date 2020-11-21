@@ -45,12 +45,12 @@ export default () => {
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         <Form>
-          {(applications.length != 0
+          {(applications.length !== 0
             ?
             <table border="1" width="100%">
               <thead>
                 <tr>
-                  <th></th>
+                  <th/>
                   <th>Application number</th>
                   <th>Source location</th>
                   <th>Destination location</th>
@@ -78,7 +78,7 @@ export default () => {
 function SupplierApplications({ application }) {
   return (
     <tr id={application.id}>
-      <td></td>
+      <td/>
       <td>{application.applicationNumber}</td>
       <td>{application.supplier.identifier}</td>
       <td>{application.destinationLocation.identifier}</td>
