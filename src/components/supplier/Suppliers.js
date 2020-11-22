@@ -1,17 +1,17 @@
+import SupplierModal from './SupplierModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import InnerAppModal from '../modals/InnerAppModal';
 
 export default () => {
-  const [applicationsData, setData] = useState({
+  const [suppliersData, setData] = useState({
     isLoading: true,
     error: null,
-    applications: [],
+    suppliers: [],
     displayModal: false
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/innerapplications', {
+    fetch('http://localhost:8080/api/suppliers', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -20,11 +20,11 @@ export default () => {
       method: "GET"
     })
       .then(res => res.json())
-      .then(applications => {
+      .then(suppliers => {
         setData((prevState) => ({
           ...prevState,
           isLoading: false,
-          applications
+          suppliers
         }));
       })
       .catch(e => {
@@ -34,31 +34,27 @@ export default () => {
           error: e
         }))
       })
-  }, []);
+  }, [suppliersData.displayModal]);
 
-  const { isLoading, error, applications } = applicationsData;
+  const { isLoading, error, suppliers, displayModal } = suppliersData;
 
   return (
     <>
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         <Form>
-          {(applications.length != 0
+          {(suppliers.length != 0
             ?
             <table border="1" width="100%">
               <thead>
                 <tr>
                   <th></th>
-                  <th>Application number</th>
-                  <th>Source location</th>
-                  <th>Destination location</th>
-                  <th>Update date and time</th>
-                  <th>Last updated by</th>
-                  <th>Status</th>
+                  <th>Name</th>
+                  <th>Registration date</th>
                 </tr>
               </thead>
               <tbody>
-                {applications.map(application => <SupplierApplications application={application} key={application.id} />)}
+                {suppliers.map(supplier => <Suppliers supplier={supplier} key={supplier.id} />)}
               </tbody>
             </table>
             : 'Empty list')}
@@ -66,26 +62,26 @@ export default () => {
             ...prevState,
             displayModal: true
           }))}>
-            Add customer
+            Add supplier
+            </Button>
+          <Button type="submit">
+            Enable/Disable
             </Button>
         </Form>
+
       }
       {!isLoading && error && 'Error happens'}
-      {displayModal && <InnerApplications onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
+      {displayModal && <SupplierModal onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
     </>
   );
 }
 
-function InnerApplications({ application }) {
+function Suppliers({ supplier }) {
   return (
-    <tr id={application.id}>
-      <td></td>
-      <td>{application.applicationNumber}</td>
-      <td>{application.supplier.identifier}</td>
-      <td>{application.destinationLocation.identifier}</td>
-      <td>{application.updatingDateTime}</td>
-      <td>{application.updater}</td>
-      <td>{application.applicationStatus}</td>
+    <tr id={supplier.id}>
+      <td><input type="checkbox" value={supplier.id} name={"suppliers"} /></td>
+      <td>{supplier.fullName}</td>
+      <td>{supplier.identifier}</td>
     </tr>
   )
 }

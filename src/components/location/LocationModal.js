@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import StateSelect from './formSelects/StateSelect';
+import StateSelect from '../../modals/formSelects/StateSelect';
 
 const LocationModal = (props) => {
     return (

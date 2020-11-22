@@ -1,4 +1,4 @@
-import LocationModal from '../modals/LocationModal';
+import LocationModal from './LocationModal';
 import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
 

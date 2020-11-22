@@ -1,4 +1,4 @@
-import ActModal from '../modals/ActModal';
+import ActModal from './ActModal';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 

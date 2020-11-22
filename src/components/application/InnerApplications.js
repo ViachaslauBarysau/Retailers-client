@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import SupplierAppModal from '../modals/SupplierAppModal';
-import UpperProductModal from '../modals/upperModals/UpperProductModal';
+import InnerAppModal from './InnerAppModal';
 
 export default () => {
   const [applicationsData, setData] = useState({
     isLoading: true,
     error: null,
     applications: [],
+    displayModal: false
   });
 
-  const [displayModal, setDisplayModal] = useState(false);
-
   useEffect(() => {
-    fetch('http://localhost:8080/api/supplierapplications', {
+    fetch('http://localhost:8080/api/innerapplications', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -45,12 +43,12 @@ export default () => {
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         <Form>
-          {(applications.length !== 0
+          {(applications.length != 0
             ?
             <table border="1" width="100%">
               <thead>
                 <tr>
-                  <th/>
+                  <th></th>
                   <th>Application number</th>
                   <th>Source location</th>
                   <th>Destination location</th>
@@ -64,21 +62,24 @@ export default () => {
               </tbody>
             </table>
             : 'Empty list')}
-          <Button onClick={() => setDisplayModal(true)}>
-            Add application
+          <Button onClick={() => setData((prevState) => ({
+            ...prevState,
+            displayModal: true
+          }))}>
+            Add customer
             </Button>
         </Form>
       }
       {!isLoading && error && 'Error happens'}
-      {displayModal && <SupplierAppModal onCloseModal={() => setDisplayModal(false)}/>}
+      {displayModal && <InnerApplications onClick={() => setData((prevState) => ({ ...prevState, displayModal: false }))} />}
     </>
   );
 }
 
-function SupplierApplications({ application }) {
+function InnerApplications({ application }) {
   return (
     <tr id={application.id}>
-      <td/>
+      <td></td>
       <td>{application.applicationNumber}</td>
       <td>{application.supplier.identifier}</td>
       <td>{application.destinationLocation.identifier}</td>

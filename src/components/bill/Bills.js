@@ -1,7 +1,7 @@
-import BillModal from '../modals/BillModal';
+import BillModal from './BillModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import UpperProductModal from '../modals/upperModals/UpperProductModal';
+import UpperProductModal from '../../modals/upperModals/UpperProductModal';
 
 export default () => {
   const [billsData, setData] = useState({

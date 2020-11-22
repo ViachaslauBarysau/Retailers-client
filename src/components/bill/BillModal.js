@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import UpperProductModal from './upperModals/UpperProductModal';
+import UpperProductModal from '../../modals/upperModals/UpperProductModal';
 import { Button, Form } from 'react-bootstrap';
 
 const BillModal = (props) => {

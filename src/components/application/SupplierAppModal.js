@@ -1,11 +1,10 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import React, {useEffect, useState} from 'react';
-// import UpperProductModal from './upperModals/UpperProductModal';
+
 import {Button, TextField} from '@material-ui/core';
-import ApplicationRecord from "../components/application/ApplicationRecord";
+import ApplicationRecord from "./ApplicationRecord";
 
 const SupplierAppModal = (props) => {
-    // const [displayUpperModal, setDisplay] = useState(false);
     const [itemRows, setItemRows] = useState({
         items: [],
         totalAmount: 0,
@@ -45,18 +44,11 @@ const SupplierAppModal = (props) => {
         setItemRows(
             (prevState) => {
                 let newItems = prevState.items;
-                let key;
-                if (prevState.items.length > 0) {
-                    let item = prevState.items[prevState.items.length - 1];
-                    key = item.key + 1;
-                } else {
-                    key = 0;
-                }
                 let newRow = {
-                    key: key,
-                    upc: 0,
-                    amount: 0,
-                    cost: 0,
+                    key: new Date(),
+                    upc: "",
+                    amount: "",
+                    cost: "",
                 };
                 newItems.push(newRow);
                 return ({
@@ -67,20 +59,29 @@ const SupplierAppModal = (props) => {
         );
     };
 
-    let changeRecord = (e, key) => {
+    const changeRecord = (e, key) => {
+        let updatedItems = [];
         if (e.id === "upc") {
             let upc = e.value;
-            setItemRows(itemRows.items.upc = 2)
-            // setItemRows(itemRows.items.map(item => item.key === key ? item.upc = upc : item))
-            // setItemRows((prev) => prev)
-            console.log(itemRows);
-            debugger
+            setItemRows((prevState) => ({
+                    ...prevState,
+                    items: itemRows.items.map(item => item.key === key ? {...item, upc: upc} : item)
+                })
+            );
         } else if (e.id === "amount") {
             let amount = e.value;
-            setItemRows(itemRows.items.map(item => item.key === key ? (item.amount = amount) : item))
+            setItemRows((prevState) => ({
+                    ...prevState,
+                    items: itemRows.items.map(item => item.key === key ? {...item, amount: amount} : item)
+                })
+            );
         } else if (e.id === "cost") {
             let cost = e.value;
-            setItemRows(itemRows.items.map(item => item.key === key ? (item.cost = cost) : item))
+            setItemRows((prevState) => ({
+                    ...prevState,
+                    items: itemRows.items.map(item => item.key === key ? {...item, cost: cost} : item)
+                })
+            );
         }
     };
 
@@ -96,17 +97,16 @@ const SupplierAppModal = (props) => {
                                    value={locationIdentifier} disabled/>
                         <TextField fullWidth={true} id="creator" value={userFullName} variant="outlined"
                                    label="Created by" disabled/>
-                        <TextField fullWidth={true} id="locationreg_date_timeId" value={date} variant="outlined"
+                        <TextField fullWidth={true} id="locationreg_date_timeId" variant="outlined"
                                    label="Registration date and time" disabled/>
                         <TextField fullWidth={true} id="update_date_time" variant="outlined"
-                                   label="Updating date and time" value={date} disabled/>
-                        {console.log("AAA = " + JSON.stringify(itemRows)) }
+                                   label="Updating date and time" disabled/>
+                        {console.log("AAA = " + JSON.stringify(itemRows))}
                         {itemRows.items.map((item) => (<ApplicationRecord item={item} products={productsData.products}
                                                                           changeRecord={changeRecord}
                                                                           key={item.key}/>))}
                         <br/>
                         <button onClick={addRow} variant="contained">Add product</button>
-                        {/*<Button onClick={() => setDisplay(true)} variant="contained">Add product</Button>*/}
                         <br/>
                         <TextField fullWidth={true} id="price" variant="outlined" label="Total amount of products"
                                    disabled/>
@@ -120,7 +120,6 @@ const SupplierAppModal = (props) => {
                     </form>
                 </div>
             </div>
-            {/*{displayUpperModal && <UpperProductModal onCloseUpperModal={() => setDisplay(false)}/>}*/}
         </div>
     )
 };

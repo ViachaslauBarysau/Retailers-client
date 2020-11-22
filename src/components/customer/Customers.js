@@ -1,4 +1,4 @@
-import CustomerModal from '../modals/CustomerModal';
+import CustomerModal from './CustomerModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 

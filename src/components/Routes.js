@@ -1,25 +1,29 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import { Switch, Route } from "react-router-dom";
 
 import withAuth from "../hoc/withAuth";
 
 import Index from '../pages/Index';
 import Login from '../pages/Login';
-import Users from '../pages/Users';
-import Customers from '../pages/Customers';
-import WriteOffActs from '../pages/WriteOffActs';
-import Products from '../pages/Products';
-import Bills from '../pages/Bills';
-import Locations from '../pages/Locations';
-import SupplierApplications from '../pages/SupplierApplications';
+import Users from './user/Users';
+import Customers from './customer/Customers';
+import WriteOffActs from './act/WriteOffActs';
+import Products from './product/Products';
+import Bills from './bill/Bills';
+import Locations from './location/Locations';
+import SupplierApplications from './application/SupplierApplications';
 import Test from "../pages/Test";
+import {AuthContext} from "../context/authContext";
+import {useStyles} from "../App.styles";
 
 
 
 export default () => {
-    let user = localStorage.getItem("user");
+    const { user } = useContext(AuthContext);
+    const [currentUser, setCurrentUser] = useState(user);
+console.log(user)
     if (user) {
-        switch (user.userRole) {
+        switch (user.userRole[0]) {
             case "SYSTEM_ADMIN":
                 return (
                     <React.Fragment>
@@ -149,16 +153,6 @@ export default () => {
             <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/locations'} component={withAuth(Locations)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
-                                <Route path={'/test'} component={Test} />
                                 <Route component={Login} />
                             </Switch>
                         </div>

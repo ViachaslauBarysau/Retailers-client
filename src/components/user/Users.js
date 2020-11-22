@@ -1,4 +1,4 @@
-import UserModal from '../modals/UserModal';
+import UserModal from './UserModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 

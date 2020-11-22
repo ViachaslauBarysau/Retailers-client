@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import { getDateStringWithoutTime } from '../util/DateAndTime';
+import { getDateStringWithoutTime } from '../../util/DateAndTime';
 
 
 const CustomerModal = (props) => {    
