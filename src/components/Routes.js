@@ -21,7 +21,6 @@ import {useStyles} from "../App.styles";
 export default () => {
     const { user } = useContext(AuthContext);
     const [currentUser, setCurrentUser] = useState(user);
-console.log(user)
     if (user) {
         switch (user.userRole[0]) {
             case "SYSTEM_ADMIN":
@@ -29,8 +28,8 @@ console.log(user)
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/login'} component={Login} />
                                 <Route path={'/'} component={withAuth(Customers)} exact={true} />
+                                <Route path={'/login'} component={Login} />
                                 <Route path={'/users'} component={withAuth(Users)} />
                                 <Route path={'/customers'} component={withAuth(Customers)} />
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />

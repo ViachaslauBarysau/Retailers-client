@@ -3,6 +3,9 @@ import React, {useEffect, useState} from 'react';
 
 import {Button, TextField} from '@material-ui/core';
 import ApplicationRecord from "./ApplicationRecord";
+import {makeStyles} from "@material-ui/core/styles";
+import style from './SupplierAppModal.modules.css'
+import Grid from "@material-ui/core/Grid";
 
 const SupplierAppModal = (props) => {
     const [itemRows, setItemRows] = useState({
@@ -45,10 +48,11 @@ const SupplierAppModal = (props) => {
             (prevState) => {
                 let newItems = prevState.items;
                 let newRow = {
-                    key: new Date(),
+                    key: new Date().getMilliseconds(),
                     upc: "",
                     amount: "",
                     cost: "",
+                    error : true
                 };
                 newItems.push(newRow);
                 return ({
@@ -61,58 +65,78 @@ const SupplierAppModal = (props) => {
 
     const changeRecord = (e, key) => {
         let updatedItems = [];
-        if (e.id === "upc") {
+        if (e.name === "upc") {
             let upc = e.value;
             setItemRows((prevState) => ({
                     ...prevState,
                     items: itemRows.items.map(item => item.key === key ? {...item, upc: upc} : item)
                 })
             );
-        } else if (e.id === "amount") {
+        } else if (e.name === "amount") {
             let amount = e.value;
             setItemRows((prevState) => ({
                     ...prevState,
                     items: itemRows.items.map(item => item.key === key ? {...item, amount: amount} : item)
                 })
             );
-        } else if (e.id === "cost") {
+        } else if (e.name === "cost") {
             let cost = e.value;
             setItemRows((prevState) => ({
                     ...prevState,
                     items: itemRows.items.map(item => item.key === key ? {...item, cost: cost} : item)
                 })
             );
+        } else if (e.name === "delete") {
+            setItemRows((prevState) => ({
+                    ...prevState,
+                    items: prevState.items.filter((item) => (item.key !== key))
+                })
+            );
         }
     };
+
 
     return (
         <div>
             <div className={"modal-wrapper"}>
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
-                    <form className="supplier-app-modal">
-                        <TextField fullWidth={true} id="app_number" variant="outlined" label="Application number"/>
-                        <TextField fullWidth={true} id="supplier" variant="outlined" label="Supplier"/>
-                        <TextField fullWidth={true} id="locationId" variant="outlined" label="Destination location"
+                    <form>
+                        <TextField size="small" fullWidth={true} id="app_number"
+                                   variant="outlined" label="Application number"/>
+                        <TextField size="small" fullWidth={true} id="supplier"
+                                   variant="outlined" label="Supplier"/>
+                        <TextField size="small" fullWidth={true} id="locationId"
+                                   variant="outlined" label="Destination location"
                                    value={locationIdentifier} disabled/>
-                        <TextField fullWidth={true} id="creator" value={userFullName} variant="outlined"
+                        <TextField size="small" fullWidth={true} id="creator" value={userFullName} variant="outlined"
                                    label="Created by" disabled/>
-                        <TextField fullWidth={true} id="locationreg_date_timeId" variant="outlined"
+                        <TextField size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
                                    label="Registration date and time" disabled/>
-                        <TextField fullWidth={true} id="update_date_time" variant="outlined"
+                        <TextField size="small" fullWidth={true} id="update_date_time" variant="outlined"
                                    label="Updating date and time" disabled/>
-                        {console.log("AAA = " + JSON.stringify(itemRows))}
-                        {itemRows.items.map((item) => (<ApplicationRecord item={item} products={productsData.products}
-                                                                          changeRecord={changeRecord}
-                                                                          key={item.key}/>))}
+
+                        <div className="scrollable-box">
+                            <Grid container spacing={1}>
+                                <Grid item xm={3}>
+                                    {itemRows.items.map((item) => (
+                                        <ApplicationRecord item={item} products={productsData.products}
+                                                           changeRecord={changeRecord}
+                                                           key={item.key}/>))}
+                                </Grid>
+                            </Grid>
+                        </div>
+
                         <br/>
                         <button onClick={addRow} variant="contained">Add product</button>
                         <br/>
-                        <TextField fullWidth={true} id="price" variant="outlined" label="Total amount of products"
+                        <TextField size="small" fullWidth={true} id="price" variant="outlined"
+                                   label="Total amount of products"
                                    disabled/>
-                        <TextField fullWidth={true} id="totalItemAmount" variant="outlined"
+                        <TextField size="small" fullWidth={true} id="totalItemAmount" variant="outlined"
                                    label="Total volume of products" disabled/>
-                        <TextField fullWidth={true} id="totalItemVolume" variant="outlined" label="Total volume"
+                        <TextField size="small" fullWidth={true} id="totalItemVolume" variant="outlined"
+                                   label="Total volume"
                                    disabled/>
                         <br/>
                         <Button type="submit" variant="contained">Save application</Button>

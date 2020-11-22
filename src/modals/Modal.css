@@ -24,10 +24,19 @@
     transform: translate(-50%, -50%);
     min-height: 30%;
     width: 800px;
-    /*overflow-y: auto;*/
+    overflow-y: auto;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
     z-index: 101;
     padding: 40px;
-    overflow: scroll;
+    /*overflow: scroll;*/
   }
+
+  .scrollable-box {
+    background-color: lightblue;
+    width: 800px;
+    height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+

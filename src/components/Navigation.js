@@ -18,7 +18,6 @@ export default () => {
                 return (
                     <AppBar position={'static'}>
                         <Toolbar>
-                            <Link to={'/writeoffacts'} className={classes.menuLink}></Link>
                             <Link to={'/customers'} className={classes.menuLink}>Customers</Link>
                             <Link to={'/supplierapplications'} className={classes.menuLink}>Applications</Link>
                             <Link to={'/products'} className={classes.menuLink}>Products</Link>
