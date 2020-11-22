@@ -12,6 +12,7 @@ import Products from '../pages/Products';
 import Bills from '../pages/Bills';
 import Locations from '../pages/Locations';
 import SupplierApplications from '../pages/SupplierApplications';
+import Test from "../pages/Test";
 
 
 
@@ -136,6 +137,7 @@ export default () => {
                                 <Route path={'/locations'} component={withAuth(Locations)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
+                                <Route path={'/test'} component={Test} />
                                 <Route component={Login} />
                             </Switch>
                         </div>
@@ -156,6 +158,7 @@ export default () => {
                                 <Route path={'/locations'} component={withAuth(Locations)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
+                                <Route path={'/test'} component={Test} />
                                 <Route component={Login} />
                             </Switch>
                         </div>
