@@ -18,7 +18,7 @@ export default (props) => {
                 options={props.products.map((option) => option.upc.toString())}
                 renderInput={(params) => (
                     <TextField {...params} fullWidth={false} label="UPC" margin="normal" variant="outlined" name="upc"
-                               value={props.item.upc} error={props.item.error} onFo onChange={changeRecord} required/>
+                               value={props.item.upc} error={props.item.error} required/>
                 )}
             />
             <TextField type="number" size="small" required name="amount" variant="outlined"
