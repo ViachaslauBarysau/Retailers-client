@@ -37,7 +37,7 @@ export default () => {
     }, [productsData.displayModal]);
 
     const {isLoading, error, products, displayModal} = productsData;
-
+    console.log(productsData.products)
     return (
         <>
             {isLoading && 'Loading....'}

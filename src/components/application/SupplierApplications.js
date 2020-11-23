@@ -13,7 +13,7 @@ export default () => {
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/supplierapplications', {
+    fetch('http://localhost:8080/api/supplier_applications', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -50,7 +50,6 @@ export default () => {
             <table border="1" width="100%">
               <thead>
                 <tr>
-                  <th/>
                   <th>Application number</th>
                   <th>Source location</th>
                   <th>Destination location</th>
@@ -78,12 +77,11 @@ export default () => {
 function SupplierApplications({ application }) {
   return (
     <tr id={application.id}>
-      <td/>
       <td>{application.applicationNumber}</td>
       <td>{application.supplier.identifier}</td>
       <td>{application.destinationLocation.identifier}</td>
       <td>{application.updatingDateTime}</td>
-      <td>{application.updater}</td>
+      <td>{application.updater.firstName} {application.updater.lastName}</td>
       <td>{application.applicationStatus}</td>
     </tr>
   )

@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/writeoffacts', {
+    fetch('http://localhost:8080/api/write_off_acts', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },

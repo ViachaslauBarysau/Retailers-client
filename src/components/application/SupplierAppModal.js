@@ -1,22 +1,21 @@
 import '../../modals/Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import {Button, TextField} from '@material-ui/core';
 import ApplicationRecord from "./ApplicationRecord";
-import {makeStyles} from "@material-ui/core/styles";
-import style from './SupplierAppModal.modules.css'
 import Grid from "@material-ui/core/Grid";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import {AuthContext} from "../../context/authContext";
 
 const SupplierAppModal = (props) => {
+    const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [],
         totalAmount: 0,
-        totalCapacity: 0,
+        totalVolume: 0,
     });
-
-    const [productsData, setData] = useState({
-        products: [],
-    });
+    const [products, setProducts] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:8080/api/products?size=100000', {
@@ -27,32 +26,30 @@ const SupplierAppModal = (props) => {
         })
             .then(res => res.json())
             .then(products => {
-                setData((prevState) => ({
-                    ...prevState,
-                    products
-                }));
-            })
-
+                setProducts(products)
+            });
+        fetch('http://localhost:8080/api/suppliers?size=100000', {
+            headers: {
+                "Authorization": localStorage.getItem("token")
+            },
+            method: "GET"
+        })
+            .then(res => res.json())
+            .then(suppliers => {
+                setSuppliers(suppliers)
+            });
     }, []);
 
-    const {products} = productsData;
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userFullName = user.firstName + " " + user.lastName;
-    const locationIdentifier = user.location.identifier;
-    const date = new Date().toLocaleString();
-
-    let addRow = (e) => {
+    const addRow = (e) => {
         e.preventDefault();
-        setItemRows(
-            (prevState) => {
+        setItemRows((prevState) => {
                 let newItems = prevState.items;
                 let newRow = {
                     key: new Date().getMilliseconds(),
-                    upc: "",
-                    amount: "",
-                    cost: "",
-                    error : true
+                    upc: 0,
+                    amount: 0,
+                    cost: 0,
+                    error: false
                 };
                 newItems.push(newRow);
                 return ({
@@ -62,9 +59,9 @@ const SupplierAppModal = (props) => {
             }
         );
     };
-
+    console.log(itemRows.items)
     const changeRecord = (e, key) => {
-        let updatedItems = [];
+
         if (e.name === "upc") {
             let upc = e.value;
             setItemRows((prevState) => ({
@@ -74,6 +71,7 @@ const SupplierAppModal = (props) => {
             );
         } else if (e.name === "amount") {
             let amount = e.value;
+            console.log(amount)
             setItemRows((prevState) => ({
                     ...prevState,
                     items: itemRows.items.map(item => item.key === key ? {...item, amount: amount} : item)
@@ -95,21 +93,89 @@ const SupplierAppModal = (props) => {
         }
     };
 
+    const calculateVolume = () => {
+        let totalVolume = 0;
+        console.log(products);
+        console.log(itemRows.items);
+        itemRows.items.forEach((item) =>  (console.log(products.filter((product) => (product.upc === item.upc)))));
+        console.log(products)
+    }
+
+    const createApplication = (e) => {
+        e.preventDefault(e);
+
+        let supplierId = suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0].id;
+        let dateTime = new Date();
+        let recordsList = [];
+        calculateVolume();
+
+        fetch('http://localhost:8080/api/supplier_applications', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify({
+                applicationNumber: e.target.app_number.value,
+                supplier: {
+                    id: supplierId
+                },
+                destinationLocation: {
+                    id: user.location.id
+                },
+                creator: {
+                    id: user.id
+                },
+                updater: {
+                    id: user.id
+                },
+                registrationDateTime: dateTime,
+                updatingDateTime: dateTime,
+                applicationStatus: "OPEN",
+                recordsList: [
+                    {
+                        product: {
+                            id: 2
+                        },
+                        amount: 3,
+                        cost: 3
+                    }
+                ],
+                totalProductAmount: 10,
+                totalUnitNumber: 20
+            }),
+            method: "POST"
+        });
+        e.target.closeButton.click();
+    }
+
 
     return (
         <div>
+
             <div className={"modal-wrapper"}>
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
-                    <form>
+                    <form onSubmit={createApplication}>
                         <TextField size="small" fullWidth={true} id="app_number"
                                    variant="outlined" label="Application number"/>
-                        <TextField size="small" fullWidth={true} id="supplier"
-                                   variant="outlined" label="Supplier"/>
+
+                        <Autocomplete
+                            id="supplier"
+                            size="small"
+                            name="supplier"
+                            clearOnEscape
+                            options={suppliers.map((option) => option.identifier.toString())}
+                            renderInput={(params) => (
+                                <TextField {...params} fullWidth={true} label="Supplier" margin="normal"
+                                           variant="outlined"
+                                           id="supplier" required/>
+                            )}
+                        />
                         <TextField size="small" fullWidth={true} id="locationId"
                                    variant="outlined" label="Destination location"
-                                   value={locationIdentifier} disabled/>
-                        <TextField size="small" fullWidth={true} id="creator" value={userFullName} variant="outlined"
+                                   disabled/>
+                        <TextField size="small" fullWidth={true} id="creator" variant="outlined"
                                    label="Created by" disabled/>
                         <TextField size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
                                    label="Registration date and time" disabled/>
@@ -120,7 +186,8 @@ const SupplierAppModal = (props) => {
                             <Grid container spacing={1}>
                                 <Grid item xm={3}>
                                     {itemRows.items.map((item) => (
-                                        <ApplicationRecord item={item} products={productsData.products}
+                                        <ApplicationRecord item={item}
+                                                           products={products}
                                                            changeRecord={changeRecord}
                                                            key={item.key}/>))}
                                 </Grid>
