@@ -10,14 +10,23 @@ export default (props) => {
         props.changeRecord(e.target, props.item.key, props.products.filter((item) => (item.upc === e.target.upc)) )
     }
 
+    function handleChangeUPC(e, value) {
+        let state = {
+            target: {name: "upc", value}
+        };
+        changeRecord(state);
+    }
+
     return (
         <div>
             <Autocomplete
                 size="small"
+                componentName="upc"
+                onChange={(e) => handleChangeUPC(e, e.target.innerText)}
                 clearOnEscape
                 options={props.products.map((option) => option.upc.toString())}
                 renderInput={(params) => (
-                    <TextField {...params} fullWidth={false} label="UPC" margin="normal" variant="outlined" name="upc"
+                    <TextField {...params} fullWidth={false} label="UPC" margin="normal" variant="outlined"
                                value={props.item.upc} error={props.item.error} required/>
                 )}
             />
