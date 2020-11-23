@@ -48,7 +48,7 @@ const SupplierAppModal = (props) => {
             (prevState) => {
                 let newItems = prevState.items;
                 let newRow = {
-                    key: new Date().getMilliseconds(),
+                    key: new Date().getTime(),
                     upc: "",
                     amount: "",
                     cost: "",
@@ -64,6 +64,7 @@ const SupplierAppModal = (props) => {
     };
 
     const changeRecord = (e, key) => {
+        debugger
         let updatedItems = [];
         if (e.name === "upc") {
             let upc = e.value;
