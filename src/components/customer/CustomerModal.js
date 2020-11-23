@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import { getDateStringWithoutTime } from '../util/DateAndTime';
+import { getDateStringWithoutTime } from '../../util/DateAndTime';
 
 
 const CustomerModal = (props) => {    
@@ -28,7 +28,7 @@ const CustomerModal = (props) => {
 
 function addCustomer(e) {
     e.preventDefault();
-    fetch('http://localhost:8080/customers', {
+    fetch('http://localhost:8080/api/customers', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',

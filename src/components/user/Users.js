@@ -1,4 +1,4 @@
-import UserModal from '../modals/UserModal';
+import UserModal from './UserModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/users', {
+    fetch('http://localhost:8080/api/users', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },
@@ -45,13 +45,17 @@ export default () => {
         <Form onSubmit={changeUserStatus}>
           {(users.length != 0
             ? <table border="1" width="100%">
-              <tr>
-                <th></th>
-                <th>Full name</th>
-                <th>Birthday</th>
-                <th>Role</th>
-              </tr>
-              {users.map(user => <Users user={user} key={user.id} />)}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Full name</th>
+                  <th>Birthday</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => <Users user={user} key={user.id} />)}
+              </tbody>
             </table>
             : 'Empty list')}
           <Button onClick={() => setData((prevState) => ({
@@ -83,15 +87,10 @@ function changeUserStatus(e) {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
-    body: {
-      body: JSON.stringify(
-        userIdList
-      )
-    },
+    body: JSON.stringify(userIdList),
     method: "PUT"
   });
 }
-
 
 function Users({ user }) {
   return (

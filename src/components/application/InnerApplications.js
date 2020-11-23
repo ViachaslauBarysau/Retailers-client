@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import InnerAppModal from '../modals/InnerAppModal';
+import InnerAppModal from './InnerAppModal';
 
 export default () => {
   const [applicationsData, setData] = useState({
@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/innerapplications', {
+    fetch('http://localhost:8080/api/innerapplications', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -46,16 +46,20 @@ export default () => {
           {(applications.length != 0
             ?
             <table border="1" width="100%">
-              <tr>
-                <th></th>
-                <th>Application number</th>
-                <th>Source location</th>
-                <th>Destination location</th>
-                <th>Update date and time</th>
-                <th>Last updated by</th>
-                <th>Status</th>
-              </tr>
-              {applications.map(application => <SupplierApplications application={application} key={application.id} />)}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Application number</th>
+                  <th>Source location</th>
+                  <th>Destination location</th>
+                  <th>Update date and time</th>
+                  <th>Last updated by</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map(application => <SupplierApplications application={application} key={application.id} />)}
+              </tbody>
             </table>
             : 'Empty list')}
           <Button onClick={() => setData((prevState) => ({

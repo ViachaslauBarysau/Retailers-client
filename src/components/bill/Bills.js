@@ -1,7 +1,7 @@
-import BillModal from '../modals/BillModal';
+import BillModal from './BillModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import UpperProductModal from '../modals/upperModals/UpperProductModal';
+import UpperProductModal from '../../modals/upperModals/UpperProductModal';
 
 export default () => {
   const [billsData, setData] = useState({
@@ -14,7 +14,7 @@ export default () => {
 
   useEffect(() => {
     setData(prevState => ({ ...prevState, isLoading: true }));
-    fetch('http://localhost:8080/bills', {
+    fetch('http://localhost:8080/api/bills', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },

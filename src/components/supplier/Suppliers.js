@@ -1,4 +1,4 @@
-import SupplierModal from '../modals/SupplierModal';
+import SupplierModal from './SupplierModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/suppliers', {
+    fetch('http://localhost:8080/api/suppliers', {
       headers: {
         "Authorization": localStorage.getItem("token"),
         'Content-Type': 'application/json',
@@ -46,12 +46,16 @@ export default () => {
           {(suppliers.length != 0
             ?
             <table border="1" width="100%">
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Registration date</th>
-              </tr>
-              {suppliers.map(supplier => <Suppliers supplier={supplier} key={supplier.id} />)}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Registration date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {suppliers.map(supplier => <Suppliers supplier={supplier} key={supplier.id} />)}
+              </tbody>
             </table>
             : 'Empty list')}
           <Button onClick={() => setData((prevState) => ({

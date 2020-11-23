@@ -1,4 +1,4 @@
-import ActModal from '../modals/ActModal';
+import ActModal from './ActModal';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ export default () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/writeoffacts', {
+    fetch('http://localhost:8080/api/writeoffacts', {
       headers: {
         "Authorization": localStorage.getItem("token")
       },

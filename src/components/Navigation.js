@@ -3,20 +3,27 @@ import React, { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import { useStyles } from '../App.styles';
 import UserProfile from "./UserProfile";
 
 export default () => {
     const classes = useStyles();
     const { user } = useContext(AuthContext);
-  
-    if (user != null) {
-        switch (user.userRole) {
+    const [currentUser, setCurrentUser] = useState(user);
+
+    if (user) {
+        switch (user.userRole[0]) {
             case "SYSTEM_ADMIN":
                 return (
                     <AppBar position={'static'}>
                         <Toolbar>
                             <Link to={'/customers'} className={classes.menuLink}>Customers</Link>
+                            <Link to={'/supplierapplications'} className={classes.menuLink}>Applications</Link>
+                            <Link to={'/products'} className={classes.menuLink}>Products</Link>
+                            <Link to={'/bills'} className={classes.menuLink}>Bills</Link>
+                            <Link to={'/locations'} className={classes.menuLink}>Locations</Link>
+                            <Link to={'/writeoffacts'} className={classes.menuLink}>Write-off acts</Link>
                             <Link to={'/users'} className={classes.lastMenuLink}>Users</Link>
                             <UserProfile />
                         </Toolbar>
@@ -81,6 +88,13 @@ export default () => {
                 return (
                     <AppBar position={'static'}>
                         <Toolbar>
+                            <Link to={'/writeoffacts'} className={classes.menuLink}>Write-off acts</Link>
+                            <Link to={'/customers'} className={classes.menuLink}>Customers</Link>
+                            <Link to={'/supplierapplications'} className={classes.menuLink}>Applications</Link>
+                            <Link to={'/products'} className={classes.menuLink}>Products</Link>
+                            <Link to={'/bills'} className={classes.menuLink}>Bills</Link>
+                            <Link to={'/locations'} className={classes.menuLink}>Locations</Link>
+                            <Link to={'/users'} className={classes.lastMenuLink}>Users</Link>
                             <UserProfile />
                         </Toolbar>
                     </AppBar>

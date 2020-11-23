@@ -14,15 +14,3 @@ function App() {
 }
 
 export default App;
-
-// 02 - Render prop pattern
-/*
-/// PUT THIS ROUTER TO SHOW RENDR PROPS PATTERN
-<Route path={'/admin'}
-       render={() => {
-           return <ProtectedComponent render={(user => {
-               console.log(user);
-               return <Admin/>
-           })}/>
-       }}/>
-*/

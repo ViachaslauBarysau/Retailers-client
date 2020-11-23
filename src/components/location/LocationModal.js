@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import StateSelect from './formSelects/StateSelect';
+import StateSelect from '../../modals/formSelects/StateSelect';
 
 const LocationModal = (props) => {
     return (
@@ -58,7 +58,7 @@ const LocationModal = (props) => {
 
 function addLocation(e) {
     e.preventDefault();
-    fetch('http://localhost:8080/locations', {
+    fetch('http://localhost:8080/api/locations', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',

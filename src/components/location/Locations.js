@@ -1,4 +1,4 @@
-import LocationModal from '../modals/LocationModal';
+import LocationModal from './LocationModal';
 import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
 
@@ -41,7 +41,7 @@ export default () => {
         e.target.locations.forEach(element => {
             element.checked && locationIdList.push({id: element.value});
         });
-        fetch('http://localhost:8080/locations', {
+        fetch('http://localhost:8080/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export default () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/locations', {
+        fetch('http://localhost:8080/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

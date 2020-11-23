@@ -5,7 +5,7 @@
     left: 0;
     right: 0;
   }
-  
+
   .modal-backdrop {
     position: fixed;
     top: 0;
@@ -15,17 +15,28 @@
     z-index: 100;
     background-color: rgba(0,0,0,0.3);
   }
-  
+
   .modal-box {
-    position: relative;
+    position: absolute;
+    display: block;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     min-height: 30%;
-    width: 400px;
+    width: 800px;
     overflow-y: auto;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
     z-index: 101;
     padding: 40px;
+    /*overflow: scroll;*/
   }
+
+  .scrollable-box {
+    background-color: lightblue;
+    width: 800px;
+    height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+

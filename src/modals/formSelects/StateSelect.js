@@ -6,7 +6,7 @@ export default () => {
     });
 
     useEffect(() => {
-        fetch('http://localhost:8080/states?size=50', {
+        fetch('http://localhost:8080/api/states?size=50', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

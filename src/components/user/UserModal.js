@@ -1,7 +1,7 @@
-import './Modal.css';
+import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import StateSelect from './formSelects/StateSelect';
+import StateSelect from '../../modals/formSelects/StateSelect';
 
 const UserModal = (props) => {
   return (
@@ -64,7 +64,7 @@ const UserModal = (props) => {
 //How to set user location? Password generator services.
 function addUser(e) {
   e.preventDefault();
-  fetch('http://localhost:8080/users', {
+  fetch('http://localhost:8080/api/users', {
     headers: {
       'Authorization': localStorage.getItem("token"),
       'Content-Type': 'application/json',
