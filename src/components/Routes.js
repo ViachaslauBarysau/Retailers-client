@@ -11,7 +11,7 @@ import WriteOffActs from './act/WriteOffActs';
 import Products from './product/Products';
 import Bills from './bill/Bills';
 import Locations from './location/Locations';
-import SupplierApplications from './application/SupplierApplications';
+import SupplierApplications from './application/supplier/SupplierApplications';
 import Test from "../pages/Test";
 import {AuthContext} from "../context/authContext";
 import {useStyles} from "../App.styles";

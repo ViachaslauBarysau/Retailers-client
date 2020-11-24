@@ -43,11 +43,11 @@ export default () => {
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         <Form onSubmit={changeCustomerStatus}>
-          {(customers.length != 0
+          {(customers.length !== 0
             ?
             <table border="1" width="100%">
               <tr>
-                <th></th>
+                <th/>
                 <th>Name</th>
                 <th>Registration date</th>
                 <th>Status</th>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import InnerAppModal from './InnerAppModal';
+import InnerAppModal from './modal/InnerAppModal';
 
 export default () => {
   const [applicationsData, setData] = useState({

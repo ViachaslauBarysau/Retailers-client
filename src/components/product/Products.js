@@ -1,5 +1,5 @@
 import ProductModal from './ProductModal';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {Button, Form} from 'react-bootstrap';
 
 export default () => {
@@ -9,6 +9,27 @@ export default () => {
         products: [],
         displayModal: false,
     });
+
+    // const columns = [
+    //     { field: 'upc', headerName: 'UPC', width: 70 },
+    //     { field: 'label', headerName: 'Label', width: 130 },
+    //     { field: 'category', headerName: 'Category', width: 130 },
+    //     {
+    //         field: 'units',
+    //         headerName: 'Units',
+    //         type: 'number',
+    //         width: 90,
+    //     },
+    //     {
+    //         field: 'fullName',
+    //         headerName: 'Full name',
+    //         description: 'This column has a value getter and is not sortable.',
+    //         sortable: false,
+    //         width: 160,
+    //         valueGetter: (params) =>
+    //             `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`,
+    //     },
+    // ];
 
     useEffect(() => {
         fetch('http://localhost:8080/api/products', {
@@ -43,12 +64,12 @@ export default () => {
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             <Form onSubmit={removeProducts}>
-                {(products.length != 0
+                {(products.length !== 0
                     ?
                     <table border="1" width="100%">
                         <thead>
                         <tr>
-                            <th></th>
+                            <th/>
                             <th>UPC</th>
                             <th>Label</th>
                             <th>Category</th>

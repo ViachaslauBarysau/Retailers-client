@@ -1,7 +1,16 @@
-import '../../modals/Modal.css';
+import '../../../../modals/Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableRow from "@material-ui/core/TableRow";
+import Table from "@material-ui/core/Table";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableHead from "@material-ui/core/TableHead";
 
 const SupplierAppEditModal = (props) => {
     const [application, setApplication] = useState(null)
@@ -51,6 +60,12 @@ const SupplierAppEditModal = (props) => {
         });
     }
 
+    const useStyles = makeStyles({
+        table: {
+            minWidth: 650,
+        },
+    });
+
     return (
         <div>
             {application && locations &&
@@ -58,7 +73,7 @@ const SupplierAppEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form className="supplier-app-modal">
-                        <TextField size="small" fullWidth={true} value={String(application.applicationNumber)}
+                        <TextField size="small" fullWidth={true} value={application.applicationNumber}
                                    variant="outlined"
                                    label="Application number" disabled/>
                         <TextField size="small" fullWidth={true} value={application.supplier.fullName}
@@ -69,7 +84,7 @@ const SupplierAppEditModal = (props) => {
                             name="location"
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
-                            defaultValue={application.destinationLocation}
+                            defaultValue={application.destinationLocation.identifier}
                             renderInput={(params) => (
                                 <TextField {...params} fullWidth={true} label="Warehouse" margin="normal"
                                            variant="outlined"
@@ -82,20 +97,48 @@ const SupplierAppEditModal = (props) => {
                         <TextField size="small" fullWidth={true} variant="outlined" value={application.updater.firstName
                         + " " + application.updater.lastName}
                                    label="Updated by" disabled/>
-                        <TextField size="small" fullWidth={true} variant="outlined" value={application.registrationDateTime}
+                        <TextField size="small" fullWidth={true} variant="outlined"
+                                   value={application.registrationDateTime}
                                    label="Registration date and time" disabled/>
                         <TextField size="small" fullWidth={true} variant="outlined" value={application.updatingDateTime}
                                    label="Updating date and time" disabled/>
-                        <TextField size="small" fullWidth={true} variant="outlined" value={application.applicationStatus}
+                        <TextField size="small" fullWidth={true} variant="outlined"
+                                   value={application.applicationStatus}
                                    label="Status"
                                    disabled/>
+                        <div className="scrollable-box">
+                            <Grid container spacing={1}>
+                                {/*<Grid item xm={3}>*/}
 
-                        {/*{itemRows.items.map((item) => (<ApplicationRecord item={item} products={productsData.products}*/}
-                        {/*                                                  changeRecord={changeRecord}*/}
-                        {/*                                                  key={item.key}/>))}*/}
-                        <br/>
 
-                        <TextField size="small" fullWidth={true} variant="outlined" value={application.totalProductAmount}
+                                    <TableContainer component={Paper}>
+                                        <Table className={useStyles.table} size="small" aria-label="a dense table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>UPC</TableCell>
+                                                    <TableCell align="right">Amount</TableCell>
+                                                    <TableCell align="right">Cost</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {application.recordsList.map((record) => (
+                                                    <TableRow key={record.product.upc}>
+                                                        <TableCell component="th" scope="row">
+                                                            {record.product.upc}
+                                                        </TableCell>
+                                                        <TableCell align="right">{record.amount}</TableCell>
+                                                        <TableCell align="right">{record.cost}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <br/>
+                                {/*</Grid>*/}
+                            </Grid>
+                        </div>
+                        <TextField size="small" fullWidth={true} variant="outlined"
+                                   value={application.totalProductAmount}
                                    label="Total amount of products"
                                    disabled/>
                         <TextField size="small" fullWidth={true} variant="outlined" value={application.totalUnitNumber}

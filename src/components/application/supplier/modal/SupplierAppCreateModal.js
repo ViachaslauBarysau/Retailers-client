@@ -1,13 +1,13 @@
-import '../../modals/Modal.css';
-import React, {useContext, useEffect, useState} from 'react';
+import '../../../../modals/Modal.css';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {Button, TextField} from '@material-ui/core';
-import ApplicationRecord from "./ApplicationRecord";
 import Grid from "@material-ui/core/Grid";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {AuthContext} from "../../context/authContext";
+import {AuthContext} from "../../../../context/authContext";
+import EditableApplicationRecord from "./record/EditableApplicationRecord";
 
-const SupplierAppModal = (props) => {
+const SupplierAppCreateModal = (props) => {
     const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: []
@@ -122,6 +122,8 @@ const SupplierAppModal = (props) => {
         return recordsList;
     }
 
+    let date = useMemo(() => new Date(), [])
+
     const createApplication = (e) => {
         e.preventDefault(e);
 
@@ -160,7 +162,6 @@ const SupplierAppModal = (props) => {
         e.target.closeButton.click();
     }
 
-
     return (
         <div>
 
@@ -184,20 +185,18 @@ const SupplierAppModal = (props) => {
                             )}
                         />
                         <TextField size="small" fullWidth={true} id="locationId"
-                                   variant="outlined" label="Destination location"
+                                   variant="outlined" value={user.location.identifier} label="Destination location"
                                    disabled/>
                         <TextField size="small" fullWidth={true} id="creator" variant="outlined"
-                                   label="Created by" disabled/>
+                                   label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
                         <TextField size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
-                                   label="Registration date and time" disabled/>
-                        <TextField size="small" fullWidth={true} id="update_date_time" variant="outlined"
-                                   label="Updating date and time" disabled/>
+                                   label="Registration date and time" value={date}  disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
                                 <Grid item xm={3}>
                                     {itemRows.items.map((item) => (
-                                        <ApplicationRecord item={item}
+                                        <EditableApplicationRecord item={item}
                                                            products={products}
                                                            changeRecord={changeRecord}
                                                            key={item.key}/>))}
@@ -217,4 +216,4 @@ const SupplierAppModal = (props) => {
     )
 };
 
-export default SupplierAppModal;
+export default SupplierAppCreateModal;

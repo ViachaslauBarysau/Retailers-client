@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
-import SupplierAppModal from './SupplierAppModal';
-import SupplierAppEditModal from "./SupplierAppEditModal";
+import SupplierAppCreateModal from './modal/SupplierAppCreateModal';
+import SupplierAppEditModal from "./modal/SupplierAppEditModal";
 
 export default () => {
     const [applicationsData, setData] = useState({
@@ -56,7 +56,7 @@ export default () => {
                         <thead>
                         <tr>
                             <th>Application number</th>
-                            <th>Source location</th>
+                            <th>Supplier identifier</th>
                             <th>Destination location</th>
                             <th>Update date and time</th>
                             <th>Last updated by</th>
@@ -75,7 +75,7 @@ export default () => {
             </Form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <SupplierAppModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <SupplierAppCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierAppEditModal appId={displayEditModal.appId}
                                                        onCloseModal={() => setDisplayEditModal({
                                                            displayModal: false,
