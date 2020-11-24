@@ -10,9 +10,7 @@ import {AuthContext} from "../../context/authContext";
 const SupplierAppModal = (props) => {
     const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
-        items: [],
-        totalAmount: 0,
-        totalVolume: 0,
+        items: []
     });
     const [products, setProducts] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -45,7 +43,7 @@ const SupplierAppModal = (props) => {
         setItemRows((prevState) => {
                 let newItems = prevState.items;
                 let newRow = {
-                    key: new Date().getMilliseconds(),
+                    key: new Date().getTime(),
                     upc: 0,
                     amount: 0,
                     cost: 0,
@@ -59,46 +57,69 @@ const SupplierAppModal = (props) => {
             }
         );
     };
-    console.log(itemRows.items)
-    const changeRecord = (e, key) => {
 
-        if (e.name === "upc") {
-            let upc = e.value;
-            setItemRows((prevState) => ({
-                    ...prevState,
-                    items: itemRows.items.map(item => item.key === key ? {...item, upc: upc} : item)
-                })
-            );
-        } else if (e.name === "amount") {
-            let amount = e.value;
-            console.log(amount)
-            setItemRows((prevState) => ({
-                    ...prevState,
-                    items: itemRows.items.map(item => item.key === key ? {...item, amount: amount} : item)
-                })
-            );
-        } else if (e.name === "cost") {
-            let cost = e.value;
-            setItemRows((prevState) => ({
-                    ...prevState,
-                    items: itemRows.items.map(item => item.key === key ? {...item, cost: cost} : item)
-                })
-            );
-        } else if (e.name === "delete") {
-            setItemRows((prevState) => ({
-                    ...prevState,
-                    items: prevState.items.filter((item) => (item.key !== key))
-                })
-            );
+    const changeRecord = (e, key) => {
+        switch (e.name) {
+            case "upc":
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value} : item)
+                    })
+                );
+                break;
+            case "amount":
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
+                    })
+                );
+                break;
+            case "cost":
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: itemRows.items.map(item => item.key === key ? {...item, cost: e.value} : item)
+                    })
+                );
+                break;
+            case "delete":
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: prevState.items.filter((item) => (item.key !== key))
+                    })
+                );
+                break;
         }
     };
 
     const calculateVolume = () => {
         let totalVolume = 0;
-        console.log(products);
-        console.log(itemRows.items);
-        itemRows.items.forEach((item) =>  (console.log(products.filter((product) => (product.upc === item.upc)))));
-        console.log(products)
+        itemRows.items.forEach((item) => {
+                totalVolume += products.filter((product) => (product.upc === Number(item.upc)))[0].volume * item.amount
+            }
+        );
+        return totalVolume;
+    }
+
+    const calculateAmount = () => {
+        let totalAmount = 0;
+        itemRows.items.forEach((item) => {
+                totalAmount += Number(item.amount);
+            }
+        );
+        return totalAmount;
+    }
+
+    const getRecordsList = () => {
+        let recordsList = itemRows.items.map((item) => (
+            {
+                product: {
+                    id: products.filter((product) => (product.upc === Number(item.upc)))[0].id
+                },
+                amount: item.amount,
+                cost: item.cost
+            }
+        ));
+        return recordsList;
     }
 
     const createApplication = (e) => {
@@ -106,8 +127,6 @@ const SupplierAppModal = (props) => {
 
         let supplierId = suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0].id;
         let dateTime = new Date();
-        let recordsList = [];
-        calculateVolume();
 
         fetch('http://localhost:8080/api/supplier_applications', {
             headers: {
@@ -116,7 +135,7 @@ const SupplierAppModal = (props) => {
                 Accept: 'application/json'
             },
             body: JSON.stringify({
-                applicationNumber: e.target.app_number.value,
+                applicationNumber: Number(e.target.app_number.value),
                 supplier: {
                     id: supplierId
                 },
@@ -132,17 +151,9 @@ const SupplierAppModal = (props) => {
                 registrationDateTime: dateTime,
                 updatingDateTime: dateTime,
                 applicationStatus: "OPEN",
-                recordsList: [
-                    {
-                        product: {
-                            id: 2
-                        },
-                        amount: 3,
-                        cost: 3
-                    }
-                ],
-                totalProductAmount: 10,
-                totalUnitNumber: 20
+                recordsList: getRecordsList(),
+                totalProductAmount: calculateAmount(),
+                totalUnitNumber: calculateVolume()
             }),
             method: "POST"
         });
@@ -193,18 +204,9 @@ const SupplierAppModal = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
-
                         <br/>
-                        <button onClick={addRow} variant="contained">Add product</button>
+                        <Button onClick={addRow} variant="contained">Add product</Button>
                         <br/>
-                        <TextField size="small" fullWidth={true} id="price" variant="outlined"
-                                   label="Total amount of products"
-                                   disabled/>
-                        <TextField size="small" fullWidth={true} id="totalItemAmount" variant="outlined"
-                                   label="Total volume of products" disabled/>
-                        <TextField size="small" fullWidth={true} id="totalItemVolume" variant="outlined"
-                                   label="Total volume"
-                                   disabled/>
                         <br/>
                         <Button type="submit" variant="contained">Save application</Button>
                         <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>

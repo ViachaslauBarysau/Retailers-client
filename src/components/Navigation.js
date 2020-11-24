@@ -29,6 +29,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             case "ADMIN":
                 return (
                     <AppBar position={'static'}>
@@ -41,6 +42,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             case "DISPATCHER":
                 return (
                     <AppBar position={'static'}>
@@ -51,6 +53,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             case "WAREHOUSE_MANAGER":
                 return (
                     <AppBar position={'static'}>
@@ -62,6 +65,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             case "SHOP_MANAGER":
                 return (
                     <AppBar position={'static'}>
@@ -74,6 +78,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             case ("DIRECTOR"):
                 return (
                     <AppBar position={'static'}>
@@ -84,6 +89,7 @@ export default () => {
                         </Toolbar>
                     </AppBar>
                 );
+                break;
             default:
                 return (
                     <AppBar position={'static'}>
