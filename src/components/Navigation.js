@@ -19,12 +19,14 @@ export default () => {
                     <AppBar position={'static'}>
                         <Toolbar>
                             <Link to={'/customers'} className={classes.menuLink}>Customers</Link>
-                            <Link to={'/supplierapplications'} className={classes.menuLink}>Applications</Link>
+                            <Link to={'/supplierapplications'} className={classes.menuLink}>Sup. applications</Link>
+                            <Link to={'/innerapplications'} className={classes.menuLink}>Inner applications</Link>
                             <Link to={'/products'} className={classes.menuLink}>Products</Link>
                             <Link to={'/bills'} className={classes.menuLink}>Bills</Link>
                             <Link to={'/locations'} className={classes.menuLink}>Locations</Link>
                             <Link to={'/writeoffacts'} className={classes.menuLink}>Write-off acts</Link>
-                            <Link to={'/users'} className={classes.lastMenuLink}>Users</Link>
+                            <Link to={'/users'} className={classes.menuLink}>Users</Link>
+                            <Link to={'/category'} className={classes.lastMenuLink}>Category</Link>
                             <UserProfile />
                         </Toolbar>
                     </AppBar>

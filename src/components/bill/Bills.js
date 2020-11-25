@@ -1,4 +1,4 @@
-import BillModal from './BillModal';
+import BillCreateModal from './BillCreateModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import UpperProductModal from '../../modals/upperModals/UpperProductModal';
@@ -63,11 +63,7 @@ export default () => {
       }))}>
         Add bill
       </Button>
-      {displayModal && <BillModal onCloseModal={() => setData((prevState) => ({ ...prevState, displayModal: false }))}
-        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))}
-        onOpenUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: true }))} />}
-      {displayUpperModal && <UpperProductModal
-        onCloseUpperModal={() => setData((prevState) => ({ ...prevState, displayUpperModal: false }))} />}
+      {displayModal && <BillCreateModal onCloseModal={() => setData((prevState) => ({ ...prevState, displayModal: false }))}/>}
     </>
   );
 }

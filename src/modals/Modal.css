@@ -35,7 +35,7 @@
   .scrollable-box {
     background-color: #eaf2f8;
     width: 600px;
-    height: 300px;
+    max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
   }

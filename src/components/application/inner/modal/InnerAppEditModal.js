@@ -18,7 +18,7 @@ const SupplierAppEditModal = (props) => {
     const [locations, setLocations] = useState(null)
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/supplier_applications/' + props.appId, {
+        fetch('http://localhost:8080/api/inner_applications/' + props.appId, {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const SupplierAppEditModal = (props) => {
             .catch(e => {
                 //TODO: Add logic
             });
-        fetch('http://localhost:8080/api/locations/warehouses', {
+        fetch('http://localhost:8080/api/locations/shops', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const SupplierAppEditModal = (props) => {
     }, []);
 
     const acceptProducts = () => {
-        fetch('http://localhost:8080/api/supplier_applications/supplier_application_status/', {
+        fetch('http://localhost:8080/api/supplier_applications/inner_application_status/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const SupplierAppEditModal = (props) => {
     const forwardApplication = (e) => {
         e.preventDefault();
         console.log(e.target.location);
-        fetch('http://localhost:8080/api/supplier_applications/', {
+        fetch('http://localhost:8080/api/inner_applications/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -96,12 +96,11 @@ const SupplierAppEditModal = (props) => {
                         <TextField size="small" fullWidth={true} value={application.applicationNumber}
                                    variant="outlined"
                                    label="Application number" disabled/>
-                        <TextField size="small" fullWidth={true} value={application.supplier.fullName}
+                        <TextField size="small" fullWidth={true} value={application.sourceLocation.identifier}
                                    variant="outlined"
                                    label="Supplier" disabled/>
                         <Autocomplete
                             size="small"
-
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
                             defaultValue={application.destinationLocation.identifier}

@@ -7,34 +7,36 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../../context/authContext";
 import EditableApplicationRecord from "./record/EditableApplicationRecord";
 
-const SupplierAppCreateModal = (props) => {
+
+
+const InnerAppCreateModal = (props) => {
     const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: []
     });
-    const [products, setProducts] = useState([]);
-    const [suppliers, setSuppliers] = useState([]);
+    const [locationProducts, setLocationProducts] = useState([]);
+    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/products?size=100000', {
+        fetch('http://localhost:8080/api/location_products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
             .then(res => res.json())
-            .then(products => {
-                setProducts(products)
+            .then(locationProducts => {
+                setLocationProducts(locationProducts)
             });
-        fetch('http://localhost:8080/api/suppliers?size=100000', {
+        fetch('http://localhost:8080/api/locations/shops', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
             .then(res => res.json())
-            .then(suppliers => {
-                setSuppliers(suppliers)
+            .then(locations => {
+                setLocations(locations)
             });
     }, []);
 
@@ -94,7 +96,8 @@ const SupplierAppCreateModal = (props) => {
     const calculateVolume = () => {
         let totalVolume = 0;
         itemRows.items.forEach((item) => {
-                totalVolume += products.filter((product) => (product.upc === Number(item.upc)))[0].volume * item.amount
+                totalVolume += locationProducts.filter((locationProduct) => (locationProduct.product.upc
+                    === Number(item.upc)))[0].volume * item.amount
             }
         );
         return totalVolume;
@@ -113,7 +116,8 @@ const SupplierAppCreateModal = (props) => {
         let recordsList = itemRows.items.map((item) => (
             {
                 product: {
-                    id: products.filter((product) => (product.upc === Number(item.upc)))[0].id
+                    id: locationProducts.filter((locationProducts) => (locationProducts.product.upc
+                        === Number(item.upc)))[0].product.id
                 },
                 amount: item.amount,
                 cost: item.cost
@@ -126,7 +130,8 @@ const SupplierAppCreateModal = (props) => {
 
     const createApplication = (e) => {
         e.preventDefault(e);
-        fetch('http://localhost:8080/api/supplier_applications', {
+
+        fetch('http://localhost:8080/api/inner_applications', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -134,8 +139,8 @@ const SupplierAppCreateModal = (props) => {
             },
             body: JSON.stringify({
                 applicationNumber: Number(e.target.appNumber.value),
-                supplier: {
-                    id: suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0].id
+                sourceLocation: {
+                    id: user.location.id
                 },
                 destinationLocation: {
                     id: user.location.id
@@ -167,24 +172,25 @@ const SupplierAppCreateModal = (props) => {
                         <TextField size="small" fullWidth={true} id="appNumber"
                                    variant="outlined" label="Application number" required/>
 
+                        <TextField size="small" fullWidth={true} id="locationId"
+                                   variant="outlined" value={user.location.identifier} label="Source location"
+                                   disabled/>
                         <Autocomplete
                             id="supplier"
                             size="small"
-                            name="supplier"
+                            name="location"
                             clearOnEscape
-                            options={suppliers.map((option) => option.identifier.toString())}
+                            options={locations.map((option) => option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Supplier" margin="normal"
+                                <TextField {...params} fullWidth={true} label="Location" margin="normal"
                                            variant="outlined"
-                                           id="supplier" required/>
+                                           id="location" required/>
                             )}
                         />
-                        <TextField size="small" fullWidth={true} id="locationId"
-                                   variant="outlined" value={user.location.identifier} label="Destination location"
-                                   disabled/>
+
                         <TextField size="small" fullWidth={true} id="creator" variant="outlined"
                                    label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField size="small" fullWidth={true} variant="outlined"
+                        <TextField size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
                                    label="Registration date and time" value={dateTime}  disabled/>
 
                         <div className="scrollable-box">
@@ -192,9 +198,9 @@ const SupplierAppCreateModal = (props) => {
                                 <Grid item xm={3}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
-                                                           products={products}
-                                                           changeRecord={changeRecord}
-                                                           key={item.key}/>))}
+                                                                   products={locationProducts}
+                                                                   changeRecord={changeRecord}
+                                                                   key={item.key}/>))}
                                 </Grid>
                             </Grid>
                         </div>
@@ -211,4 +217,4 @@ const SupplierAppCreateModal = (props) => {
     )
 };
 
-export default SupplierAppCreateModal;
+export default InnerAppCreateModal;

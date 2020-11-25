@@ -1,4 +1,3 @@
-import '../../modals/upperModals/UpperModal.css';
 import React, {useEffect, useRef, useState} from 'react';
 import {TextField, Button} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -16,7 +15,7 @@ export default (props) => {
         };
         changeRecord(state);
     }
-
+    console.log(props)
     return (
         <div>
             <Autocomplete
@@ -24,7 +23,7 @@ export default (props) => {
                 componentName="upc"
                 onChange={(e) => handleChangeUPC(e, e.target.innerText)}
                 clearOnEscape
-                options={props.products.map((option) => option.upc.toString())}
+                options={props.products.map((option) => option.product.upc.toString())}
                 renderInput={(params) => (
                     <TextField {...params} fullWidth={false} label="UPC" margin="normal" variant="outlined"
                                value={props.item.upc} error={props.item.error} required/>

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 export default () => {
     const [statesData, setData] = useState({
@@ -21,17 +23,21 @@ export default () => {
             })
     }, []);
 
-    const { states } = statesData;
+    const {states} = statesData;
 
     return (
-        <select id="state">
-            {states.map(state => <States state={state} key={state.id} />)}
-        </select>
+        <Select
+            labelId="demo-simple-select-label"
+            id="state"
+        >
+            {states.map(state => <States state={state} key={state.id}/>)}
+        </Select>
+
     )
 }
 
-function States({ state }) {
+function States({state}) {
     return (
-    <option value={state.id}>{state.name}</option>
+        <MenuItem value={state.id}>{state.name}</MenuItem>
     )
 }
