@@ -44,7 +44,7 @@ export default () => {
       {isLoading && 'Loading....'}
       {!isLoading && !error &&
         (bills.length != 0
-          ? <table border="1">
+          ? <table border="1" width="100%">
             <tr>
               <th>Bill number</th>
               <th>Total amount of items</th>
@@ -73,7 +73,7 @@ function Bills({ bill }) {
     <tr id={bill.id}>
       <td>{bill.billNumber}</td>
       <td>{bill.totalProductAmount}</td>
-      <td>{bill.totalUnitNumber}</td>
+      <td>{bill.totalPrice}</td>
       <td>{bill.registrationDateTime}</td>
     </tr>
   )

@@ -1,9 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {TextField, Button} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import {AuthContext} from "../../context/authContext";
 
 
 export default (props) => {
+    const {user} = useContext(AuthContext);
 
     function changeRecord(e) {
         props.changeRecord(e.target, props.item.key, props.products.filter((item) => (item.upc === e.target.upc)) )
@@ -15,7 +17,7 @@ export default (props) => {
         };
         changeRecord(state);
     }
-    console.log(props)
+
     return (
         <div>
             <Autocomplete
@@ -32,7 +34,7 @@ export default (props) => {
             <TextField type="number" size="small" required name="amount" variant="outlined"
                        label="Amount" value={props.item.amount} onChange={changeRecord}/>
             <TextField type="number" size="small" required name="cost" variant="outlined"
-                       label="Cost" value={props.item.cost} onChange={changeRecord}/>
+                       label="Cost" value={props.item.price} disabled/>
             <button name="delete" onClick={changeRecord}>DELETE RECORD</button>
         </div>
     )

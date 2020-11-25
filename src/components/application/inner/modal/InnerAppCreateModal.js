@@ -97,7 +97,7 @@ const InnerAppCreateModal = (props) => {
         let totalVolume = 0;
         itemRows.items.forEach((item) => {
                 totalVolume += locationProducts.filter((locationProduct) => (locationProduct.product.upc
-                    === Number(item.upc)))[0].volume * item.amount
+                    === Number(item.upc)))[0].product.volume * item.amount
             }
         );
         return totalVolume;

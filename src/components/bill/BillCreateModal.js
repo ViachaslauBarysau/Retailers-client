@@ -12,8 +12,8 @@ const BillCreateModal = (props) => {
     const [itemRows, setItemRows] = useState({
         items: []
     });
+    // const [totalPrice, setTotalPrice] = useState(0);
     const [locationProducts, setLocationProducts] = useState([]);
-    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:8080/api/location_products?size=100000', {
@@ -36,7 +36,7 @@ const BillCreateModal = (props) => {
                     key: new Date().getTime(),
                     upc: 0,
                     amount: 0,
-                    cost: 0,
+                    price: 0,
                     error: false
                 };
                 newItems.push(newRow);
@@ -51,9 +51,16 @@ const BillCreateModal = (props) => {
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
+                let billProduct = locationProducts.filter(prod => prod.product.upc === Number(e.value))[0];
+                let itemPrice = (1 + billProduct.location.address.state.stateTax
+                    + billProduct.product.category.categoryTax + billProduct.location.locationTax) * billProduct.cost;
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value} : item)
+                        items: itemRows.items.map(item => item.key === key ?
+                            {...item,
+                                upc: e.value,
+                                price: itemPrice
+                            } : item)
                     })
                 );
                 break;
@@ -61,13 +68,6 @@ const BillCreateModal = (props) => {
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
-                    })
-                );
-                break;
-            case "cost":
-                setItemRows((prevState) => ({
-                        ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, cost: e.value} : item)
                     })
                 );
                 break;
@@ -81,14 +81,11 @@ const BillCreateModal = (props) => {
         }
     };
 
-    const calculateVolume = () => {
-        let totalVolume = 0;
-        itemRows.items.forEach((item) => {
-                totalVolume += locationProducts.filter((locationProduct) => (locationProduct.product.upc
-                    === Number(item.upc)))[0].volume * item.amount
-            }
-        );
-        return totalVolume;
+    const calculatePrice = () => {
+        let totalPrice = 0;
+        itemRows.items.forEach((item) => totalPrice += item.price * item.amount);
+        console.log(totalPrice)
+        return totalPrice;
     }
 
     const calculateAmount = () => {
@@ -107,8 +104,8 @@ const BillCreateModal = (props) => {
                     id: locationProducts.filter((locationProducts) => (locationProducts.product.upc
                         === Number(item.upc)))[0].product.id
                 },
-                amount: item.amount,
-                cost: item.cost
+                productAmount: item.amount,
+                productPrice: item.price
             }
         ));
         return recordsList;
@@ -130,13 +127,13 @@ const BillCreateModal = (props) => {
                 location: {
                     id: user.location.id
                 },
-                creator: {
+                shopManager: {
                     id: user.id
                 },
                 registrationDateTime: dateTime,
-                recordsList: getRecordsList(),
+                recordList: getRecordsList(),
                 totalProductAmount: calculateAmount(),
-                totalUnitNumber: calculateVolume()
+                totalPrice: calculatePrice()
             }),
             method: "POST"
         });
