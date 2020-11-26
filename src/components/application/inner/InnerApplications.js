@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form} from 'react-bootstrap';
 import InnerAppCreateModal from "./modal/InnerAppCreateModal";
 import InnerAppEditModal from "./modal/InnerAppEditModal";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import Button from "@material-ui/core/Button";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default () => {
     const [applicationsData, setData] = useState({
@@ -49,30 +56,32 @@ export default () => {
         <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-            <Form>
+            <form>
                 {(applications.length !== 0
                     ?
-                    <table border="1" width="100%">
-                        <thead>
-                        <tr>
-                            <th>Application number</th>
-                            <th>Source Location</th>
-                            <th>Destination location</th>
-                            <th>Update date and time</th>
-                            <th>Last updated by</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {applications.map(application => <InnerApplications application={application}
-                                                                               key={application.id}/>)}
-                        </tbody>
-                    </table>
+                    <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Application number</TableCell>
+                                    <TableCell align="right">Source Location</TableCell>
+                                    <TableCell align="right">Destination location</TableCell>
+                                    <TableCell align="right">Update date and time</TableCell>
+                                    <TableCell align="right">Last updated by</TableCell>
+                                    <TableCell align="right">Status</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {applications.map(application => <InnerApplications application={application}
+                                                                                    key={application.id}/>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     : 'Empty list')}
-                <Button onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add application
                 </Button>
-            </Form>
+            </form>
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <InnerAppCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
@@ -87,18 +96,19 @@ export default () => {
 
     function InnerApplications({application}) {
         return (
-            <tr>
-                <td><a href="#" onClick={() => setDisplayEditModal({
+        <TableRow key={application.applicationNumber}>
+            <TableCell component="th" scope="row">
+                <a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
                     appId: application.id
-                })}
-                       id={application.id}>{application.applicationNumber}</a></td>
-                <td>{application.sourceLocation.identifier}</td>
-                <td>{application.destinationLocation.identifier}</td>
-                <td>{application.updatingDateTime}</td>
-                <td>{application.updater.firstName} {application.updater.lastName}</td>
-                <td>{application.applicationStatus}</td>
-            </tr>
+                })}>{application.applicationNumber}</a>
+            </TableCell>
+            <TableCell align="right">{application.sourceLocation.identifier}</TableCell>
+            <TableCell align="right">{application.destinationLocation.identifier}</TableCell>
+            <TableCell align="right">{application.updatingDateTime}</TableCell>
+            <TableCell align="right">{application.updater.firstName} {application.updater.lastName}</TableCell>
+            <TableCell align="right">{application.applicationStatus}</TableCell>
+        </TableRow>
         )
     }
 }

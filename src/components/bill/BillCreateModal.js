@@ -71,7 +71,7 @@ const BillCreateModal = (props) => {
                     })
                 );
                 break;
-            case "delete":
+            default:
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: prevState.items.filter((item) => (item.key !== key))
@@ -137,7 +137,6 @@ const BillCreateModal = (props) => {
             }),
             method: "POST"
         });
-        e.target.closeButton.click();
     }
 
     return (
@@ -145,18 +144,18 @@ const BillCreateModal = (props) => {
             <div onClick={props.onCloseModal} className={"modal-backdrop"} />
             <div className={"modal-box"}>
                 <form onSubmit={createBill}>
-                    <TextField size="small" fullWidth={true} id="billNumber"
+                    <TextField margin="dense" size="small" fullWidth={true} id="billNumber"
                                variant="outlined" label="Bill number" required/>
-                    <TextField size="small" fullWidth={true} id="locationId"
+                    <TextField margin="dense" size="small" fullWidth={true} id="locationId"
                                variant="outlined" value={user.location.identifier} label="Location identifier"
                                disabled/>
-                    <TextField size="small" fullWidth={true} id="managerInformation" variant="outlined"
+                    <TextField margin="dense" size="small" fullWidth={true} id="managerInformation" variant="outlined"
                                label="Manager information" value={`${user.firstName} ${user.lastName}`} disabled/>
-                    <TextField size="small" fullWidth={true} variant="outlined"
+                    <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
                                label="Registration date and time" value={dateTime}  disabled/>
                     <div className="scrollable-box">
                         <Grid container spacing={1}>
-                            <Grid item xm={3}>
+                            <Grid item xm={12}>
                                 {itemRows.items.map((item) => (
                                     <EditableBillRecord item={item}
                                                                products={locationProducts}

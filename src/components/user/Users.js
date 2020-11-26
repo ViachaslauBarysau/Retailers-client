@@ -1,6 +1,13 @@
 import UserModal from './UserModal';
-import React, {useState, useEffect} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Button} from '@material-ui/core';
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default () => {
     const [usersData, setData] = useState({
@@ -47,24 +54,26 @@ export default () => {
             {!isLoading && !error &&
             <form onSubmit={changeUserStatus}>
                 {(users.length != 0
-                    ? <table border="1" width="100%">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Full name</th>
-                            <th>Birthday</th>
-                            <th>Role</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {users.map(user => <Users user={user} key={user.id}/>)}
-                        </tbody>
-                    </table>
+                    ? <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell>Full name</TableCell>
+                                    <TableCell>Birthday</TableCell>
+                                    <TableCell>Role</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {users.map(user => <Users user={user} key={user.id}/>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     : 'Empty list')}
-                <Button onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained"  onClick={() => setDisplayCreateModal(true)}>
                     Add user
                 </Button>
-                <Button type="submit">
+                <Button variant="contained"  type="submit">
                     Enable/Disable
                 </Button>
             </form>
@@ -94,12 +103,14 @@ function changeUserStatus(e) {
 
 function Users({user}) {
     return (
-        <tr>
-            <td><input type="checkbox" value={user.id} name={"users"}/></td>
-            <td>{user.firstName} {user.lastName}</td>
-            <td>{user.birthday}</td>
-            <td>{user.userRole}</td>
-        </tr>
+        <TableRow key={user.id}>
+            <TableCell component="th" scope="row">
+                <input type="checkbox" value={user.id} name={"users"}/>
+            </TableCell>
+            <TableCell>{user.firstName} {user.lastName}</TableCell>
+            <TableCell>{user.birthday}</TableCell>
+            <TableCell>{user.userRole}</TableCell>
+        </TableRow>
     )
 }
 

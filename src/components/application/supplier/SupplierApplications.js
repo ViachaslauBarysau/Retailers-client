@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import {Button} from '@material-ui/core';
 import SupplierAppCreateModal from './modal/SupplierAppCreateModal';
 import SupplierAppEditModal from "./modal/SupplierAppEditModal";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default () => {
     const [applicationsData, setData] = useState({
@@ -49,56 +56,58 @@ export default () => {
         <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-            <Form>
+            <form>
                 {(applications.length !== 0
-                    ?
-                    <table border="1" width="100%">
-                        <thead>
-                        <tr>
-                            <th>Application number</th>
-                            <th>Supplier identifier</th>
-                            <th>Destination location</th>
-                            <th>Update date and time</th>
-                            <th>Last updated by</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {applications.map(application => <SupplierApplications application={application}
-                                                                               key={application.id}/>)}
-                        </tbody>
-                    </table>
+                    ? <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Application number</TableCell>
+                                    <TableCell>Supplier identifier</TableCell>
+                                    <TableCell>Destination location</TableCell>
+                                    <TableCell>Update date and time</TableCell>
+                                    <TableCell>Last updated by</TableCell>
+                                    <TableCell>Status</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {applications.map(application => <SupplierApplications application={application}
+                                                                                    key={application.id}/>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     : 'Empty list')}
-                <Button onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add application
                 </Button>
-            </Form>
+            </form>
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <SupplierAppCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierAppEditModal appId={displayEditModal.appId}
-                                                       onCloseModal={() => setDisplayEditModal({
-                                                           displayModal: false,
-                                                           appId: null
-                                                       })}
+                                                                    onCloseModal={() => setDisplayEditModal({
+                                                                        displayModal: false,
+                                                                        appId: null
+                                                                    })}
             />}
         </div>
     );
 
     function SupplierApplications({application}) {
         return (
-            <tr>
-                <td><a href="#" onClick={() => setDisplayEditModal({
+        <TableRow key={application.applicationNumber}>
+            <TableCell component="th" scope="row">
+                <a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
                     appId: application.id
-                })}
-                       id={application.id}>{application.applicationNumber}</a></td>
-                <td>{application.supplier.identifier}</td>
-                <td>{application.destinationLocation.identifier}</td>
-                <td>{application.updatingDateTime}</td>
-                <td>{application.updater.firstName} {application.updater.lastName}</td>
-                <td>{application.applicationStatus}</td>
-            </tr>
+                })}>{application.applicationNumber}</a>
+            </TableCell>
+            <TableCell>{application.supplier.identifier}</TableCell>
+            <TableCell>{application.destinationLocation.identifier}</TableCell>
+            <TableCell>{application.updatingDateTime}</TableCell>
+            <TableCell>{application.updater.firstName} {application.updater.lastName}</TableCell>
+            <TableCell>{application.applicationStatus}</TableCell>
+        </TableRow>
         )
     }
 }

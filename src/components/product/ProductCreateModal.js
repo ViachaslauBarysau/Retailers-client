@@ -4,11 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { FormControl, TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const ProductModal = (props) => {
+const ProductCreateModal = (props) => {
 
-  const [categoriesData, setData] = useState({
-    categories: [],
-  });
+  const [categories, setCategories] = useState(null);
 
   useEffect(() => {
     fetch('http://localhost:8080/api/categories?size=100000', {
@@ -19,35 +17,31 @@ const ProductModal = (props) => {
     })
       .then(res => res.json())
       .then(categories => {
-        setData((prevState) => ({
-          ...prevState,
-          categories
-        }));
+        setCategories(categories);
       })
 
   }, []);
-
-  const { categories } = categoriesData;
 
   return ( 
     <div className={"modal-wrapper"}>
       <div onClick={props.onClick} className={"modal-backdrop"} />
       <div className={"modal-box"}>
         <form onSubmit={addProduct}>
-          <TextField fullWidth={true} id="upc" variant="outlined" label="UPC" />
-          <TextField fullWidth={true} id="label" variant="outlined" label="Label" />
+          <TextField margin="dense" size="small" fullWidth={true} id="upc" variant="outlined" label="UPC" required/>
+          <TextField margin="dense" size="small" fullWidth={true} id="label" variant="outlined" label="Label" required/>
           <Autocomplete
             id="category"
+            size="small"
             freeSolo
-            autoSelect
             options={categories.map((option) => option.name)}
             renderInput={(params) => (
-              <TextField fullWidth={true} {...params} label="categories" margin="normal" variant="outlined" />
+              <TextField fullWidth={true} {...params} label="Category" margin="normal" variant="outlined"  required/>
             )}
           />
-          <TextField fullWidth={true} id="units" variant="outlined" label="Units" />
-          <Button fullWidth={true} type="submit" variant="contained">Add product</Button>
-          <Button fullWidth={true} id="closeButton" type="button" onClick={props.onClick} variant="contained">Close</Button>
+          <TextField margin="dense" size="small" fullWidth={true} id="units" variant="outlined" label="Units" required/>
+          <br />
+          <Button fullWidth={false} type="submit" variant="contained">Add product</Button>
+          <Button fullWidth={false} id="closeButton" type="button" onClick={props.onClick} variant="contained">Close</Button>
         </form>
       </div>
     </div>
@@ -56,7 +50,6 @@ const ProductModal = (props) => {
 
 function addProduct(e) {
   e.preventDefault();
-  console.log(e.target)
   fetch('http://localhost:8080/api/products', {
     headers: {
       'Authorization': localStorage.getItem("token"),
@@ -64,23 +57,20 @@ function addProduct(e) {
       Accept: 'application/json'
     },
     body: JSON.stringify({
-      upc: e.target.upc.value,
+      upc: Number(e.target.upc.value),
       label: e.target.label.value,
       volume: e.target.units.value,
       category: {
-        categoryTax: 0,
         name: e.target.category.value,
-        customer: {
-          id: JSON.parse(localStorage.getItem("user")).customer.id
-        }
       },
       customer: {
         id: JSON.parse(localStorage.getItem("user")).customer.id
-      }
+      },
+      status: "ACTIVE"
     }),
     method: "POST"
   });
   e.target.closeButton.click();
 }
 
-export default ProductModal;
+export default ProductCreateModal;

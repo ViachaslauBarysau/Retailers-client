@@ -126,8 +126,6 @@ const SupplierAppEditModal = (props) => {
                                    label="Status"
                                    disabled/>
                         <div className="scrollable-box">
-                            <Grid container spacing={1}>
-                                {/*<Grid item xm={3}>*/}
                                 <TableContainer component={Paper}>
                                     <Table className={useStyles.table} size="small" aria-label="a dense table">
                                         <TableHead>
@@ -151,8 +149,6 @@ const SupplierAppEditModal = (props) => {
                                     </Table>
                                 </TableContainer>
                                 <br/>
-                                {/*</Grid>*/}
-                            </Grid>
                         </div>
                         <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined"
                                    value={application.totalProductAmount}
