@@ -76,7 +76,7 @@ export default () => {
     }
 
     return (
-        <>
+        <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             <form onSubmit={removeProducts}>
@@ -117,7 +117,7 @@ export default () => {
                                                                         productId: null
                                                                     })}
             />}
-        </>
+        </div>
     );
 
     function Products({product}) {
