@@ -83,7 +83,7 @@ const InnerAppCreateModal = (props) => {
                     })
                 );
                 break;
-            case "delete":
+            default:
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: prevState.items.filter((item) => (item.key !== key))
@@ -169,10 +169,10 @@ const InnerAppCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={createApplication}>
-                        <TextField size="small" fullWidth={true} id="appNumber"
+                        <TextField margin={"dense"} size="small" fullWidth={true} id="appNumber"
                                    variant="outlined" label="Application number" required/>
 
-                        <TextField size="small" fullWidth={true} id="locationId"
+                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationId"
                                    variant="outlined" value={user.location.identifier} label="Source location"
                                    disabled/>
                         <Autocomplete
@@ -188,14 +188,14 @@ const InnerAppCreateModal = (props) => {
                             )}
                         />
 
-                        <TextField size="small" fullWidth={true} id="creator" variant="outlined"
+                        <TextField margin={"dense"} size="small" fullWidth={true} id="creator" variant="outlined"
                                    label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
+                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
                                    label="Registration date and time" value={dateTime}  disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xm={3}>
+                                <Grid item xm={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                                    products={locationProducts}

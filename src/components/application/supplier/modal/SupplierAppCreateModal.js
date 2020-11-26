@@ -81,7 +81,7 @@ const SupplierAppCreateModal = (props) => {
                     })
                 );
                 break;
-            case "delete":
+            default:
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: prevState.items.filter((item) => (item.key !== key))
@@ -174,22 +174,22 @@ const SupplierAppCreateModal = (props) => {
                             clearOnEscape
                             options={suppliers.map((option) => option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Supplier" margin="normal"
+                                <TextField {...params} fullWidth={true} label="Supplier" margin="dense"
                                            variant="outlined"
                                            id="supplier" required/>
                             )}
                         />
-                        <TextField size="small" fullWidth={true} id="locationId"
+                        <TextField margin="dense" size="small" fullWidth={true} id="locationId"
                                    variant="outlined" value={user.location.identifier} label="Destination location"
                                    disabled/>
-                        <TextField size="small" fullWidth={true} id="creator" variant="outlined"
+                        <TextField margin="dense" size="small" fullWidth={true} id="creator" variant="outlined"
                                    label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField size="small" fullWidth={true} variant="outlined"
+                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
                                    label="Registration date and time" value={dateTime}  disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xm={3}>
+                                <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                            products={products}
