@@ -1,6 +1,13 @@
 import LocationModal from './LocationModal';
 import React, {useEffect, useState} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import {Button} from '@material-ui/core';
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
@@ -95,37 +102,39 @@ export default () => {
         <>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-            <Form onSubmit={removeLocations}>
+            <form onSubmit={removeLocations}>
                 {(locations.length !== 0
-                    ? <table border="1" width="100%">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Identifier</th>
-                            <th>Type</th>
-                            <th>Full address</th>
-                            <th>Available/Total capacity</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {locations.map(location => <Location
-                            key={location.id}
-                            location={location}
-                            onChange={handleChange}
-                        />)}
-                        </tbody>
-                    </table>
+                    ? <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell>Identifier</TableCell>
+                                    <TableCell>Type</TableCell>
+                                    <TableCell>Full address</TableCell>
+                                    <TableCell>Available/Total capacity</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {locations.map(location => <Location
+                                    key={location.id}
+                                    location={location}
+                                    onChange={handleChange}
+                                />)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     : 'Empty list')}
-                <Button onClick={() => setLocationsData((prevState) => ({
+                <Button variant="contained" onClick={() => setLocationsData((prevState) => ({
                     ...prevState,
                     displayModal: true
                 }))}>
                     Add location
                 </Button>
-                <Button type="submit" disabled={locationsData.checkedRecords.length === 0}>
+                <Button variant="contained" type="submit" disabled={locationsData.checkedRecords.length === 0}>
                     Remove location
                 </Button>
-            </Form>
+            </form>
             }
             {!isLoading && error && 'Error happens'}
             {displayModal &&
@@ -136,17 +145,18 @@ export default () => {
 
 
 function Location(props) {
-
     return (
-        <tr id={props.location.id}>
-            <td><input type="checkbox"
+        <TableRow key={props.location.identifier}>
+            <TableCell component="th" scope="row">
+                <input type="checkbox"
                        value={props.location.id}
                        name={"locations"}
-                       onChange={props.onChange}/></td>
-            <td>{props.location.identifier}</td>
-            <td>{props.location.locationType}</td>
-            <td>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</td>
-            <td>{props.location.availableCapacity}/{props.location.totalCapacity}</td>
-        </tr>
+                       onChange={props.onChange}/>
+            </TableCell>
+            <TableCell>{props.location.identifier}</TableCell>
+            <TableCell>{props.location.locationType}</TableCell>
+            <TableCell>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</TableCell>
+            <TableCell>{props.location.availableCapacity}/{props.location.totalCapacity}</TableCell>
+        </TableRow>
     )
 }

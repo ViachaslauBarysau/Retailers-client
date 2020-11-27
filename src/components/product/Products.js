@@ -1,13 +1,26 @@
-import ProductModal from './ProductModal';
-import React, {useState, useEffect} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import ProductCreateModal from './ProductCreateModal';
+import ProductEditModal from './ProductEditModal';
+import React, {useEffect, useState} from 'react';
+import {Button} from '@material-ui/core';
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default () => {
     const [productsData, setData] = useState({
         isLoading: true,
         error: null,
         products: [],
+    });
+
+    const [displayCreateModal, setDisplayCreateModal] = useState(false);
+    const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
+        productId: null
     });
 
     useEffect(() => {
@@ -38,76 +51,85 @@ export default () => {
 
     const {isLoading, error, products, displayModal} = productsData;
 
+    function removeProducts(e) {
+        e.preventDefault();
+        let productIdList = [];
+        e.target.products.forEach(element => {
+            element.checked && productIdList.push({id: element.value});
+        });
+        fetch('http://localhost:8080/api/products', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(
+                productIdList
+            ),
+            method: "DELETE"
+        })
+            .then(() => {
+
+            });
+    }
+
     return (
-        <>
+        <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-            <Form onSubmit={removeProducts}>
-                {(products.length != 0
-                    ?
-                    <table border="1" width="100%">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>UPC</th>
-                            <th>Label</th>
-                            <th>Category</th>
-                            <th>Units</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {products.map(product => <Products product={product} key={product.id}/>)}
-                        </tbody>
-                    </table>
+            <form onSubmit={removeProducts}>
+                {(products.length !== 0
+                    ? <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell>UPC</TableCell>
+                                    <TableCell>Label date</TableCell>
+                                    <TableCell>Category</TableCell>
+                                    <TableCell>Units</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {products.map(product => <Products product={product} key={product.id}/>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     : 'Empty list')}
-                <Button onClick={() => setData((prevState) => ({
-                    ...prevState,
-                    displayModal: true
-                }))}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add product
                 </Button>
-                <Button type="submit">
+                <Button variant="contained" type="submit">
                     Remove product
                 </Button>
-            </Form>
+            </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayModal &&
-            <ProductModal onClick={() => setData((prevState) => ({...prevState, displayModal: false}))}/>}
-        </>
+            {displayCreateModal && <ProductCreateModal onClick={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
+                                                                    onCloseModal={() => setDisplayEditModal({
+                                                                        displayModal: false,
+                                                                        productId: null
+                                                                    })}
+            />}
+        </div>
     );
-}
 
-function removeProducts(e) {
-    e.preventDefault();
-    let productIdList = [];
-    e.target.products.forEach(element => {
-        element.checked && productIdList.push({id: element.value});
-    });
-    fetch('http://localhost:8080/api/products', {
-        headers: {
-            'Authorization': localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
-        body: JSON.stringify(
-            productIdList
-        ),
-        method: "DELETE"
-    })
-        .then(() => {
-
-        });
-}
-
-function Products({product}) {
-    return (
-        <tr id={product.id}>
-            <td><input type="checkbox" value={product.id} name={"products"}/></td>
-            <td>{product.upc}</td>
-            <td>{product.label}</td>
-            <td>{product.category.name}</td>
-            <td>{product.volume}</td>
-        </tr>
-    )
+    function Products({product}) {
+        return (
+            <TableRow key={product.id}>
+                <TableCell component="th" scope="row">
+                    <input type="checkbox" value={product.id} name={"products"}/>
+                </TableCell>
+                <TableCell><a href="#" onClick={() => setDisplayEditModal({
+                    displayModal: true,
+                    productId: product.id
+                })}>{product.upc}</a>
+                </TableCell>
+                <TableCell>{product.label}</TableCell>
+                <TableCell>{product.category.name}</TableCell>
+                <TableCell>{product.volume}</TableCell>
+            </TableRow>
+        )
+    }
 }

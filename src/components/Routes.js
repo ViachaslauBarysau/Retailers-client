@@ -11,10 +11,13 @@ import WriteOffActs from './act/WriteOffActs';
 import Products from './product/Products';
 import Bills from './bill/Bills';
 import Locations from './location/Locations';
-import SupplierApplications from './application/SupplierApplications';
+// import SupplierApplications from './application/supplier/SupplierApplications';
 import Test from "../pages/Test";
 import {AuthContext} from "../context/authContext";
 import {useStyles} from "../App.styles";
+import SupplierApplications from "./application/supplier/SupplierApplications";
+import Category from './category/Category';
+import InnerApplications from "./application/inner/InnerApplications";
 
 
 
@@ -31,12 +34,14 @@ export default () => {
                                 <Route path={'/'} component={withAuth(Customers)} exact={true} />
                                 <Route path={'/login'} component={Login} />
                                 <Route path={'/users'} component={withAuth(Users)} />
+                                <Route path={'/category'} component={withAuth(Category)} />
                                 <Route path={'/customers'} component={withAuth(Customers)} />
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/locations'} component={withAuth(Locations)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
+                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
                                 <Route component={Index} />
                             </Switch>
                         </div>
