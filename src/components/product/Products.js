@@ -9,7 +9,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import SupplierAppEditModal from "../application/supplier/modal/SupplierAppEditModal";
 
 export default () => {
     const [productsData, setData] = useState({

@@ -31,29 +31,21 @@ const UserModal = (props) => {
               }}
           />
 
-
           <label> State:
-
-
               <StateSelect/>
-
           </label>
           <br />
-
 
           <br />
           <TextField size="small" name="city" id="city" fullWidth={true}
                      variant="outlined" label="City"/>
-          <br />
-
 
           <TextField size="small" name="address1" id="address1" fullWidth={true}
                      variant="outlined" label="Address line 1"/>
-          <br />
 
           <TextField size="small" name="address1" id="address2" fullWidth={true}
                      variant="outlined" label="Address line 2"/>
-          <br />
+
           <label>
             <InputLabel id="demo-simple-select-label">Role:</InputLabel>
             <Select
@@ -124,7 +116,6 @@ function addUser(e) {
   });
   e.target.closeButton.click();
 }
-
 
 export default UserModal;
 

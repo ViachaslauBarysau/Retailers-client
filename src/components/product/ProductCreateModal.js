@@ -6,7 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const ProductCreateModal = (props) => {
 
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:8080/api/categories?size=100000', {
