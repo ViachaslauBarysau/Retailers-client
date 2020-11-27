@@ -1,14 +1,13 @@
 import '../../modals/Modal.css';
-import ReactDom from 'react-dom';
-import React, { useState, useEffect } from 'react';
-import { FormControl, TextField, Button } from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {Button, TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const ProductEditModal = (props) => {
 
-    const [product, setProduct] = useState(null);
+    let [product, setProduct] = useState(null);
 
-    const [categories, setCategories] = useState(null);
+    let [categories, setCategories] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:8080/api/products/' + props.productId, {
@@ -54,22 +53,31 @@ const ProductEditModal = (props) => {
                 },
                 status: "ACTIVE"
             }),
-            method: "POST"
+            method: "PUT"
         });
         e.target.closeButton.click();
     }
+
+    let handleChange = (e) => setProduct(
+        (prevState) => {
+            return (
+                {...prevState, label: e.target.value}
+            )
+        })
 
     return (
         <div>
             {product && categories &&
             <div className={"modal-wrapper"}>
-                <div onClick={props.onCloseModal} className={"modal-backdrop"} />
+                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editProduct}>
                         <TextField margin="dense" size="small" fullWidth={true} value={product.upc}
                                    id="upc" variant="outlined" label="UPC" disabled/>
                         <TextField margin="dense" size="small" fullWidth={true} value={product.label}
-                                   id="label" variant="outlined" label="Label" required/>
+                                   id="label" variant="outlined" label="Label"
+                                   onChange={handleChange}
+                                   required/>
                         <Autocomplete
                             id="category"
                             size="small"
@@ -77,13 +85,15 @@ const ProductEditModal = (props) => {
                             defaultValue={product.category.name}
                             options={categories.map((option) => option.name)}
                             renderInput={(params) => (
-                                <TextField fullWidth={true} {...params} label="Category" margin="normal" variant="outlined"  required/>
+                                <TextField fullWidth={true} {...params} label="Category" margin="normal"
+                                           variant="outlined" required/>
                             )}
                         />
                         <TextField margin="dense" size="small" fullWidth={true} value={product.volume}
                                    id="units" variant="outlined" label="Units" disabled/>
                         <Button fullWidth={false} type="submit" variant="contained">Edit product</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

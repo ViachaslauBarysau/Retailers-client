@@ -16,7 +16,6 @@ export default () => {
         isLoading: true,
         error: null,
         products: [],
-        displayModal: false,
     });
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
@@ -98,10 +97,7 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained" onClick={() => setData((prevState) => ({
-                    ...prevState,
-                    displayModal: true
-                }))}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add product
                 </Button>
                 <Button variant="contained" type="submit">
@@ -110,7 +106,7 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ProductCreateModal onClick={() => setDisplayCreateModal(true)}/>}
+            {displayCreateModal && <ProductCreateModal onClick={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
                                                                     onCloseModal={() => setDisplayEditModal({
                                                                         displayModal: false,
