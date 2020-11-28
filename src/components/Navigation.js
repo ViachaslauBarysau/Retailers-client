@@ -26,6 +26,7 @@ export default () => {
                             <Link to={'/locations'} className={classes.menuLink}>Locations</Link>
                             <Link to={'/writeoffacts'} className={classes.menuLink}>Write-off acts</Link>
                             <Link to={'/users'} className={classes.menuLink}>Users</Link>
+                            <Link to={'/location_products'} className={classes.menuLink}>Location products</Link>
                             <Link to={'/category'} className={classes.lastMenuLink}>Category</Link>
                             <UserProfile />
                         </Toolbar>

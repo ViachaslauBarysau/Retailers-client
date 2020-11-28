@@ -1,5 +1,4 @@
-import ProductCreateModal from './ProductCreateModal';
-import ProductEditModal from './ProductEditModal';
+
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -9,22 +8,24 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import ActCreateModal from "../act/ActCreateModal";
+import LocationProductEditModal from "./LocationProductEditModal";
 
 export default () => {
     const [productsData, setData] = useState({
         isLoading: true,
         error: null,
-        products: [],
+        loc_products: [],
     });
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
-        productId: null
+        loc_productId: null
     });
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/products', {
+        fetch('http://localhost:8080/api/location_products', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -33,11 +34,11 @@ export default () => {
             method: "GET"
         })
             .then(res => res.json())
-            .then(products => {
+            .then(loc_products => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    products
+                    loc_products
                 }));
             })
             .catch(e => {
@@ -49,36 +50,16 @@ export default () => {
             })
     }, [productsData.displayModal]);
 
-    const {isLoading, error, products} = productsData;
+    const { isLoading, error, loc_products } = productsData;
 
-    function removeProducts(e) {
-        e.preventDefault();
-        let productIdList = [];
-        e.target.products.forEach(element => {
-            element.checked && productIdList.push({id: element.value});
-        });
-        fetch('http://localhost:8080/api/products', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(
-                productIdList
-            ),
-            method: "DELETE"
-        })
-            .then(() => {
-
-            });
-    }
+    console.log(productsData)
 
     return (
         <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
-            <form onSubmit={removeProducts}>
-                {(products.length !== 0
+            <form>
+                {(productsData.loc_products.length !== 0
                     ? <TableContainer component={Paper}>
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
@@ -91,44 +72,47 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {products.map(product => <Products product={product} key={product.id}/>)}
+                                {productsData.loc_products.map(loc_product => <LocationProducts loc_product={loc_product} key={loc_product.id}/>)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add product
-                </Button>
-                <Button variant="contained" type="submit">
-                    Remove product
+                    Create write-off act
                 </Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ProductCreateModal onClick={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
-                                                                    onCloseModal={() => setDisplayEditModal({
-                                                                        displayModal: false,
-                                                                        productId: null
-                                                                    })}
+            {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <LocationProductEditModal loc_productId={displayEditModal.productId}
+                                                                onCloseModal={() => setDisplayEditModal({
+                                                                    displayModal: false,
+                                                                    loc_productId: null
+                                                                })}
             />}
+            {/*{displayEditModal.displayModal && <ActCreateModal productId={displayEditModal.productId}*/}
+            {/*                                                  onCloseModal={() => setDisplayEditModal({*/}
+            {/*                                                      displayModal: false,*/}
+            {/*                                                      productId: null*/}
+            {/*                                                  })}*/}
+            {/*/>}*/}
         </div>
     );
 
-    function Products({product}) {
+    function LocationProducts({loc_product}) {
         return (
-            <TableRow key={product.id}>
+            <TableRow key={loc_product.id}>
                 <TableCell component="th" scope="row">
-                    <input type="checkbox" value={product.id} name={"products"}/>
+                    <input type="checkbox" value={loc_product.id} name={"products"}/>
                 </TableCell>
                 <TableCell><a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
-                    productId: product.id
-                })}>{product.upc}</a>
+                    loc_productId: loc_product.id
+                })}>{loc_product.product.upc}</a>
                 </TableCell>
-                <TableCell>{product.label}</TableCell>
-                <TableCell>{product.category.name}</TableCell>
-                <TableCell>{product.volume}</TableCell>
+                <TableCell>{loc_product.product.label}</TableCell>
+                <TableCell>{loc_product.product.category.name}</TableCell>
+                <TableCell>{loc_product.product.volume}</TableCell>
             </TableRow>
         )
     }

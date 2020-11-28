@@ -31,9 +31,8 @@ const UserModal = (props) => {
               }}
           />
 
-          <label> State:
+          <InputLabel id="state-label">State:</InputLabel>
               <StateSelect/>
-          </label>
           <br />
 
           <br />

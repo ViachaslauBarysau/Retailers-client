@@ -50,7 +50,7 @@ const SupplierAppEditModal = (props) => {
     }, []);
 
     const acceptProducts = () => {
-        fetch('http://localhost:8080/api/supplier_applications/inner_application_status/', {
+        fetch('http://localhost:8080/api/supplier_applications/status/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
