@@ -46,24 +46,19 @@ const UserModal = (props) => {
                      variant="outlined" label="Address line 2"/>
 
           <label>
-            <InputLabel id="demo-simple-select-label">Role:</InputLabel>
+            <InputLabel id="role-label">Role:</InputLabel>
             <Select
-                labelId="demo-simple-select-label"
+                variant="outlined"
+                labelId="role-label"
                 id="role"
                 // value={age}
                 // onChange={handleChange}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={"DISPATCHER"}>Dispatcher</MenuItem>
+              <MenuItem value={"WAREHOUSE_MANAGER"}>Warehouse manager</MenuItem>
+              <MenuItem value={"SHOP_MANAGER"}>Shop manager</MenuItem>
+              <MenuItem value={"DIRECTOR"}>Director</MenuItem>
             </Select>
-
-            {/*<select id="role">*/}
-            {/*  <option value="DISPATCHER">Dispatcher</option>*/}
-            {/*  <option value="WAREHOUSE_MANAGER">Warehouse manager</option>*/}
-            {/*  <option value="SHOP_MANAGER">Shop manager</option>*/}
-            {/*  <option value="DIRECTOR">Director</option>*/}
-            {/*</select>*/}
           </label>
 
           <TextField size="small" name="login" id="login" fullWidth={true}

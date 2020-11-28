@@ -8,15 +8,21 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import LocationEditModal from "./LocationEditModal";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
         isLoading: true,
         error: null,
         locations: [],
-        displayModal: false,
         checkedRecords: [],
         isDataOutdated: false
+    });
+
+    const [displayCreateModal, setDisplayCreateModal] = useState(false);
+    const [displayEditModal, setDisplayEditModal] = useState({
+        displayModal: false,
+        locationId: null
     });
 
     const [selectedLocations, setSelectedLocations] = useState({});
@@ -125,10 +131,7 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained" onClick={() => setLocationsData((prevState) => ({
-                    ...prevState,
-                    displayModal: true
-                }))}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add location
                 </Button>
                 <Button variant="contained" type="submit" disabled={locationsData.checkedRecords.length === 0}>
@@ -137,8 +140,13 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayModal &&
-            <LocationModal onClick={() => setLocationsData((prevState) => ({...prevState, displayModal: false}))}/>}
+            {displayCreateModal && <LocationModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <LocationEditModal locationId={displayEditModal.locationId}
+                                                                    onCloseModal={() => setDisplayEditModal({
+                                                                        displayModal: false,
+                                                                        locationId: null
+                                                                    })}
+            />}
         </>
     );
 }

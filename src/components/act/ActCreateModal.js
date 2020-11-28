@@ -1,6 +1,6 @@
 import '../../modals/Modal.css';
 import ReactDom from 'react-dom';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useMemo} from 'react';
 import {Button, TextField} from "@material-ui/core";
 import {AuthContext} from "../../context/authContext";
 import Grid from "@material-ui/core/Grid";
@@ -80,6 +80,7 @@ const ActCreateModal = (props) => {
         }
     };
 
+    let dateTime = useMemo(() => new Date(), [])
 
     return (
         <div className={"modal-wrapper"}>
@@ -98,9 +99,9 @@ const ActCreateModal = (props) => {
                         </Grid>
                     </div>
                     <Button onClick={addRow} variant="contained">Add product</Button>
-                    <TextField margin="dense" name="date" size="small" fullWidth={true}
+                    <TextField value={dateTime} margin="dense" name="date" size="small" fullWidth={true}
                                variant="outlined" label="Date and time"
-                               required/>
+                               disabled/>
                     <TextField margin="dense" name="sum" size="small" fullWidth={true}
                                variant="outlined" label="Total sum of items"
                                required/>

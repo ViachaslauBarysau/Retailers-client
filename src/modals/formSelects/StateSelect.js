@@ -23,9 +23,7 @@ export default () => {
     }, []);
 
     return (
-            <Select
-                labelId="state-label"
-                id="state">
+            <Select id="state" variant="outlined">
                 {states.map(state => <MenuItem key={state.id} value={state.id}>{state.name}</MenuItem>)}
             </Select>
     )

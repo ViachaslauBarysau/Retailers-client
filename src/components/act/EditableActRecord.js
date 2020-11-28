@@ -58,7 +58,7 @@ export default (props) => {
                     required
                     value={props.item.reason}
                     onChange={changeRecord}
-                >
+                disabled>
                     <MenuItem value={"DAMAGED"}>Damaged</MenuItem>
                     <MenuItem value={"SPOILED"}>Spoiled</MenuItem>
                     <MenuItem value={"LOST"}>Lost</MenuItem>
