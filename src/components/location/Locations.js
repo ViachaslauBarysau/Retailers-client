@@ -23,22 +23,13 @@ export default () => {
         locationId: null
     });
 
-    const [selectedLocationsNumber, setSelectedLocationsNumber] = useState({
-        count: 0,
-        needRefresh: true
-    });
+    const [selectedLocationsNumber, setSelectedLocationsNumber] = useState(0);
 
     function handleChange(e) {
         if (e.target.checked) {
-            setSelectedLocationsNumber((prevstate) => ({
-                ...prevstate,
-                count: ++selectedLocationsNumber.count,
-            }));
+            setSelectedLocationsNumber(selectedLocationsNumber + 1);
         } else {
-            setSelectedLocationsNumber((prevstate) => ({
-                ...prevstate,
-                count: --selectedLocationsNumber.count,
-            }));
+            setSelectedLocationsNumber(selectedLocationsNumber - 1);
         }
     }
 
@@ -62,10 +53,7 @@ export default () => {
         });
         //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
         //TODO логика ниже работает только при успешном удалении всех .then .catch
-        setSelectedLocationsNumber({
-            count: 0,
-            needRefresh: !selectedLocationsNumber.needRefresh
-        });
+        setSelectedLocationsNumber(0);
     }
 
     useEffect(() => {
@@ -118,6 +106,10 @@ export default () => {
                                     key={location.id}
                                     location={location}
                                     onChange={handleChange}
+                                    onClick={() => setDisplayEditModal({
+                                        displayModal: true,
+                                        locationId: location.id
+                                    })}
                                 />)}
                             </TableBody>
                         </Table>
@@ -126,7 +118,7 @@ export default () => {
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add location
                 </Button>
-                <Button variant="contained" type="submit" disabled={selectedLocationsNumber.count === 0}>
+                <Button variant="contained" type="submit" disabled={selectedLocationsNumber === 0}>
                     Remove location
                 </Button>
             </form>
@@ -143,7 +135,6 @@ export default () => {
     );
 }
 
-
 function Location(props) {
     return (
         <TableRow key={props.location.identifier}>
@@ -153,10 +144,11 @@ function Location(props) {
                        name={"locations"}
                        onChange={props.onChange}/>
             </TableCell>
-            <TableCell>{props.location.identifier}</TableCell>
+            <TableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></TableCell>
             <TableCell>{props.location.locationType}</TableCell>
             <TableCell>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</TableCell>
             <TableCell>{props.location.availableCapacity}/{props.location.totalCapacity}</TableCell>
         </TableRow>
     )
 }
+

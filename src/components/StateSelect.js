@@ -32,12 +32,11 @@ export default (props) => {
         <div>
             {states &&
             <Select id="state" variant="outlined" required
-                    value={1}
+                    value={state}
                     onChange={updateSelect}>
                 {states.map(state => <MenuItem key={state.id} value={state.id}>{state.name}</MenuItem>)}
             </Select>
             }
         </div>
-
     )
 }

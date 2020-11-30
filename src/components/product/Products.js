@@ -96,7 +96,7 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained" onCloseModal={() => setDisplayCreateModal(true)}>
                     Add product
                 </Button>
                 <Button variant="contained" type="submit">
