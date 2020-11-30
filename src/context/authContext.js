@@ -14,7 +14,13 @@ export default function AuthContextProvider({ children }) {
             logout: () => {
                 localStorage.setItem('user', JSON.stringify(null));
                 localStorage.setItem('token', JSON.stringify(null));
-                setUser(null)
+                setUser(null);
+                fetch('http://localhost:8080/api/logout', {
+                    headers: {
+                        "Authorization": localStorage.getItem("token")
+                    },
+                    method: "post"
+                });
             }
         }}>
             {children}

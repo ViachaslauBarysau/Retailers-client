@@ -1,4 +1,4 @@
-import BillCreateModal from './BillCreateModal';
+import BillCreateModal from './modal/BillCreateModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -8,7 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import BillEditModal from "./BillEditModal";
+import BillEditModal from "./modal/BillEditModal";
 
 export default () => {
     const [billsData, setData] = useState({
@@ -47,7 +47,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [displayCreateModal]);
+    }, []);
 
     const {isLoading, error, bills, displayModal} = billsData;
 

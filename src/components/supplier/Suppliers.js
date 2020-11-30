@@ -1,4 +1,4 @@
-import SupplierModal from './SupplierModal';
+import SupplierModal from './modal/SupplierModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 

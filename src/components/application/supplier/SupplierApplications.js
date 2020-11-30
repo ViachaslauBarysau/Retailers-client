@@ -23,7 +23,6 @@ export default () => {
         appId: null
     });
 
-
     useEffect(() => {
         fetch('http://localhost:8080/api/supplier_applications', {
             headers: {

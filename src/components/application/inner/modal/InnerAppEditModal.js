@@ -1,4 +1,4 @@
-import '../../../../modals/Modal.css';
+import '../../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -50,7 +50,7 @@ const SupplierAppEditModal = (props) => {
     }, []);
 
     const acceptProducts = () => {
-        fetch('http://localhost:8080/api/supplier_applications/inner_application_status/', {
+        fetch('http://localhost:8080/api/inner_applications/status/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -78,6 +78,7 @@ const SupplierAppEditModal = (props) => {
                 }
             })
         });
+        props.onCloseModal();
     }
 
     const useStyles = makeStyles({
@@ -98,14 +99,15 @@ const SupplierAppEditModal = (props) => {
                                    label="Application number" disabled/>
                         <TextField margin={"dense"} size="small" fullWidth={true} value={application.sourceLocation.identifier}
                                    variant="outlined"
-                                   label="Supplier" disabled/>
+                                   label="Source location" disabled/>
                         <Autocomplete
+                            disabled={application.applicationStatus === "FINISHED_PROCESSING"}
                             size="small"
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
                             defaultValue={application.destinationLocation.identifier}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Warehouse" margin="normal" name="location"
+                                <TextField {...params} fullWidth={true} label="Destination location" margin="normal" name="location"
                                            variant="outlined"
                                            required/>
                             )}
@@ -157,8 +159,10 @@ const SupplierAppEditModal = (props) => {
                         <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined" value={application.totalUnitNumber}
                                    label="Total volume of products" disabled/>
                         <br/>
-                        <Button type="submit" variant="contained">Forward application</Button>
-                        <Button variant="contained" onClick={acceptProducts}>Accept products</Button>
+                        <Button type="submit" variant="contained"
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward application</Button>
+                        <Button variant="contained" onClick={acceptProducts}
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept products</Button>
                         <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
                     </form>
                 </div>

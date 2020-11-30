@@ -1,4 +1,4 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import ReactDom from 'react-dom';
 import React, {useState, useEffect} from 'react';
 import {FormControl, TextField, Button} from '@material-ui/core';
@@ -22,11 +22,36 @@ const ProductCreateModal = (props) => {
 
     }, []);
 
+    function addProduct(e) {
+        e.preventDefault();
+        fetch('http://localhost:8080/api/products', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify({
+                upc: Number(e.target.upc.value),
+                label: e.target.label.value,
+                volume: e.target.units.value,
+                category: {
+                    name: e.target.category.value,
+                },
+                customer: {
+                    id: JSON.parse(localStorage.getItem("user")).customer.id
+                },
+                status: "ACTIVE"
+            }),
+            method: "POST"
+        });
+        props.onCloseModal();
+    }
+
     return (
         <div>
             {categories &&
             <div className={"modal-wrapper"}>
-                <div onClick={props.onClick} className={"modal-backdrop"}/>
+                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={addProduct}>
                         <TextField margin="dense" size="small" fullWidth={true} id="upc" variant="outlined" label="UPC"
@@ -50,7 +75,7 @@ const ProductCreateModal = (props) => {
                                    required/>
                         <br/>
                         <Button fullWidth={false} type="submit" variant="contained">Add product</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onClick}
+                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>
@@ -60,29 +85,6 @@ const ProductCreateModal = (props) => {
     )
 }
 
-function addProduct(e) {
-    e.preventDefault();
-    fetch('http://localhost:8080/api/products', {
-        headers: {
-            'Authorization': localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
-        body: JSON.stringify({
-            upc: Number(e.target.upc.value),
-            label: e.target.label.value,
-            volume: e.target.units.value,
-            category: {
-                name: e.target.category.value,
-            },
-            customer: {
-                id: JSON.parse(localStorage.getItem("user")).customer.id
-            },
-            status: "ACTIVE"
-        }),
-        method: "POST"
-    });
-    e.target.closeButton.click();
-}
+
 
 export default ProductCreateModal;
