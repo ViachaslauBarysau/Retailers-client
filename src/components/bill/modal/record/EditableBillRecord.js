@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {AuthContext} from "../../context/authContext";
+import {AuthContext} from "../../../../context/authContext";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";

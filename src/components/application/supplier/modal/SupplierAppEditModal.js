@@ -1,4 +1,4 @@
-import '../../../../modals/Modal.css';
+import '../../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -63,7 +63,6 @@ const SupplierAppEditModal = (props) => {
 
     const forwardApplication = (e) => {
         e.preventDefault();
-        console.log(e.target.location);
         fetch('http://localhost:8080/api/supplier_applications/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
@@ -78,6 +77,7 @@ const SupplierAppEditModal = (props) => {
                 }
             })
         });
+        props.onCloseModal();
     }
 
     const useStyles = makeStyles({
@@ -101,7 +101,7 @@ const SupplierAppEditModal = (props) => {
                                    label="Supplier" disabled/>
                         <Autocomplete
                             size="small"
-
+                            disabled={application.applicationStatus === "FINISHED_PROCESSING"}
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
                             defaultValue={application.destinationLocation.identifier}
@@ -127,8 +127,6 @@ const SupplierAppEditModal = (props) => {
                                    label="Status"
                                    disabled/>
                         <div className="scrollable-box">
-                            <Grid container spacing={1}>
-                                {/*<Grid item xm={3}>*/}
                                 <TableContainer component={Paper}>
                                     <Table className={useStyles.table} size="small" aria-label="a dense table">
                                         <TableHead>
@@ -152,8 +150,6 @@ const SupplierAppEditModal = (props) => {
                                     </Table>
                                 </TableContainer>
                                 <br/>
-                                {/*</Grid>*/}
-                            </Grid>
                         </div>
                         <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
                                    value={application.totalProductAmount}
@@ -163,8 +159,10 @@ const SupplierAppEditModal = (props) => {
                                    value={application.totalUnitNumber}
                                    label="Total volume of products" disabled/>
                         <br/>
-                        <Button type="submit" variant="contained">Forward application</Button>
-                        <Button variant="contained" onClick={acceptProducts}>Accept products</Button>
+                        <Button type="submit" variant="contained"
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward application</Button>
+                        <Button variant="contained" onClick={acceptProducts}
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept products</Button>
                         <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
                     </form>
                 </div>

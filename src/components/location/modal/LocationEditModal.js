@@ -1,7 +1,7 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
-import StateSelect from '../../modals/formSelects/StateSelect';
+import StateSelect from '../../StateSelect';
 import {Button, TextField} from "@material-ui/core";
 
 const LocationEditModal = (props) => {

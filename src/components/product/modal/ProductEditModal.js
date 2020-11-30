@@ -1,4 +1,4 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -55,7 +55,7 @@ const ProductEditModal = (props) => {
             }),
             method: "PUT"
         });
-        e.target.closeButton.click();
+        props.onCloseModal();
     }
 
     let handleChange = (e) => setProduct(

@@ -1,4 +1,4 @@
-import UserModal from './UserModal';
+import UserModal from './modal/UserModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";

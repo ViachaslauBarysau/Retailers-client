@@ -1,5 +1,5 @@
-import ProductCreateModal from './ProductCreateModal';
-import ProductEditModal from './ProductEditModal';
+import ProductCreateModal from './modal/ProductCreateModal';
+import ProductEditModal from './modal/ProductEditModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -105,7 +105,7 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ProductCreateModal onClick={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <ProductCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
                                                                     onCloseModal={() => setDisplayEditModal({
                                                                         displayModal: false,

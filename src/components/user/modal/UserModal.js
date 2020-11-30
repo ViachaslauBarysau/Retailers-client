@@ -1,8 +1,8 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import ReactDom from 'react-dom';
 import React, { useState, useEffect } from 'react';
 import {Button, TextField} from '@material-ui/core';
-import StateSelect from '../../modals/formSelects/StateSelect';
+import StateSelect from '../../StateSelect';
 import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";

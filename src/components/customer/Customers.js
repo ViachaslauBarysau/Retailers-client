@@ -1,4 +1,5 @@
-import CustomerCreateModal from './CustomerCreateModal';
+import CustomerCreateModal from './modal/CustomerCreateModal';
+import CustomerEditModal from './modal/CustomerEditModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -14,7 +15,12 @@ export default () => {
         isLoading: true,
         error: null,
         customers: [],
-        displayModal: false
+    });
+
+    const [displayCreateModal, setDisplayCreateModal] = useState(false);
+    const [displayEditModal, setDisplayEditModal] = useState({
+        displayModal: false,
+        customerId: null
     });
 
     useEffect(() => {
@@ -43,7 +49,7 @@ export default () => {
             })
     }, [customersData.displayModal]);
 
-    const {isLoading, error, customers, displayModal} = customersData;
+    const {isLoading, error, customers} = customersData;
 
     function changeCustomerStatus(e) {
         e.preventDefault();
@@ -64,7 +70,7 @@ export default () => {
     }
 
     return (
-        <>
+        <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             <form onSubmit={changeCustomerStatus}>
@@ -86,10 +92,7 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained" onClick={() => setData((prevState) => ({
-                    ...prevState,
-                    displayModal: true
-                }))}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
                 <Button variant="contained" type="submit">
@@ -99,25 +102,34 @@ export default () => {
 
             }
             {!isLoading && error && 'Error happens'}
-            {displayModal &&
-            <CustomerCreateModal onClick={() => setData((prevState) => ({...prevState, displayModal: false}))}/>}
-        </>
+            {displayCreateModal && <CustomerCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <CustomerEditModal customerId={displayEditModal.customerId}
+                                                                onCloseModal={() => setDisplayEditModal({
+                                                                    displayModal: false,
+                                                                    customerId: null
+                                                                })}
+            />}
+        </div>
     );
-}
 
-
-function Customers({customer}) {
-    return (
-        <TableRow key={customer.id}>
-            <TableCell component="th" scope="row">
-                <input type="checkbox"
-                       value={customer.id}
-                       name={"customers"}/>
-            </TableCell>
-            <TableCell>{customer.name}</TableCell>
-            <TableCell>{customer.registrationDate}</TableCell>
-            <TableCell>{customer.customerStatus}</TableCell>
-            <TableCell>{customer.email}</TableCell>
-        </TableRow>
-    )
+    function Customers({customer}) {
+        return (
+            <TableRow key={customer.id}>
+                <TableCell component="th" scope="row">
+                    <input type="checkbox"
+                           value={customer.id}
+                           name={"customers"}/>
+                </TableCell>
+                <TableCell>
+                    <a href="#" onClick={() => setDisplayEditModal({
+                        displayModal: true,
+                        customerId: customer.id
+                    })}>{customer.name}</a>
+                </TableCell>
+                <TableCell>{customer.registrationDate}</TableCell>
+                <TableCell>{customer.customerStatus}</TableCell>
+                <TableCell>{customer.email}</TableCell>
+            </TableRow>
+        )
+    }
 }

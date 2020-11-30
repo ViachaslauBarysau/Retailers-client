@@ -1,4 +1,4 @@
-import LocationModal from './LocationModal';
+import LocationCreateModal from './modal/LocationCreateModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -8,15 +8,13 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import LocationEditModal from "./LocationEditModal";
+import LocationEditModal from "./modal/LocationEditModal";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
         isLoading: true,
         error: null,
         locations: [],
-        checkedRecords: [],
-        isDataOutdated: false
     });
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
@@ -25,32 +23,29 @@ export default () => {
         locationId: null
     });
 
-    const [selectedLocations, setSelectedLocations] = useState({});
+    const [selectedLocationsNumber, setSelectedLocationsNumber] = useState({
+        count: 0,
+        needRefresh: true
+    });
 
     function handleChange(e) {
         if (e.target.checked) {
-            let checkedRecords = locationsData.checkedRecords;
-            checkedRecords.push(e.target.value);
-            setLocationsData((prevState) => ({
-                    ...prevState,
-                    checkedRecords
-                })
-            );
+            setSelectedLocationsNumber((prevstate) => ({
+                ...prevstate,
+                count: ++selectedLocationsNumber.count,
+            }));
         } else {
-            let checkedRecords = locationsData.checkedRecords;
-            checkedRecords = locationsData.checkedRecords.filter(elem => elem !== e.target.value);
-
-            setLocationsData((prevState) => ({
-                    ...prevState,
-                    checkedRecords
-                })
-            );
+            setSelectedLocationsNumber((prevstate) => ({
+                ...prevstate,
+                count: --selectedLocationsNumber.count,
+            }));
         }
     }
 
     function removeLocations(e) {
         e.preventDefault();
         let locationIdList = [];
+        console.log(e.target.locations)
         e.target.locations.forEach(element => {
             element.checked && locationIdList.push({id: element.value});
         });
@@ -67,13 +62,10 @@ export default () => {
         });
         //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
         //TODO логика ниже работает только при успешном удалении всех .then .catch
-        setLocationsData(
-            (prevState) => ({
-                ...prevState,
-                checkedRecords: [],
-                isDataOutdated: !locationsData.isDataOutdated
-            })
-        );
+        setSelectedLocationsNumber({
+            count: 0,
+            needRefresh: !selectedLocationsNumber.needRefresh
+        });
     }
 
     useEffect(() => {
@@ -102,10 +94,10 @@ export default () => {
             })
     }, [locationsData.displayModal, locationsData.isDataOutdated]);
 
-    const {isLoading, error, locations, displayModal} = locationsData;
+    const {isLoading, error, locations} = locationsData;
 
     return (
-        <>
+        <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             <form onSubmit={removeLocations}>
@@ -134,20 +126,20 @@ export default () => {
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add location
                 </Button>
-                <Button variant="contained" type="submit" disabled={locationsData.checkedRecords.length === 0}>
+                <Button variant="contained" type="submit" disabled={selectedLocationsNumber.count === 0}>
                     Remove location
                 </Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <LocationModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <LocationCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <LocationEditModal locationId={displayEditModal.locationId}
-                                                                    onCloseModal={() => setDisplayEditModal({
-                                                                        displayModal: false,
-                                                                        locationId: null
-                                                                    })}
+                                                                 onCloseModal={() => setDisplayEditModal({
+                                                                     displayModal: false,
+                                                                     locationId: null
+                                                                 })}
             />}
-        </>
+        </div>
     );
 }
 

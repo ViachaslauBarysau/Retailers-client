@@ -12,6 +12,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 export default (props) => {
 
     function changeRecord(e) {
+        console.log(e.target.value)
         props.changeRecord(e.target, props.item.key, props.products.filter((item) => (item.upc === e.target.upc)))
     }
 
@@ -20,11 +21,6 @@ export default (props) => {
             target: {name: "upc", value}
         };
         changeRecord(state);
-    }
-
-
-    function handleChange(e) {
-        console.log(e.target.name)
     }
 
     return (
@@ -58,7 +54,7 @@ export default (props) => {
                     required
                     value={props.item.reason}
                     onChange={changeRecord}
-                disabled>
+                >
                     <MenuItem value={"DAMAGED"}>Damaged</MenuItem>
                     <MenuItem value={"SPOILED"}>Spoiled</MenuItem>
                     <MenuItem value={"LOST"}>Lost</MenuItem>

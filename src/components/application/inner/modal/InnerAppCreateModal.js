@@ -1,4 +1,4 @@
-import '../../../../modals/Modal.css';
+import '../../../Modal.css';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {Button, TextField} from '@material-ui/core';
@@ -8,11 +8,16 @@ import {AuthContext} from "../../../../context/authContext";
 import EditableApplicationRecord from "./record/EditableApplicationRecord";
 
 
-
 const InnerAppCreateModal = (props) => {
     const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
-        items: []
+        items: [{
+            key: new Date().getTime(),
+            upc: 0,
+            amount: 0,
+            cost: 0,
+            error: false
+        }]
     });
     const [locationProducts, setLocationProducts] = useState([]);
     const [locations, setLocations] = useState([]);
@@ -84,11 +89,13 @@ const InnerAppCreateModal = (props) => {
                 );
                 break;
             default:
-                setItemRows((prevState) => ({
-                        ...prevState,
-                        items: prevState.items.filter((item) => (item.key !== key))
-                    })
-                );
+                if (itemRows.items.length > 1) {
+                    setItemRows((prevState) => ({
+                            ...prevState,
+                            items: prevState.items.filter((item) => (item.key !== key))
+                        })
+                    );
+                }
                 break;
         }
     };
@@ -130,7 +137,7 @@ const InnerAppCreateModal = (props) => {
 
     const createApplication = (e) => {
         e.preventDefault(e);
-
+        console.log(e.target.location.value)
         fetch('http://localhost:8080/api/inner_applications', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
@@ -139,18 +146,10 @@ const InnerAppCreateModal = (props) => {
             },
             body: JSON.stringify({
                 applicationNumber: Number(e.target.appNumber.value),
-                sourceLocation: {
-                    id: user.location.id
-                },
-                destinationLocation: {
-                    id: user.location.id
-                },
-                creator: {
-                    id: user.id
-                },
-                updater: {
-                    id: user.id
-                },
+                sourceLocation: user.location,
+                destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0],
+                creator: user,
+                updater: user,
                 registrationDateTime: dateTime,
                 updatingDateTime: dateTime,
                 applicationStatus: "OPEN",
@@ -160,7 +159,7 @@ const InnerAppCreateModal = (props) => {
             }),
             method: "POST"
         });
-        e.target.closeButton.click();
+        props.onCloseModal();
     }
 
     return (
@@ -176,22 +175,22 @@ const InnerAppCreateModal = (props) => {
                                    variant="outlined" value={user.location.identifier} label="Source location"
                                    disabled/>
                         <Autocomplete
-                            id="supplier"
+                            id="location"
                             size="small"
                             name="location"
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Location" margin="normal"
-                                           variant="outlined"
-                                           id="location" required/>
+                                <TextField {...params} fullWidth={true} label="Destination location" margin="dense"
+                                           variant="outlined" required/>
                             )}
                         />
 
                         <TextField margin={"dense"} size="small" fullWidth={true} id="creator" variant="outlined"
                                    label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationreg_date_timeId" variant="outlined"
-                                   label="Registration date and time" value={dateTime}  disabled/>
+                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationreg_date_timeId"
+                                   variant="outlined"
+                                   label="Registration date and time" value={dateTime} disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>

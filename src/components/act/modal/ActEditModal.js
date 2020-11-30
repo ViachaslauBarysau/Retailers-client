@@ -1,4 +1,4 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -25,8 +25,6 @@ const ActEditModal = (props) => {
             });
     }, []);
 
-    console.log(act)
-
     return (
         <div>
             {act &&
@@ -34,6 +32,10 @@ const ActEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form>
+                        <TextField margin="dense" name="actNumber" size="small" fullWidth={true}
+                                   vaule={act.writeOffActNumber}
+                                   variant="outlined" label="Write-off act number"
+                                   disabled/>
                         <div className="scrollable-box">
                             <TableContainer component={Paper}>
                                 <Table size="small" aria-label="a dense table">
@@ -59,13 +61,12 @@ const ActEditModal = (props) => {
                             </TableContainer>
                             <br/>
                         </div>
-                        <TextField margin="dense" name="date" size="small" fullWidth={true}
+                        <TextField margin="dense" name="date" size="small" fullWidth={true} value={act.actDateTime}
                                    variant="outlined" label="Date and time"
-                                   required/>
-                        <TextField margin="dense" name="sum" size="small" fullWidth={true}
-                                   variant="outlined" label="Total sum of items"
-                                   required/>
-                        <Button fullWidth={false} type="submit" variant="contained">Add act</Button>
+                                   disabled/>
+                        <TextField margin="dense" name="sum" size="small" fullWidth={true} value={act.totalProductSum}
+                                   variant="outlined" label="Total cost of items"
+                                   disabled/>
                         <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

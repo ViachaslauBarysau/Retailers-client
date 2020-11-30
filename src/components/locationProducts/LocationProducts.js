@@ -8,8 +8,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import ActCreateModal from "../act/ActCreateModal";
-import LocationProductEditModal from "./LocationProductEditModal";
+import ActCreateModal from "../act/modal/ActCreateModal";
+import LocationProductEditModal from "./modal/LocationProductEditModal";
 
 export default () => {
     const [productsData, setData] = useState({
@@ -64,9 +64,8 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell></TableCell>
                                     <TableCell>UPC</TableCell>
-                                    <TableCell>Label date</TableCell>
+                                    <TableCell>Label</TableCell>
                                     <TableCell>Category</TableCell>
                                     <TableCell>Units</TableCell>
                                 </TableRow>
@@ -102,9 +101,6 @@ export default () => {
     function LocationProducts({loc_product}) {
         return (
             <TableRow key={loc_product.id}>
-                <TableCell component="th" scope="row">
-                    <input type="checkbox" value={loc_product.id} name={"products"}/>
-                </TableCell>
                 <TableCell><a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
                     loc_productId: loc_product.id

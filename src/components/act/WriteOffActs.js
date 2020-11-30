@@ -1,5 +1,5 @@
-import ActCreateModal from './ActCreateModal';
-import ActEditModal from './ActEditModal';
+import ActCreateModal from './modal/ActCreateModal';
+import ActEditModal from './modal/ActEditModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from 'react-bootstrap';
 import Paper from "@material-ui/core/Paper";
@@ -50,7 +50,7 @@ export default () => {
     const {isLoading, error, acts, displayModal} = actsData;
 
     return (
-        <>
+        <div>
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             (acts.length != 0
@@ -82,7 +82,7 @@ export default () => {
                                                                 actId: null
                                                             })}
             />}
-        </>
+        </div>
     );
 
     function Acts({act}) {

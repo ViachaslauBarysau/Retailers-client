@@ -1,8 +1,8 @@
-import '../../modals/Modal.css';
+import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 
-import {AuthContext} from "../../context/authContext";
+import {AuthContext} from "../../../context/authContext";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -55,7 +55,7 @@ const BillCreateModal = (props) => {
                                         <TableRow>
                                             <TableCell>UPC</TableCell>
                                             <TableCell align="right">Amount</TableCell>
-                                            <TableCell align="right">Cost</TableCell>
+                                            <TableCell align="right">Price</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
