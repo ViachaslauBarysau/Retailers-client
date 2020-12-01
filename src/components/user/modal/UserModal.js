@@ -45,7 +45,6 @@ const UserModal = (props) => {
           <TextField size="small" name="address1" id="address2" fullWidth={true}
                      variant="outlined" label="Address line 2"/>
 
-          <label>
             <InputLabel id="role-label">Role:</InputLabel>
             <Select
                 variant="outlined"
@@ -59,7 +58,6 @@ const UserModal = (props) => {
               <MenuItem value={"SHOP_MANAGER"}>Shop manager</MenuItem>
               <MenuItem value={"DIRECTOR"}>Director</MenuItem>
             </Select>
-          </label>
 
           <TextField size="small" name="login" id="login" fullWidth={true}
                      variant="outlined" label="Login"/>

@@ -65,7 +65,7 @@ export default () => {
                 Accept: 'application/json'
             },
             body: JSON.stringify(customerIdList),
-            method: "PUT"
+            method: "DELETE"
         });
     }
 
