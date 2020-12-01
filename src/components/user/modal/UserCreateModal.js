@@ -7,22 +7,65 @@ import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 
-const UserModal = (props) => {
+const UserCreateModal = (props) => {
+  const [stateId, setStateId] = useState(1);
+
+  function updateStateSelectValue(e) {
+    setStateId(e.target.value)
+  }
+
+  function addUser(e) {
+    e.preventDefault();
+    fetch('http://localhost:8080/api/users', {
+      headers: {
+        'Authorization': localStorage.getItem("token"),
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        firstName: e.target.name.value,
+        lastName: e.target.surname.value,
+        email: e.target.email.value,
+        userRole: ["DIRECTOR"],
+        birthday: e.target.date_of_birth.value,
+        userStatus: "ACTIVE",
+        location: {
+          id: "2"
+        },
+        customer: {
+          id: JSON.parse(localStorage.getItem("user")).customer.id
+        },
+        address: {
+          state:
+              {
+                id: stateId,
+              },
+          city: e.target.city.value,
+          firstAddressLine: e.target.address1.value,
+          secondAddressLine: e.target.address2.value
+        },
+      }),
+      method: "POST"
+    });
+    e.target.closeButton.click();
+  }
+
   return (
     <div className={"modal-wrapper"}>
       <div onClick={props.onClick} className={"modal-backdrop"} />
       <div className={"modal-box"}>
         <form onSubmit={addUser}>
-          <TextField size="small" id="name" fullWidth={true}
+          <TextField margin="dense" size="small" id="name" fullWidth={true}
                      variant="outlined" label="Name"/>
 
           <br />
-          <TextField size="small" id="surname" fullWidth={true}
+          <TextField margin="dense" size="small" id="surname" fullWidth={true}
                      variant="outlined" label="Surname"/>
           <br />
-          <br />
           <TextField
-              id="date_of_birth"
+              variant="outlined"
+              margin="dense"
+              name="date_of_birth"
               label="Date of birth"
               type="date"
               defaultValue="2000-01-01"
@@ -30,19 +73,16 @@ const UserModal = (props) => {
                 shrink: true,
               }}
           />
-
           <InputLabel id="state-label">State:</InputLabel>
-              <StateSelect/>
-          <br />
+          <StateSelect onChangeState={updateStateSelectValue}/>
 
-          <br />
-          <TextField size="small" name="city" id="city" fullWidth={true}
+          <TextField margin="dense" size="small" name="city" id="city" fullWidth={true}
                      variant="outlined" label="City"/>
 
-          <TextField size="small" name="address1" id="address1" fullWidth={true}
+          <TextField margin="dense" size="small" name="address1" id="address1" fullWidth={true}
                      variant="outlined" label="Address line 1"/>
 
-          <TextField size="small" name="address1" id="address2" fullWidth={true}
+          <TextField margin="dense" size="small" name="address1" id="address2" fullWidth={true}
                      variant="outlined" label="Address line 2"/>
 
             <InputLabel id="role-label">Role:</InputLabel>
@@ -59,10 +99,10 @@ const UserModal = (props) => {
               <MenuItem value={"DIRECTOR"}>Director</MenuItem>
             </Select>
 
-          <TextField size="small" name="login" id="login" fullWidth={true}
+          <TextField margin="dense" size="small" name="login" id="login" fullWidth={true}
                      variant="outlined" label="Login"/>
 
-          <TextField size="small" name="email" id="email" fullWidth={true}
+          <TextField margin="dense" size="small" name="email" id="email" fullWidth={true}
                      variant="outlined" label="Email"/>
 
           <Button type="submit" variant="contained">Add user</Button>
@@ -73,42 +113,7 @@ const UserModal = (props) => {
   )
 }
 //How to set user location? Password generator services.
-function addUser(e) {
-  e.preventDefault();
-  fetch('http://localhost:8080/api/users', {
-    headers: {
-      'Authorization': localStorage.getItem("token"),
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({
-      firstName: e.target.name.value,
-      lastName: e.target.surname.value,
-      email: e.target.email.value,
-      userRole: [e.target.role.value],
-      birthday: e.target.date_of_birth.value,
-      userStatus: "ACTIVE",
-      location: {
-        id: "2"
-      },
-      customer: {
-        id: JSON.parse(localStorage.getItem("user")).customer.id
-      },
-      address: {
-        state:
-        {
-          id: e.target.state.value
-        },
-        city: e.target.city.value,
-        firstAddressLine: e.target.address1.value,
-        secondAddressLine: e.target.address2.value
-      },
-    }),
-    method: "POST"
-  });
-  e.target.closeButton.click();
-}
 
-export default UserModal;
+export default UserCreateModal;
 
 

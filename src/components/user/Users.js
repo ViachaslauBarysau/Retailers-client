@@ -1,4 +1,4 @@
-import UserModal from './modal/UserModal';
+import UserCreateModal from './modal/UserCreateModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -79,7 +79,7 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <UserModal onClick={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <UserCreateModal onClick={() => setDisplayCreateModal(false)}/>}
         </div>
     );
 }

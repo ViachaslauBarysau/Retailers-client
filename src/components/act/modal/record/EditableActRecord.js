@@ -12,7 +12,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 export default (props) => {
 
     function changeRecord(e) {
-        console.log(e.target.value)
         props.changeRecord(e.target, props.item.key, props.products.filter((item) => (item.upc === e.target.upc)))
     }
 
@@ -47,6 +46,7 @@ export default (props) => {
                 <Select
                     labelId="reason-label"
                     id="reason"
+                    autoWidth={false}
                     name="reason"
                     fullWidth={true}
                     variant="outlined"

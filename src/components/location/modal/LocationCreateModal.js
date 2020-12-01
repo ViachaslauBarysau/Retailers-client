@@ -12,7 +12,6 @@ const LocationCreateModal = (props) => {
 
     function updateStateSelectValue(e) {
         setStateId(e.target.value)
-        console.log(e.target.value)
     }
 
     const [locationType, setLocationType] = useState("WAREHOUSE");
@@ -75,7 +74,6 @@ const LocationCreateModal = (props) => {
                     <Select
                         variant="outlined"
                         labelId="type-label"
-                        id="type"
                         value={locationType}
                         onChange={handleLocationTypeChange}
                     >
