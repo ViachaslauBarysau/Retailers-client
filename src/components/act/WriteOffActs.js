@@ -1,7 +1,7 @@
 import ActCreateModal from './modal/ActCreateModal';
 import ActEditModal from './modal/ActEditModal';
 import React, {useEffect, useState} from 'react';
-import {Button} from 'react-bootstrap';
+import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -72,7 +72,7 @@ export default () => {
                 : 'Empty list')
             }
             {!isLoading && error && 'Error happens'}
-            <Button onClick={() => setDisplayCreateModal(true)}>
+            <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act
             </Button>
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}

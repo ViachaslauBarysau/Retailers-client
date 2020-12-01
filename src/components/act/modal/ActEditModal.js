@@ -25,6 +25,8 @@ const ActEditModal = (props) => {
             });
     }, []);
 
+    console.log(act)
+
     return (
         <div>
             {act &&
@@ -32,8 +34,7 @@ const ActEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form>
-                        <TextField margin="dense" name="actNumber" size="small" fullWidth={true}
-                                   vaule={act.writeOffActNumber}
+                        <TextField margin="dense" name="actNumber" size="small" fullWidth={true} value={act.writeOffActNumber}
                                    variant="outlined" label="Write-off act number"
                                    disabled/>
                         <div className="scrollable-box">

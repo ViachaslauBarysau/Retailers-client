@@ -25,7 +25,7 @@ export default (props) => {
 
     function updateSelect(e) {
         setState(e.target.value);
-        props.onChangeState(state)
+        props.onChangeState(e)
     }
 
     return (

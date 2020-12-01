@@ -23,6 +23,16 @@ export default () => {
         productId: null
     });
 
+    const [selectedProductsNumber, setSelectedProductsNumber] = useState(0);
+
+    function handleChange(e) {
+        if (e.target.checked) {
+            setSelectedProductsNumber(selectedProductsNumber + 1);
+        } else {
+            setSelectedProductsNumber(selectedProductsNumber - 1);
+        }
+    }
+
     useEffect(() => {
         fetch('http://localhost:8080/api/products', {
             headers: {
@@ -91,15 +101,22 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {products.map(product => <Products product={product} key={product.id}/>)}
+                                {products.map(product => <Product product={product}
+                                                                  key={product.id}
+                                                                  onChange={handleChange}
+                                                                  onClick={() => setDisplayEditModal({
+                                                                      displayModal: true,
+                                                                      productId: product.id
+                                                                  })}
+                                />)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained" onCloseModal={() => setDisplayCreateModal(true)}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add product
                 </Button>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" type="submit" disabled={selectedProductsNumber === 0}>
                     Remove product
                 </Button>
             </form>
@@ -114,22 +131,22 @@ export default () => {
             />}
         </div>
     );
+}
 
-    function Products({product}) {
-        return (
-            <TableRow key={product.id}>
-                <TableCell component="th" scope="row">
-                    <input type="checkbox" value={product.id} name={"products"}/>
-                </TableCell>
-                <TableCell><a href="#" onClick={() => setDisplayEditModal({
-                    displayModal: true,
-                    productId: product.id
-                })}>{product.upc}</a>
-                </TableCell>
-                <TableCell>{product.label}</TableCell>
-                <TableCell>{product.category.name}</TableCell>
-                <TableCell>{product.volume}</TableCell>
-            </TableRow>
-        )
-    }
+function Product(props) {
+    return (
+        <TableRow key={props.product.id}>
+            <TableCell component="th" scope="row">
+                <input type="checkbox"
+                       value={props.product.id}
+                       name={"products"}
+                       onChange={props.onChange}/>
+            </TableCell>
+            <TableCell><a href="#" onClick={props.onClick}>{props.product.upc}</a>
+            </TableCell>
+            <TableCell>{props.product.label}</TableCell>
+            <TableCell>{props.product.category.name}</TableCell>
+            <TableCell>{props.product.volume}</TableCell>
+        </TableRow>
+    )
 }

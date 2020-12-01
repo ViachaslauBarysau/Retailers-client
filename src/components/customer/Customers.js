@@ -23,6 +23,16 @@ export default () => {
         customerId: null
     });
 
+    const [selectedCustomersNumber, setSelectedCustomersNumber] = useState(0);
+
+    function handleChange(e) {
+        if (e.target.checked) {
+            setSelectedCustomersNumber(selectedCustomersNumber + 1);
+        } else {
+            setSelectedCustomersNumber(selectedCustomersNumber - 1);
+        }
+    }
+
     useEffect(() => {
         fetch('http://localhost:8080/api/customers', {
             headers: {
@@ -57,7 +67,7 @@ export default () => {
         e.target.customers.forEach(element => {
             element.checked && customerIdList.push(Number(element.value));
         });
-        console.log(customerIdList);
+
         fetch('http://localhost:8080/api/customers', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
@@ -65,7 +75,7 @@ export default () => {
                 Accept: 'application/json'
             },
             body: JSON.stringify(customerIdList),
-            method: "PUT"
+            method: "DELETE"
         });
     }
 
@@ -87,7 +97,14 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {customers.map(customer => <Customers customer={customer} key={customer.id}/>)}
+                                {customers.map(customer => <Customer customer={customer}
+                                                                      key={customer.id}
+                                                                      onChange={handleChange}
+                                                                      onClick={() => setDisplayEditModal({
+                                                                          displayModal: true,
+                                                                          customerId: customer.id
+                                                                      })}
+                                />)}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -95,7 +112,7 @@ export default () => {
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" type="submit" disabled={selectedCustomersNumber === 0}>
                     Enable/Disable
                 </Button>
             </form>
@@ -111,25 +128,23 @@ export default () => {
             />}
         </div>
     );
+}
 
-    function Customers({customer}) {
-        return (
-            <TableRow key={customer.id}>
-                <TableCell component="th" scope="row">
-                    <input type="checkbox"
-                           value={customer.id}
-                           name={"customers"}/>
-                </TableCell>
-                <TableCell>
-                    <a href="#" onClick={() => setDisplayEditModal({
-                        displayModal: true,
-                        customerId: customer.id
-                    })}>{customer.name}</a>
-                </TableCell>
-                <TableCell>{customer.registrationDate}</TableCell>
-                <TableCell>{customer.customerStatus}</TableCell>
-                <TableCell>{customer.email}</TableCell>
-            </TableRow>
-        )
-    }
+function Customer(props) {
+    return (
+        <TableRow key={props.customer.id}>
+            <TableCell component="th" scope="row">
+                <input type="checkbox"
+                       value={props.customer.id}
+                       name={"customers"}
+                       onChange={props.onChange}/>
+            </TableCell>
+            <TableCell>
+                <a href="#" onClick={props.onClick}>{props.customer.name}</a>
+            </TableCell>
+            <TableCell>{props.customer.registrationDate}</TableCell>
+            <TableCell>{props.customer.customerStatus}</TableCell>
+            <TableCell>{props.customer.email}</TableCell>
+        </TableRow>
+    )
 }

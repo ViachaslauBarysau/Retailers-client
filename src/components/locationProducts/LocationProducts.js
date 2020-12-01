@@ -83,7 +83,7 @@ export default () => {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <LocationProductEditModal loc_productId={displayEditModal.productId}
+            {displayEditModal.displayModal && <LocationProductEditModal loc_productId={displayEditModal.loc_productId}
                                                                 onCloseModal={() => setDisplayEditModal({
                                                                     displayModal: false,
                                                                     loc_productId: null
