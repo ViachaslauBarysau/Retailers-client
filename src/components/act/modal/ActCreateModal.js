@@ -106,10 +106,8 @@ const ActCreateModal = (props) => {
     const getRecordsList = () => {
         let recordsList = itemRows.items.map((item) => (
             {
-                product: {
-                    id: locationProducts.filter((locationProduct) => (locationProduct.product.upc
-                        === Number(item.upc)))[0].product.id
-                },
+                product: locationProducts.filter((locationProduct) => (locationProduct.product.upc
+                        === Number(item.upc)))[0].product,
                 amount: item.amount,
                 reason: item.reason
             }

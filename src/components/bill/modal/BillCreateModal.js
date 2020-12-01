@@ -110,10 +110,8 @@ const BillCreateModal = (props) => {
     const getRecordsList = () => {
         let recordsList = itemRows.items.map((item) => (
             {
-                product: {
-                    id: locationProducts.filter((locationProducts) => (locationProducts.product.upc
-                        === Number(item.upc)))[0].product.id
-                },
+                product: locationProducts.filter((locationProducts) => (locationProducts.product.upc
+                        === Number(item.upc)))[0].product,
                 productAmount: item.amount,
                 productPrice: item.price
             }
