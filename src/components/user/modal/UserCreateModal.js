@@ -20,7 +20,6 @@ const UserCreateModal = (props) => {
 
     function handleRoleChange(e) {
         setRole(e.target.value);
-        // setUserLocation(null);
     }
 
     useEffect(() => {
@@ -72,14 +71,14 @@ const UserCreateModal = (props) => {
             }),
             method: "POST"
         });
-        props.onClick();
+        props.onCloseModal();
     }
 
     return (
         <div>
             {locations &&
             <div className={"modal-wrapper"}>
-                <div onClick={props.onClick} className={"modal-backdrop"}/>
+                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={addUser}>
                         <TextField margin="dense" size="small" name="name" fullWidth={true}
@@ -101,7 +100,7 @@ const UserCreateModal = (props) => {
                             }}
                         />
                         <InputLabel id="state-label">State:</InputLabel>
-                        <StateSelect onChangeState={updateStateSelectValue}/>
+                        <StateSelect MenuProps={{ autoFocus: true }} onChangeState={updateStateSelectValue}/>
 
                         <TextField margin="dense" size="small" name="city" fullWidth={true}
                                    variant="outlined" label="City" required/>
@@ -113,7 +112,7 @@ const UserCreateModal = (props) => {
                                    variant="outlined" label="Address line 2"/>
 
                         <InputLabel id="role-label">Role:</InputLabel>
-                        <Select
+                        <Select MenuProps={{ autoFocus: true }}
                             variant="outlined"
                             labelId="role-label"
                             id="role"
@@ -165,7 +164,7 @@ const UserCreateModal = (props) => {
                                    variant="outlined" label="Email" required/>
 
                         <Button type="submit" variant="contained">Add user</Button>
-                        <Button id="closeButton" onClick={props.onClick} variant="contained">Close</Button>
+                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
                     </form>
                 </div>
             </div>
