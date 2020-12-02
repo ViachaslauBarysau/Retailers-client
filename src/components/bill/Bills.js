@@ -9,6 +9,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import BillEditModal from "./modal/BillEditModal";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [billsData, setData] = useState({
@@ -17,28 +18,36 @@ export default () => {
         bills: [],
     });
 
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(1)
+
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         billId: null
     });
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/bills', {
+        fetch('http://localhost:8080/api/bills?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
             .then(res => res.json())
-            .then(bills => {
+            .then(billsPage => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    bills
+                    bills: billsPage.content
                 }));
+                setPageCount(billsPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -47,9 +56,9 @@ export default () => {
                     error: e
                 }))
             })
-    }, []);
+    }, [pageNumber]);
 
-    const {isLoading, error, bills, displayModal} = billsData;
+    const {isLoading, error, bills} = billsData;
 
     return (
         <div>
@@ -71,12 +80,13 @@ export default () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                : 'Empty list')
-            }
-            {!isLoading && error && 'Error happens'}
+                : 'Empty list')}
+            <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                        onChange={handleChangePage}/>
             <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                 Add bill
             </Button>
+            {!isLoading && error && 'Error happens'}
             {displayCreateModal && <BillCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <BillEditModal billId={displayEditModal.billId}
                                                              onCloseModal={() => setDisplayEditModal({

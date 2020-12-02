@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [usersData, setData] = useState({
@@ -16,6 +17,10 @@ export default () => {
         error: null,
         users: []
     });
+
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -33,20 +38,25 @@ export default () => {
         }
     }
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
+
     useEffect(() => {
-        fetch('http://localhost:8080/api/users', {
+        fetch('http://localhost:8080/api/users?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
             .then(res => res.json())
-            .then(users => {
+            .then(usersPage => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    users
+                    users: usersPage.content
                 }));
+                setPageCount(usersPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -55,7 +65,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, []);
+    }, [pageNumber]);
 
     const {isLoading, error, users} = usersData;
 
@@ -89,6 +99,8 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
+                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                            onChange={handleChangePage}/>
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add user
                 </Button>

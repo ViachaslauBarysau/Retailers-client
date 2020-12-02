@@ -10,22 +10,31 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import ActCreateModal from "../act/modal/ActCreateModal";
 import LocationProductEditModal from "./modal/LocationProductEditModal";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [productsData, setData] = useState({
         isLoading: true,
         error: null,
-        loc_products: [],
+        locProducts: [],
     });
+
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
-        loc_productId: null
+        locProductId: null
     });
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
+
     useEffect(() => {
-        fetch('http://localhost:8080/api/location_products', {
+        fetch('http://localhost:8080/api/location_products?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -34,12 +43,13 @@ export default () => {
             method: "GET"
         })
             .then(res => res.json())
-            .then(loc_products => {
+            .then(locProductsPage => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    loc_products
+                    locProducts: locProductsPage.content
                 }));
+                setPageCount(locProductsPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -48,9 +58,9 @@ export default () => {
                     error: e
                 }))
             })
-    }, [productsData.displayModal]);
+    }, [pageNumber]);
 
-    const { isLoading, error, loc_products } = productsData;
+    const { isLoading, error, locProducts } = productsData;
 
     console.log(productsData)
 
@@ -59,7 +69,7 @@ export default () => {
             {isLoading && 'Loading....'}
             {!isLoading && !error &&
             <form>
-                {(productsData.loc_products.length !== 0
+                {(locProducts.length !== 0
                     ? <TableContainer component={Paper}>
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
@@ -71,11 +81,13 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {productsData.loc_products.map(loc_product => <LocationProducts loc_product={loc_product} key={loc_product.id}/>)}
+                                {productsData.locProducts.map(locProduct => <LocationProducts locProduct={locProduct} key={locProduct.id}/>)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
+                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                            onChange={handleChangePage}/>
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Create write-off act
                 </Button>
@@ -83,32 +95,26 @@ export default () => {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <LocationProductEditModal loc_productId={displayEditModal.loc_productId}
+            {displayEditModal.displayModal && <LocationProductEditModal locProductId={displayEditModal.locProductId}
                                                                 onCloseModal={() => setDisplayEditModal({
                                                                     displayModal: false,
-                                                                    loc_productId: null
+                                                                    locProductId: null
                                                                 })}
             />}
-            {/*{displayEditModal.displayModal && <ActCreateModal productId={displayEditModal.productId}*/}
-            {/*                                                  onCloseModal={() => setDisplayEditModal({*/}
-            {/*                                                      displayModal: false,*/}
-            {/*                                                      productId: null*/}
-            {/*                                                  })}*/}
-            {/*/>}*/}
         </div>
     );
 
-    function LocationProducts({loc_product}) {
+    function LocationProducts({locProduct}) {
         return (
-            <TableRow key={loc_product.id}>
+            <TableRow key={locProduct.id}>
                 <TableCell><a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
-                    loc_productId: loc_product.id
-                })}>{loc_product.product.upc}</a>
+                    locProductId: locProduct.id
+                })}>{locProduct.product.upc}</a>
                 </TableCell>
-                <TableCell>{loc_product.product.label}</TableCell>
-                <TableCell>{loc_product.product.category.name}</TableCell>
-                <TableCell>{loc_product.product.volume}</TableCell>
+                <TableCell>{locProduct.product.label}</TableCell>
+                <TableCell>{locProduct.product.category.name}</TableCell>
+                <TableCell>{locProduct.product.volume}</TableCell>
             </TableRow>
         )
     }

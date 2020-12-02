@@ -29,7 +29,7 @@ const BillCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(locationProducts => {
-                setLocationProducts(locationProducts)
+                setLocationProducts(locationProducts.content)
             });
     }, []);
 

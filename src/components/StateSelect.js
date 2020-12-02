@@ -18,7 +18,7 @@ export default (props) => {
             .then(res => res.json())
             .then(states => {
                 setStates(
-                    states
+                    states.content
                 );
             })
     }, []);
