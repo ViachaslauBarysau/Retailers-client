@@ -8,7 +8,7 @@ const LocationProductEditModal = (props) => {
     let [locationProduct, setProduct] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/location_products/' + props.loc_productId, {
+        fetch('http://localhost:8080/api/location_products/' + props.locProductId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

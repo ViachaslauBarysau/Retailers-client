@@ -31,7 +31,7 @@ const InnerAppCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(locationProducts => {
-                setLocationProducts(locationProducts)
+                setLocationProducts(locationProducts.content)
             });
         fetch('http://localhost:8080/api/locations/shops', {
             headers: {

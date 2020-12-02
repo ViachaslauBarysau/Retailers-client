@@ -17,7 +17,7 @@ const ProductCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(categories => {
-                setCategories(categories);
+                setCategories(categories.content);
             })
 
     }, []);

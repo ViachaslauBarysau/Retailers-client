@@ -20,7 +20,7 @@ export default () => {
 
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, stPageCount] = useState(1)
+    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -41,7 +41,6 @@ export default () => {
     const handleChangePage = (event, value) => {
         setPageNumber(value - 1);
     };
-
 
     function removeLocations(e) {
         e.preventDefault();
@@ -81,7 +80,7 @@ export default () => {
                     isLoading: false,
                     locations: locationsPage.content
                 }));
-                stPageCount(locationsPage.totalPages);
+                setPageCount(locationsPage.totalPages);
             })
             .catch(e => {
                 setLocationsData((prevState) => ({

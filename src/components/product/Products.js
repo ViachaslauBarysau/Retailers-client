@@ -20,7 +20,7 @@ export default () => {
 
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, stPageCount] = useState(1)
+    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -58,7 +58,7 @@ export default () => {
                     isLoading: false,
                     products: productsPage.content
                 }));
-                stPageCount(productsPage.totalPages);
+                setPageCount(productsPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({

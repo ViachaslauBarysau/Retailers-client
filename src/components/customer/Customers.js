@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [customersData, setData] = useState({
@@ -16,6 +17,10 @@ export default () => {
         error: null,
         customers: [],
     });
+
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -33,8 +38,12 @@ export default () => {
         }
     }
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
+
     useEffect(() => {
-        fetch('http://localhost:8080/api/customers', {
+        fetch('http://localhost:8080/api/customers?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -43,12 +52,13 @@ export default () => {
             method: "GET"
         })
             .then(res => res.json())
-            .then(customers => {
+            .then(customersPage => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    customers
+                    customers: customersPage.content
                 }));
+                setPageCount(customersPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -57,7 +67,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [customersData.displayModal]);
+    }, [pageNumber]);
 
     const {isLoading, error, customers} = customersData;
 
@@ -109,6 +119,8 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
+                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                            onChange={handleChangePage}/>
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>

@@ -30,7 +30,7 @@ const SupplierAppCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(products => {
-                setProducts(products)
+                setProducts(products.content)
             });
         fetch('http://localhost:8080/api/suppliers?size=100000', {
             headers: {
@@ -40,7 +40,7 @@ const SupplierAppCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(suppliers => {
-                setSuppliers(suppliers)
+                setSuppliers(suppliers.content)
             });
     }, []);
 

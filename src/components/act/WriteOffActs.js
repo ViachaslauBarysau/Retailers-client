@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [actsData, setData] = useState({
@@ -17,26 +18,35 @@ export default () => {
         acts: null,
     });
 
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, setPageCount] = useState(1)
+
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         actId: null
     });
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
+
     useEffect(() => {
-        fetch('http://localhost:8080/api/write_off_acts', {
+        fetch('http://localhost:8080/api/write_off_acts?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
             .then(res => res.json())
-            .then(acts => {
+            .then(actsPage => {
                 setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    acts
+                    acts: actsPage.content
                 }));
+                setPageCount(actsPage.totalPages);
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -45,7 +55,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, []);
+    }, [pageNumber]);
 
     const {isLoading, error, acts} = actsData;
 
@@ -69,12 +79,14 @@ export default () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                : 'Empty list')
-            }
-            {!isLoading && error && 'Error happens'}
+                : 'Empty list')}
+            <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                        onChange={handleChangePage}/>
+
             <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act
             </Button>
+            {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ActEditModal actId={displayEditModal.actId}
                                                             onCloseModal={() => setDisplayEditModal({
