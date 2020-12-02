@@ -45,7 +45,7 @@ const LocationCreateModal = (props) => {
                 totalCapacity: e.target.total_capacity.value,
                 availableCapacity: e.target.total_capacity.value,
                 locationType: locationType,
-                locationTax: e.target.location_tax.value,
+                locationTax: 0,
                 status: "ACTIVE"
             }),
             method: "POST"
@@ -84,10 +84,6 @@ const LocationCreateModal = (props) => {
                     <TextField margin="dense" size="small" fullWidth={true} type="number"
                                InputProps={{ inputProps: { min: 1, step: 1 } }}
                                name="total_capacity" variant="outlined" label="Total capacity"
-                               required/>
-                    <TextField margin="dense" size="small" fullWidth={true} type="number"
-                               InputProps={{ inputProps: { min: 0, max: 1, step: 0.01 } }}
-                               name="location_tax" variant="outlined" label="Location tax"
                                required/>
                     <Button fullWidth={false} type="submit" variant="contained">Add location</Button>
                     <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
