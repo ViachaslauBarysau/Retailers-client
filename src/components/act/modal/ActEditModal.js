@@ -25,7 +25,9 @@ const ActEditModal = (props) => {
             });
     }, []);
 
-    console.log(act)
+    if (act != null) {
+        console.log()
+    }
 
     return (
         <div>
@@ -62,7 +64,8 @@ const ActEditModal = (props) => {
                             </TableContainer>
                             <br/>
                         </div>
-                        <TextField margin="dense" name="date" size="small" fullWidth={true} value={act.actDateTime}
+                        <TextField margin="dense" name="date" size="small" fullWidth={true}
+                                   value={new Date(new Date(act.actDateTime).getTime() - new Date().getTimezoneOffset()*60*1000)}
                                    variant="outlined" label="Date and time"
                                    disabled/>
                         <TextField margin="dense" name="sum" size="small" fullWidth={true} value={act.totalProductSum}

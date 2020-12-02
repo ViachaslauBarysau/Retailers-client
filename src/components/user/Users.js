@@ -90,14 +90,14 @@ function changeUserStatus(e) {
     e.target.users.forEach(element => {
         element.checked && userIdList.push(element.value);
     });
-    fetch('http://localhost:8080/users', {
+    fetch('http://localhost:8080/api/users', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',
             Accept: 'application/json'
         },
         body: JSON.stringify(userIdList),
-        method: "PUT"
+        method: "DELETE"
     });
 }
 
