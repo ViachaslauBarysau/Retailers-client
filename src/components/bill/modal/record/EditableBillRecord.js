@@ -41,8 +41,8 @@ export default (props) => {
                            label="Amount" value={props.item.amount} onChange={changeRecord}/>
             </Grid>
             <Grid item xs={3}>
-                <TextField margin="normal" type="number" size="small" required name="cost" variant="outlined"
-                           label="Cost" value={props.item.price} disabled/>
+                <TextField margin="normal" type="number" size="small" required name="price" variant="outlined"
+                           label="Price" value={props.item.price} disabled/>
             </Grid>
             <Grid item xs={1}>
                 <IconButton aria-label="delete" onClick={changeRecord}>

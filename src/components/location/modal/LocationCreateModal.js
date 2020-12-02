@@ -82,11 +82,11 @@ const LocationCreateModal = (props) => {
                     </Select>
                     <br />
                     <TextField margin="dense" size="small" fullWidth={true} type="number"
-                               InputProps={{ inputProps: { min: 1 } }}
+                               InputProps={{ inputProps: { min: 1, step: 1 } }}
                                name="total_capacity" variant="outlined" label="Total capacity"
                                required/>
                     <TextField margin="dense" size="small" fullWidth={true} type="number"
-                               InputProps={{ inputProps: { min: 0, max: 1 } }}
+                               InputProps={{ inputProps: { min: 0, max: 1, step: 0.01 } }}
                                name="location_tax" variant="outlined" label="Location tax"
                                required/>
                     <Button fullWidth={false} type="submit" variant="contained">Add location</Button>
@@ -97,6 +97,5 @@ const LocationCreateModal = (props) => {
         </div>
     )
 }
-
 
 export default LocationCreateModal;

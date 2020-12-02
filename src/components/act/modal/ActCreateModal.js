@@ -114,9 +114,9 @@ const ActCreateModal = (props) => {
         ));
         return recordsList;
     }
-    console.log(itemRows.items)
-    let dateTime = useMemo(() => new Date(), [])
 
+    let dateTime = useMemo(() => new Date(), [])
+    console.log(dateTime)
     const createAct = (e) => {
         e.preventDefault(e);
         fetch('http://localhost:8080/api/write_off_acts', {

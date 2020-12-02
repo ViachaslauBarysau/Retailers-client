@@ -1,4 +1,5 @@
 import UserCreateModal from './modal/UserCreateModal';
+import UserEditModal from './modal/UserEditModal';
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -21,6 +22,16 @@ export default () => {
         displayModal: false,
         userId: null
     });
+
+    const [selectedUsersNumber, setSelectedUsersNumber] = useState(0);
+
+    function handleChange(e) {
+        if (e.target.checked) {
+            setSelectedUsersNumber(selectedUsersNumber + 1);
+        } else {
+            setSelectedUsersNumber(selectedUsersNumber - 1);
+        }
+    }
 
     useEffect(() => {
         fetch('http://localhost:8080/api/users', {
@@ -65,21 +76,35 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {users.map(user => <Users user={user} key={user.id}/>)}
+                                {users.map(user => <User
+                                    user={user}
+                                    key={user.id}
+                                    onChange={handleChange}
+                                    onClick={() => setDisplayEditModal({
+                                        displayModal: true,
+                                        userId: user.id
+                                    })}
+                                />)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"  onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add user
                 </Button>
-                <Button variant="contained"  type="submit">
+                <Button variant="contained" type="submit" disabled={selectedUsersNumber === 0}>
                     Enable/Disable
                 </Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <UserCreateModal onClick={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <UserCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <UserEditModal userId={displayEditModal.userId}
+                                                             onCloseModal={() => setDisplayEditModal({
+                                                                 displayModal: false,
+                                                                 userId: null
+                                                             })}
+            />}
         </div>
     );
 }
@@ -90,26 +115,29 @@ function changeUserStatus(e) {
     e.target.users.forEach(element => {
         element.checked && userIdList.push(element.value);
     });
-    fetch('http://localhost:8080/users', {
+    fetch('http://localhost:8080/api/users', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',
             Accept: 'application/json'
         },
         body: JSON.stringify(userIdList),
-        method: "PUT"
+        method: "DELETE"
     });
 }
 
-function Users({user}) {
+function User(props) {
     return (
-        <TableRow key={user.id}>
+        <TableRow key={props.user.id}>
             <TableCell component="th" scope="row">
-                <input type="checkbox" value={user.id} name={"users"}/>
+                <input type="checkbox"
+                       value={props.user.id}
+                       name={"users"}
+                       onChange={props.onChange}/>
             </TableCell>
-            <TableCell>{user.firstName} {user.lastName}</TableCell>
-            <TableCell>{user.birthday}</TableCell>
-            <TableCell>{user.userRole}</TableCell>
+            <TableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></TableCell>
+            <TableCell>{props.user.birthday}</TableCell>
+            <TableCell>{props.user.userRole}</TableCell>
         </TableRow>
     )
 }

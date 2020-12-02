@@ -17,7 +17,7 @@ const BillCreateModal = (props) => {
             error: false
         }]
     });
-    // const [totalPrice, setTotalPrice] = useState(0);
+
     const [locationProducts, setLocationProducts] = useState([]);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const BillCreateModal = (props) => {
             }
         );
     };
-
+    console.log(itemRows.items[0].upc)
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
@@ -71,6 +71,7 @@ const BillCreateModal = (props) => {
                         })
                     );
                 }
+
                 break;
             case "amount":
                 setItemRows((prevState) => ({

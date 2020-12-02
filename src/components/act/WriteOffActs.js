@@ -47,7 +47,7 @@ export default () => {
             })
     }, []);
 
-    const {isLoading, error, acts, displayModal} = actsData;
+    const {isLoading, error, acts} = actsData;
 
     return (
         <div>
