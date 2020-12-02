@@ -9,6 +9,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import LocationEditModal from "./modal/LocationEditModal";
+import Pagination from '@material-ui/lab/Pagination';
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
@@ -16,6 +17,10 @@ export default () => {
         error: null,
         locations: [],
     });
+
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageCount, stPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -33,10 +38,14 @@ export default () => {
         }
     }
 
+    const handleChangePage = (event, value) => {
+        setPageNumber(value - 1);
+    };
+
+
     function removeLocations(e) {
         e.preventDefault();
         let locationIdList = [];
-        console.log(e.target.locations)
         e.target.locations.forEach(element => {
             element.checked && locationIdList.push({id: element.value});
         });
@@ -57,7 +66,7 @@ export default () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/locations', {
+        fetch('http://localhost:8080/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -66,12 +75,13 @@ export default () => {
             method: "GET"
         })
             .then(res => res.json())
-            .then(locations => {
+            .then(locationsPage => {
                 setLocationsData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    locations
+                    locations: locationsPage.content
                 }));
+                stPageCount(locationsPage.totalPages);
             })
             .catch(e => {
                 setLocationsData((prevState) => ({
@@ -80,7 +90,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [locationsData.displayModal, locationsData.isDataOutdated]);
+    }, [pageNumber]);
 
     const {isLoading, error, locations} = locationsData;
 
@@ -115,6 +125,8 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
+                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                            onChange={handleChangePage}/>
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add location
                 </Button>
