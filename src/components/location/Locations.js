@@ -10,6 +10,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import LocationEditModal from "./modal/LocationEditModal";
 import Pagination from '@material-ui/lab/Pagination';
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
@@ -96,7 +97,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress  />}
             {!isLoading && !error &&
             <form onSubmit={removeLocations}>
                 {(locations.length !== 0

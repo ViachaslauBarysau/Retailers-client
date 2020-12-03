@@ -10,6 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [usersData, setData] = useState({
@@ -71,7 +72,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress  />}
             {!isLoading && !error &&
             <form onSubmit={changeUserStatus}>
                 {(users.length != 0

@@ -1,6 +1,7 @@
 import SupplierModal from './modal/SupplierModal';
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
   const [suppliersData, setData] = useState({
@@ -40,7 +41,7 @@ export default () => {
 
   return (
     <>
-      {isLoading && 'Loading....'}
+      {isLoading && <LinearProgress  />}
       {!isLoading && !error &&
         <Form>
           {(suppliers.length != 0

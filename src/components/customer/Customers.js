@@ -10,8 +10,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-export default () => {
+export default function Customers(){
     const [customersData, setData] = useState({
         isLoading: true,
         error: null,
@@ -21,6 +23,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -67,7 +70,8 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+        setTimeout(console.log, 1000)
+    }, [pageNumber, needRefresh]);
 
     const {isLoading, error, customers} = customersData;
 
@@ -86,12 +90,17 @@ export default () => {
             },
             body: JSON.stringify(customerIdList),
             method: "DELETE"
-        });
+        })
+            .then(()=> {
+                setNeedRefresh(!needRefresh);
+                setData((prevState) => ({...prevState, isLoading: true, customers: []}))
+            })
+
     }
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress  />}
             {!isLoading && !error &&
             <form onSubmit={changeCustomerStatus}>
                 {(customers.length !== 0
@@ -108,12 +117,12 @@ export default () => {
                             </TableHead>
                             <TableBody>
                                 {customers.map(customer => <Customer customer={customer}
-                                                                      key={customer.id}
-                                                                      onChange={handleChange}
-                                                                      onClick={() => setDisplayEditModal({
-                                                                          displayModal: true,
-                                                                          customerId: customer.id
-                                                                      })}
+                                                                     key={customer.id}
+                                                                     onChange={handleChange}
+                                                                     onClick={() => setDisplayEditModal({
+                                                                         displayModal: true,
+                                                                         customerId: customer.id
+                                                                     })}
                                 />)}
                             </TableBody>
                         </Table>
@@ -124,7 +133,7 @@ export default () => {
                 <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
-                <Button variant="contained" type="submit" disabled={selectedCustomersNumber === 0}>
+                <Button variant="contained" type="submit" disabled={selectedCustomersNumber <= 0}>
                     Enable/Disable
                 </Button>
             </form>

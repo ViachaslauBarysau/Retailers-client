@@ -11,6 +11,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import ActCreateModal from "../act/modal/ActCreateModal";
 import LocationProductEditModal from "./modal/LocationProductEditModal";
 import Pagination from "@material-ui/lab/Pagination";
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [productsData, setData] = useState({
@@ -66,7 +67,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress  />}
             {!isLoading && !error &&
             <form>
                 {(locProducts.length !== 0

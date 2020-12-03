@@ -10,6 +10,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import BillEditModal from "./modal/BillEditModal";
 import Pagination from "@material-ui/lab/Pagination";
+import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [billsData, setData] = useState({
@@ -62,7 +63,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress  />}
             {!isLoading && !error &&
             (bills.length != 0
                 ? <TableContainer component={Paper}>
