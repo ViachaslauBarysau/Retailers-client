@@ -43,6 +43,7 @@ export default () => {
     };
 
     function removeLocations(e) {
+        console.log()
         e.preventDefault();
         let locationIdList = [];
         e.target.locations.forEach(element => {
@@ -152,7 +153,7 @@ function Location(props) {
             <TableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.location.id}
-                       name={"locations"}
+                       name="locations"
                        onChange={props.onChange}/>
             </TableCell>
             <TableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></TableCell>

@@ -26,7 +26,7 @@ const UserEditModal = (props) => {
         })
             .then(res => res.json())
             .then(locations => {
-                setLocations(locations)
+                setLocations(locations.content)
             });
         fetch('http://localhost:8080/api/users/' + props.userId, {
             headers: {

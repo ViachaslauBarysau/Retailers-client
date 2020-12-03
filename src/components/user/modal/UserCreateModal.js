@@ -31,7 +31,7 @@ const UserCreateModal = (props) => {
         })
             .then(res => res.json())
             .then(locations => {
-                setLocations(locations)
+                setLocations(locations.content)
             });
     }, []);
 
