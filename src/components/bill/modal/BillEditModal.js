@@ -16,7 +16,7 @@ const BillCreateModal = (props) => {
     const [bill, setIBill] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/bills/' + props.billId, {
+        fetch('/api/bills/' + props.billId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -47,7 +47,7 @@ const BillCreateModal = (props) => {
                                    label="Manager information"
                                    value={`${bill.shopManager.firstName} ${bill.shopManager.lastName}`} disabled/>
                         <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                                   label="Registration date and time" value={bill.registrationDateTime}disabled/>
+                                   label="Registration date and time" value={bill.registrationDateTime} disabled/>
                         <div className="scrollable-box">
                             <TableContainer component={Paper}>
                                 <Table size="small" aria-label="a dense table">

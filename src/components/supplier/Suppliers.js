@@ -5,13 +5,14 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
   const [suppliersData, setData] = useState({
-    isLoading: true,
+    isLoading: false,
     error: null,
     suppliers: [],
     displayModal: false
   });
 
   useEffect(() => {
+    setData(prevState => ({...prevState, isLoading: true}));
     fetch('http://localhost:8080/api/suppliers', {
       headers: {
         "Authorization": localStorage.getItem("token"),

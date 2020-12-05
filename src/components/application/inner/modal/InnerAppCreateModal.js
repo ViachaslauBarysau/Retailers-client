@@ -23,7 +23,7 @@ const InnerAppCreateModal = (props) => {
     const [locations, setLocations] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/location_products?size=100000', {
+        fetch('/api/location_products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -33,7 +33,7 @@ const InnerAppCreateModal = (props) => {
             .then(locationProducts => {
                 setLocationProducts(locationProducts.content)
             });
-        fetch('http://localhost:8080/api/locations/shops', {
+        fetch('/api/locations/shops', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -138,7 +138,7 @@ const InnerAppCreateModal = (props) => {
     const createApplication = (e) => {
         e.preventDefault(e);
         console.log(e.target.location.value)
-        fetch('http://localhost:8080/api/inner_applications', {
+        fetch('/api/inner_applications', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

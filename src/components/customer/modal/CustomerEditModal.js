@@ -8,7 +8,7 @@ const CustomerEditModal = (props) => {
     const [customer, setCustomer] = useState(null)
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/customers/' + props.customerId, {
+        fetch('/api/customers/' + props.customerId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -22,7 +22,7 @@ const CustomerEditModal = (props) => {
 
     function editCustomer(e) {
         e.preventDefault();
-        fetch('http://localhost:8080/api/customers', {
+        fetch('/api/customers', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

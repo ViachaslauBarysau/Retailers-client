@@ -58,7 +58,7 @@ export default () => {
                             <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                             <Route path={'/products'} component={withAuth(Products)} />
                             <Route path={'/bills'} component={withAuth(Bills)} />
-                            <Route component={Index} />
+                            {/*<Route component={Index} />*/}
                         </Switch>
                         </div>
                     </React.Fragment>
@@ -75,7 +75,7 @@ export default () => {
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route component={Index} />
+                                {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -92,7 +92,7 @@ export default () => {
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route component={Index} />
+                                {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -109,7 +109,7 @@ export default () => {
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route component={Index} />
+                                {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -126,7 +126,7 @@ export default () => {
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route component={Index} />
+                                {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -146,7 +146,7 @@ export default () => {
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                                 <Route path={'/test'} component={Test} />
-                                <Route component={Login} />
+                                {/*<Route component={Login} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>

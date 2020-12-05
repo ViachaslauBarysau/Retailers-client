@@ -22,7 +22,7 @@ const SupplierAppCreateModal = (props) => {
     const [suppliers, setSuppliers] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/products?size=100000', {
+        fetch('/api/products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -32,7 +32,7 @@ const SupplierAppCreateModal = (props) => {
             .then(products => {
                 setProducts(products.content)
             });
-        fetch('http://localhost:8080/api/suppliers?size=100000', {
+        fetch('/api/suppliers?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -134,7 +134,7 @@ const SupplierAppCreateModal = (props) => {
 
     const createApplication = (e) => {
         e.preventDefault(e);
-        fetch('http://localhost:8080/api/supplier_applications', {
+        fetch('/api/supplier_applications', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

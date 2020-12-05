@@ -13,7 +13,7 @@ const ActEditModal = (props) => {
     let [act, setAct] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/write_off_acts/' + props.actId, {
+        fetch('/api/write_off_acts/' + props.actId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

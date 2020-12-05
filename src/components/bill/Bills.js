@@ -35,7 +35,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/bills?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/bills?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

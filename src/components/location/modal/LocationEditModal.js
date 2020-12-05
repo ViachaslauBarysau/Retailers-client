@@ -6,7 +6,7 @@ const LocationEditModal = (props) => {
     let [location, setLocation] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/locations/' + props.locationId, {
+        fetch('/api/locations/' + props.locationId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

@@ -15,7 +15,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 export default function Customers(){
     const [customersData, setData] = useState({
-        isLoading: true,
+        isLoading: false,
         error: null,
         customers: [],
     });
@@ -46,7 +46,8 @@ export default function Customers(){
     };
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/customers?page=' + pageNumber + '&size=' + elementsOnPage, {
+        setData(prevState => ({...prevState, isLoading: true}));
+        fetch('/api/customers?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -70,7 +71,6 @@ export default function Customers(){
                     error: e
                 }))
             })
-        setTimeout(console.log, 1000)
     }, [pageNumber, needRefresh]);
 
     const {isLoading, error, customers} = customersData;
@@ -93,7 +93,7 @@ export default function Customers(){
         })
             .then(()=> {
                 setNeedRefresh(!needRefresh);
-                setData((prevState) => ({...prevState, isLoading: true, customers: []}))
+                setData((prevState) => ({...prevState, customers: []}))
             })
 
     }

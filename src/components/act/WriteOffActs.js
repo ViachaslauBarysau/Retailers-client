@@ -13,9 +13,9 @@ import Pagination from "@material-ui/lab/Pagination";
 
 export default () => {
     const [actsData, setData] = useState({
-        isLoading: true,
+        isLoading: false,
         error: null,
-        acts: null,
+        acts: [],
     });
 
     const [elementsOnPage, setElementsOnPage] = useState(5);
@@ -33,7 +33,8 @@ export default () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/write_off_acts?page=' + pageNumber + '&size=' + elementsOnPage, {
+        setData(prevState => ({...prevState, isLoading: true}));
+        fetch('/api/write_off_acts?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

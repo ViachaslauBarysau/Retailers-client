@@ -22,7 +22,7 @@ const LocationCreateModal = (props) => {
 
     function addLocation(e) {
         e.preventDefault();
-        fetch('http://localhost:8080/api/locations', {
+        fetch('/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

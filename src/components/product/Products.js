@@ -14,7 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [productsData, setData] = useState({
-        isLoading: true,
+        isLoading: false,
         error: null,
         products: [],
     });
@@ -44,6 +44,7 @@ export default () => {
     };
 
     useEffect(() => {
+        setData(prevState => ({...prevState, isLoading: true}));
         fetch('http://localhost:8080/api/products?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),

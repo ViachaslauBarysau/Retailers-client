@@ -19,7 +19,7 @@ const ActCreateModal = (props) => {
     const [locationProducts, setLocationProducts] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/location_products?size=100000', {
+        fetch('/api/location_products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -119,7 +119,7 @@ const ActCreateModal = (props) => {
     console.log(dateTime)
     const createAct = (e) => {
         e.preventDefault(e);
-        fetch('http://localhost:8080/api/write_off_acts', {
+        fetch('/api/write_off_acts', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

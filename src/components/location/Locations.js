@@ -14,7 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
-        isLoading: true,
+        isLoading: false,
         error: null,
         locations: [],
     });
@@ -43,30 +43,8 @@ export default () => {
         setPageNumber(value - 1);
     };
 
-    function removeLocations(e) {
-        console.log()
-        e.preventDefault();
-        let locationIdList = [];
-        e.target.locations.forEach(element => {
-            element.checked && locationIdList.push({id: element.value});
-        });
-        fetch('http://localhost:8080/api/locations', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(
-                locationIdList
-            ),
-            method: "DELETE"
-        });
-        //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
-        //TODO логика ниже работает только при успешном удалении всех .then .catch
-        setSelectedLocationsNumber(0);
-    }
-
     useEffect(() => {
+        setLocationsData(prevState => ({...prevState, isLoading: true}));
         fetch('http://localhost:8080/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
@@ -92,6 +70,29 @@ export default () => {
                 }))
             })
     }, [pageNumber]);
+
+    function removeLocations(e) {
+        console.log()
+        e.preventDefault();
+        let locationIdList = [];
+        e.target.locations.forEach(element => {
+            element.checked && locationIdList.push({id: element.value});
+        });
+        fetch('http://localhost:8080/api/locations', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(
+                locationIdList
+            ),
+            method: "DELETE"
+        });
+        //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
+        //TODO логика ниже работает только при успешном удалении всех .then .catch
+        setSelectedLocationsNumber(0);
+    }
 
     const {isLoading, error, locations} = locationsData;
 

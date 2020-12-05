@@ -21,7 +21,7 @@ const BillCreateModal = (props) => {
     const [locationProducts, setLocationProducts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/location_products?size=100000', {
+        fetch('/api/location_products?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -52,7 +52,7 @@ const BillCreateModal = (props) => {
             }
         );
     };
-    console.log(itemRows.items[0].upc)
+
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
@@ -125,7 +125,7 @@ const BillCreateModal = (props) => {
     const createBill = (e) => {
         e.preventDefault(e);
 
-        fetch('http://localhost:8080/api/bills', {
+        fetch('/api/bills', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

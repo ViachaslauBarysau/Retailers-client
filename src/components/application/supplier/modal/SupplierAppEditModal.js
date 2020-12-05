@@ -18,7 +18,7 @@ const SupplierAppEditModal = (props) => {
     const [locations, setLocations] = useState(null)
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/supplier_applications/' + props.appId, {
+        fetch('/api/supplier_applications/' + props.appId, {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const SupplierAppEditModal = (props) => {
             .catch(e => {
                 //TODO: Add logic
             });
-        fetch('http://localhost:8080/api/locations/warehouses', {
+        fetch('/api/locations/warehouses', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const SupplierAppEditModal = (props) => {
     }, []);
 
     const acceptProducts = () => {
-        fetch('http://localhost:8080/api/supplier_applications/status/', {
+        fetch('/api/supplier_applications/status/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const SupplierAppEditModal = (props) => {
 
     const forwardApplication = (e) => {
         e.preventDefault();
-        fetch('http://localhost:8080/api/supplier_applications/', {
+        fetch('/api/supplier_applications/', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
