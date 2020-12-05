@@ -1,0 +1,42 @@
+.modal-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 102;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.modal-box {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-height: 30%;
+    width: 600px;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    z-index: 103;
+    padding: 40px;
+    /*overflow: scroll;*/
+}
+
+.scrollable-box {
+    background-color: #eaf2f8;
+    width: 600px;
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+

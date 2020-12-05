@@ -27,37 +27,74 @@ const LocationEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                                   label="Identifier" value={location.identifier}
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Identifier"
+                                   value={location.identifier}
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                                   label="State" value={location.address.state.name}
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="State"
+                                   value={location.address.state.name}
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} value={location.address.city}
-                                   variant="outlined" label="City"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={location.address.city}
+                                   variant="outlined"
+                                   label="City"
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   value={location.address.firstAddressLine} variant="outlined" label="Address line 1"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={location.address.firstAddressLine}
+                                   variant="outlined"
+                                   label="Address line 1"
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   value={location.address.secondAddressLine} variant="outlined" label="Address line 2"
-                                   disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} value={location.Type} variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={location.address.secondAddressLine}
+                                   variant="outlined"
                                    label="Address line 2"
                                    disabled/>
-                        <TextField margin="dense" type="number" size="small" fullWidth={true}
-                                   id="total_capacity" variant="outlined" label="Total capacity"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={location.Type}
+                                   variant="outlined"
+                                   label="Address line 2"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   type="number"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="total_capacity"
+                                   variant="outlined"
+                                   label="Total capacity"
                                    value={location.totalCapacity}
                                    disabled/>
-                        <TextField margin="dense" size="number" fullWidth={true} id="available_capacity"
-                                   variant="outlined" label="Available capacity" value={location.availableCapacity}
+                        <TextField margin="dense"
+                                   size="number"
+                                   fullWidth={true}
+                                   id="available_capacity"
+                                   variant="outlined"
+                                   label="Available capacity"
+                                   value={location.availableCapacity}
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined" label="Location tax"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Location tax"
                                    value={location.locationTax}
                                    disabled/>
-                        <Button variant="contained" onClick={props.onCloseModal}>
-                            Close
-                        </Button>
+                        <Button variant="contained"
+                                onClick={props.onCloseModal}>Close</Button>
                     </form>
                 </div>
             </div>}

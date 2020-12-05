@@ -73,7 +73,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form onSubmit={changeUserStatus}>
                 {(users.length != 0
@@ -101,14 +101,16 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add user
-                </Button>
-                <Button variant="contained" type="submit" disabled={selectedUsersNumber === 0}>
-                    Enable/Disable
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>Add user</Button>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedUsersNumber === 0}>Enable/Disable</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
@@ -129,7 +131,7 @@ function changeUserStatus(e) {
     e.target.users.forEach(element => {
         element.checked && userIdList.push(element.value);
     });
-    fetch('http://localhost:8080/api/users', {
+    fetch('/api/users', {
         headers: {
             'Authorization': localStorage.getItem("token"),
             'Content-Type': 'application/json',

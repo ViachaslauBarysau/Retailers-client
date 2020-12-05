@@ -57,18 +57,29 @@ const CategoryEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editCategory}>
-                        <TextField size="small" fullWidth={true} name="categoryName"
+                        <TextField size="small"
+                                   fullWidth={true}
+                                   name="categoryName"
                                    variant="outlined"
                                    onChange={handleNameChange}
-                                   label="Category name" value={category.name}
+                                   label="Category name"
+                                   value={category.name}
                                    required/>
-                        <TextField margin="dense" size="small" fullWidth={true} name="tax"
-                                   variant="outlined" value={category.categoryTax} label="Destination location"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   name="tax"
+                                   variant="outlined"
+                                   value={category.categoryTax}
+                                   label="Destination location"
                                    onChange={handleTaxChange}
                                    required/>
                         <br/>
-                        <Button type="submit" variant="contained">Edit category</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button type="submit"
+                                variant="contained">Edit category</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

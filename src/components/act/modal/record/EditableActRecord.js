@@ -32,40 +32,52 @@ export default (props) => {
                     clearOnEscape
                     options={props.products.map((option) => option.product.upc.toString())}
                     renderInput={(params) => (
-                        <TextField {...params} fullWidth={true} label="UPC" margin="normal" variant="outlined"
-                                   value={props.item.upc} error={props.item.error} required/>
+                        <TextField {...params}
+                                   fullWidth={true}
+                                   label="UPC"
+                                   margin="normal"
+                                   variant="outlined"
+                                   value={props.item.upc}
+                                   error={props.item.error}
+                                   required/>
                     )}
                 />
             </Grid>
             <Grid item xs={3}>
-                <TextField margin="normal" type="number" size="small" required name="amount" variant="outlined"
-                           label="Amount" value={props.item.amount} onChange={changeRecord}/>
+                <TextField margin="normal"
+                           type="number"
+                           size="small"
+                           name="amount"
+                           variant="outlined"
+                           label="Amount"
+                           value={props.item.amount}
+                           onChange={changeRecord}
+                           required/>
             </Grid>
             <Grid item xs={4}>
                 <InputLabel id="reason-label">Reason:</InputLabel>
-                <Select
-                    labelId="reason-label"
-                    id="reason"
-                    autoWidth={false}
-                    name="reason"
-                    fullWidth={true}
-                    variant="outlined"
-                    size="small"
-                    required
-                    value={props.item.reason}
-                    onChange={changeRecord}
+                <Select labelId="reason-label"
+                        id="reason"
+                        autoWidth={false}
+                        name="reason"
+                        fullWidth={true}
+                        variant="outlined"
+                        size="small"
+                        value={props.item.reason}
+                        onChange={changeRecord}
+                        required
                 >
                     <MenuItem value={"DAMAGED"}>Damaged</MenuItem>
                     <MenuItem value={"SPOILED"}>Spoiled</MenuItem>
                     <MenuItem value={"LOST"}>Lost</MenuItem>
                     <MenuItem value={"STOLEN"}>Stolen</MenuItem>
                 </Select>
-
                 {/*<TextField margin="normal" type="number" size="small" required name="cost" variant="outlined"*/}
                 {/*           label="Cost"  onChange={changeRecord}/>*/}
             </Grid>
             <Grid item xs={1}>
-                <IconButton aria-label="delete" onClick={changeRecord}>
+                <IconButton aria-label="delete"
+                            onClick={changeRecord}>
                     <DeleteIcon fontSize="large"/>
                 </IconButton>
             </Grid>

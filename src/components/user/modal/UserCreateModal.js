@@ -81,12 +81,22 @@ const UserCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={addUser}>
-                        <TextField margin="dense" size="small" name="name" fullWidth={true}
-                                   variant="outlined" label="Name" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="name"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Name"
+                                   required/>
 
                         <br/>
-                        <TextField margin="dense" size="small" id="surname" fullWidth={true}
-                                   variant="outlined" label="Surname" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   id="surname"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Surname"
+                                   required/>
                         <br/>
                         <TextField
                             variant="outlined"
@@ -100,31 +110,44 @@ const UserCreateModal = (props) => {
                             }}
                         />
                         <InputLabel id="state-label">State:</InputLabel>
-                        <StateSelect MenuProps={{ autoFocus: true }} onChangeState={updateStateSelectValue}/>
+                        <StateSelect MenuProps={{autoFocus: true}} onChangeState={updateStateSelectValue}/>
 
-                        <TextField margin="dense" size="small" name="city" fullWidth={true}
-                                   variant="outlined" label="City" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="city"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="City"
+                                   required/>
 
-                        <TextField margin="dense" size="small" name="address1" fullWidth={true}
-                                   variant="outlined" label="Address line 1" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="address1"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Address line 1"
+                                   required/>
 
-                        <TextField margin="dense" size="small" name="address2" fullWidth={true}
-                                   variant="outlined" label="Address line 2"/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="address2"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Address line 2"/>
 
                         <InputLabel id="role-label">Role:</InputLabel>
-                        <Select MenuProps={{ autoFocus: true }}
-                            variant="outlined"
-                            labelId="role-label"
-                            id="role"
-                            value={role}
-                            onChange={handleRoleChange}
+                        <Select MenuProps={{autoFocus: true}}
+                                variant="outlined"
+                                labelId="role-label"
+                                id="role"
+                                value={role}
+                                onChange={handleRoleChange}
                         >
                             <MenuItem value={"DISPATCHER"}>Dispatcher</MenuItem>
                             <MenuItem value={"WAREHOUSE_MANAGER"}>Warehouse manager</MenuItem>
                             <MenuItem value={"SHOP_MANAGER"}>Shop manager</MenuItem>
                             <MenuItem value={"DIRECTOR"}>Director</MenuItem>
                         </Select>
-
                         {(role === "DISPATCHER" || role === "WAREHOUSE_MANAGER") &&
                         <Autocomplete
                             id="location"
@@ -135,8 +158,12 @@ const UserCreateModal = (props) => {
                             options={locations.filter(location => location.locationType === "WAREHOUSE").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Location" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Location"
+                                           margin="dense"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />
                         }
@@ -151,20 +178,37 @@ const UserCreateModal = (props) => {
                             options={locations.filter(location => location.locationType === "SHOP").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Location" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Location"
+                                           margin="dense"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />
                         }
 
-                        <TextField margin="dense" size="small" name="login" fullWidth={true}
-                                   variant="outlined" label="Login" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="login"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Login"
+                                   required/>
 
-                        <TextField margin="dense" size="small" name="email" fullWidth={true}
-                                   variant="outlined" label="Email" required/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="email"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Email"
+                                   required/>
 
-                        <Button type="submit" variant="contained">Add user</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button type="submit"
+                                variant="contained">Add user</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

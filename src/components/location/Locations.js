@@ -45,7 +45,7 @@ export default () => {
 
     useEffect(() => {
         setLocationsData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default () => {
         e.target.locations.forEach(element => {
             element.checked && locationIdList.push({id: element.value});
         });
-        fetch('http://localhost:8080/api/locations', {
+        fetch('/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -103,7 +103,8 @@ export default () => {
             <form onSubmit={removeLocations}>
                 {(locations.length !== 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
@@ -127,14 +128,16 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add location
-                </Button>
-                <Button variant="contained" type="submit" disabled={selectedLocationsNumber === 0}>
-                    Remove location
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>Add location</Button>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedLocationsNumber === 0}>Remove location</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}

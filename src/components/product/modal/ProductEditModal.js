@@ -72,10 +72,21 @@ const ProductEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editProduct}>
-                        <TextField margin="dense" size="small" fullWidth={true} value={product.upc}
-                                   id="upc" variant="outlined" label="UPC" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} value={product.label}
-                                   id="label" variant="outlined" label="Label"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={product.upc}
+                                   id="upc"
+                                   variant="outlined"
+                                   label="UPC"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={product.label}
+                                   id="label"
+                                   variant="outlined"
+                                   label="Label"
                                    onChange={handleChange}
                                    required/>
                         <Autocomplete
@@ -85,14 +96,29 @@ const ProductEditModal = (props) => {
                             defaultValue={product.category.name}
                             options={categories.map((option) => option.name)}
                             renderInput={(params) => (
-                                <TextField fullWidth={true} {...params} label="Category" margin="normal"
-                                           variant="outlined" required/>
+                                <TextField fullWidth={true}
+                                           {...params}
+                                           label="Category"
+                                           margin="normal"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />
-                        <TextField margin="dense" size="small" fullWidth={true} value={product.volume}
-                                   id="units" variant="outlined" label="Units" disabled/>
-                        <Button fullWidth={false} type="submit" variant="contained">Edit product</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={product.volume}
+                                   id="units"
+                                   variant="outlined"
+                                   label="Units"
+                                   disabled/>
+                        <Button fullWidth={false}
+                                type="submit"
+                                variant="contained">Edit product</Button>
+                        <Button fullWidth={false}
+                                id="closeButton"
+                                type="button"
+                                onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>

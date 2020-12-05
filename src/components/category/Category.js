@@ -74,12 +74,16 @@ export default () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {categories.map(category => <Category category={category} key={category.id}/>)}
+                            {categories.map(category => <Category category={category}
+                                                                  key={category.id}/>)}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 : 'Empty list')}
-            <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+            <Pagination count={pageCount}
+                        showFirstButton
+                        showLastButton
+                        page={pageNumber + 1}
                         onChange={handleChangePage}/>
             {!isLoading && error && 'Error happens'}
             {displayEditModal.displayModal && <CategoryEditModal categoryId={displayEditModal.categoryId}

@@ -37,20 +37,38 @@ const BillCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   variant="outlined" label="Bill number" value={bill.billNumber} disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   variant="outlined" value={user.location.identifier} label="Location identifier"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Bill number"
+                                   value={bill.billNumber}
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true}
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={user.location.identifier}
+                                   label="Location identifier"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
                                    variant="outlined"
                                    label="Manager information"
-                                   value={`${bill.shopManager.firstName} ${bill.shopManager.lastName}`} disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                                   label="Registration date and time" value={bill.registrationDateTime} disabled/>
+                                   value={`${bill.shopManager.firstName} ${bill.shopManager.lastName}`}
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Registration date and time"
+                                   value={bill.registrationDateTime}
+                                   disabled/>
                         <div className="scrollable-box">
                             <TableContainer component={Paper}>
-                                <Table size="small" aria-label="a dense table">
+                                <Table size="small"
+                                       aria-label="a dense table">
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>UPC</TableCell>
@@ -72,12 +90,23 @@ const BillCreateModal = (props) => {
                                 </Table>
                             </TableContainer>
                         </div>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   variant="outlined" label="Total product amount" value={bill.totalProductAmount} disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true}
-                                   variant="outlined" value={bill.totalPrice} label="Total price"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Total product amount"
+                                   value={bill.totalProductAmount}
                                    disabled/>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={bill.totalPrice}
+                                   label="Total price"
+                                   disabled/>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

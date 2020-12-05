@@ -29,21 +29,42 @@ export default (props) => {
                     clearOnEscape
                     options={props.products.map((option) => option.product.upc.toString())}
                     renderInput={(params) => (
-                        <TextField {...params} fullWidth={true} label="UPC" margin="normal" variant="outlined"
-                                   value={props.item.upc} error={props.item.error} required/>
+                        <TextField {...params}
+                                   fullWidth={true}
+                                   label="UPC"
+                                   margin="normal"
+                                   variant="outlined"
+                                   value={props.item.upc}
+                                   error={props.item.error}
+                                   required/>
                     )}
                 />
             </Grid>
             <Grid item xs={3}>
-                <TextField margin="normal" type="number" size="small" required name="amount" variant="outlined"
-                           label="Amount" value={props.item.amount} onChange={changeRecord}/>
+                <TextField margin="normal"
+                           type="number"
+                           size="small"
+                           required
+                           name="amount"
+                           variant="outlined"
+                           label="Amount"
+                           value={props.item.amount}
+                           onChange={changeRecord}/>
             </Grid>
             <Grid item xs={3}>
-                <TextField margin="normal" type="number" size="small" required name="cost" variant="outlined"
-                           label="Cost" value={props.item.cost} onChange={changeRecord}/>
+                <TextField margin="normal"
+                           type="number"
+                           size="small"
+                           name="cost"
+                           variant="outlined"
+                           label="Cost"
+                           value={props.item.cost}
+                           onChange={changeRecord}
+                           required/>
             </Grid>
             <Grid item xs={1}>
-                <IconButton aria-label="delete" onClick={changeRecord}>
+                <IconButton aria-label="delete"
+                            onClick={changeRecord}>
                     <DeleteIcon fontSize="large"/>
                 </IconButton>
             </Grid>

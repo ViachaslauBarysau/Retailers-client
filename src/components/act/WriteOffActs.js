@@ -66,7 +66,8 @@ export default () => {
             {!isLoading && !error &&
             (acts.length != 0
                 ? <TableContainer component={Paper}>
-                    <Table size="small" aria-label="a dense table">
+                    <Table size="small"
+                           aria-label="a dense table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Identifier</TableCell>
@@ -81,12 +82,15 @@ export default () => {
                     </Table>
                 </TableContainer>
                 : 'Empty list')}
-            <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+            <Pagination count={pageCount}
+                        showFirstButton
+                        showLastButton
+                        page={pageNumber + 1}
                         onChange={handleChangePage}/>
 
-            <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                Add write-off act
-            </Button>
+            <Button variant="contained"
+                    onClick={() => setDisplayCreateModal(true)}>
+                Add write-off act</Button>
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ActEditModal actId={displayEditModal.actId}

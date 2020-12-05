@@ -82,7 +82,7 @@ export default function Customers(){
             element.checked && customerIdList.push(Number(element.value));
         });
 
-        fetch('http://localhost:8080/api/customers', {
+        fetch('/api/customers', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -105,7 +105,8 @@ export default function Customers(){
             <form onSubmit={changeCustomerStatus}>
                 {(customers.length !== 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
@@ -128,12 +129,18 @@ export default function Customers(){
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
-                <Button variant="contained" type="submit" disabled={selectedCustomersNumber <= 0}>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedCustomersNumber === 0}>
                     Enable/Disable
                 </Button>
             </form>

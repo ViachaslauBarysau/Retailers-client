@@ -71,7 +71,8 @@ export default () => {
                 {(applications.length !== 0
                     ?
                     <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Application number</TableCell>
@@ -89,11 +90,13 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add application
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>Add application</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}

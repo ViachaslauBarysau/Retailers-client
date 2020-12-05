@@ -145,8 +145,12 @@ const ActCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={createAct}>
-                        <TextField margin="dense" name="actNumber" size="small" fullWidth={true}
-                                   variant="outlined" label="Write-off act number"
+                        <TextField margin="dense"
+                                   name="actNumber"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Write-off act number"
                                    required/>
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
@@ -159,16 +163,29 @@ const ActCreateModal = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button onClick={addRow} variant="contained">Add product</Button>
-                        <TextField value={dateTime} margin="dense" name="date" size="small" fullWidth={true}
-                                   variant="outlined" label="Date and time"
+                        <Button onClick={addRow}
+                                variant="contained">
+                            Add product</Button>
+                        <TextField value={dateTime}
+                                   margin="dense"
+                                   name="date"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Date and time"
                                    disabled/>
-                        <Button fullWidth={false} type="submit" variant="contained">Add act</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                        <Button fullWidth={false}
+                                type="submit"
+                                variant="contained">Add act</Button>
+                        <Button fullWidth={false}
+                                id="closeButton"
+                                type="button"
+                                onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>
-            </div>  }
+            </div>
+            }
         </div>
 
     )

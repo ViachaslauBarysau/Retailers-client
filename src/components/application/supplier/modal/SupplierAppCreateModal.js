@@ -120,9 +120,7 @@ const SupplierAppCreateModal = (props) => {
     const getRecordsList = () => {
         let recordsList = itemRows.items.map((item) => (
             {
-                product: {
-                    id: products.filter((product) => (product.upc === Number(item.upc)))[0].id
-                },
+                product: products.filter((product) => (product.upc === Number(item.upc)))[0],
                 amount: item.amount,
                 cost: item.cost
             }
@@ -164,8 +162,12 @@ const SupplierAppCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={createApplication}>
-                        <TextField size="small" fullWidth={true} id="appNumber"
-                                   variant="outlined" label="Application number" required/>
+                        <TextField size="small"
+                                   fullWidth={true}
+                                   id="appNumber"
+                                   variant="outlined"
+                                   label="Application number"
+                                   required/>
 
                         <Autocomplete
                             id="supplier"
@@ -174,17 +176,37 @@ const SupplierAppCreateModal = (props) => {
                             clearOnEscape
                             options={suppliers.map((option) => option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Supplier" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Supplier"
+                                           margin="dense"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />
-                        <TextField margin="dense" size="small" fullWidth={true} id="locationId"
-                                   variant="outlined" value={user.location.identifier} label="Destination location"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="locationId"
+                                   variant="outlined"
+                                   value={user.location.identifier}
+                                   label="Destination location"
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} id="creator" variant="outlined"
-                                   label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                                   label="Registration date and time" value={dateTime}  disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="creator"
+                                   variant="outlined"
+                                   label="Created by"
+                                   value={`${user.firstName} ${user.lastName}`}
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Registration date and time"
+                                   value={dateTime}
+                                   disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
@@ -198,11 +220,15 @@ const SupplierAppCreateModal = (props) => {
                             </Grid>
                         </div>
                         <br/>
-                        <Button onClick={addRow} variant="contained">Add product</Button>
+                        <Button onClick={addRow}
+                                variant="contained">Add product</Button>
                         <br/>
                         <br/>
-                        <Button type="submit" variant="contained">Save application</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button type="submit"
+                                variant="contained">Save application</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

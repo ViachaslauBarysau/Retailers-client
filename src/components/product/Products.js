@@ -22,6 +22,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -45,7 +46,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/products?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/products?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -69,17 +70,18 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     const {isLoading, error, products} = productsData;
 
     function removeProducts(e) {
         e.preventDefault();
+        console.log(e.target.products)
         let productIdList = [];
         e.target.products.forEach(element => {
             element.checked && productIdList.push({id: element.value});
         });
-        fetch('http://localhost:8080/api/products', {
+        fetch('/api/products', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -91,13 +93,14 @@ export default () => {
             method: "DELETE"
         })
             .then(() => {
-
-            });
+                setNeedRefresh(!needRefresh);
+                setData((prevState) => ({...prevState, products: []}))
+            })
     }
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form onSubmit={removeProducts}>
                 {(products.length !== 0
@@ -125,23 +128,25 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add product
-                </Button>
-                <Button variant="contained" type="submit" disabled={selectedProductsNumber === 0}>
-                    Remove product
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>Add product</Button>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedProductsNumber === 0}>Remove product</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ProductCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
-                                                                    onCloseModal={() => setDisplayEditModal({
-                                                                        displayModal: false,
-                                                                        productId: null
-                                                                    })}
+                                                                onCloseModal={() => setDisplayEditModal({
+                                                                    displayModal: false,
+                                                                    productId: null
+                                                                })}
             />}
         </div>
     );

@@ -28,15 +28,32 @@ const CustomerCreateModal = (props) => {
 
     return (
         <div className={"modal-wrapper"}>
-            <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
+            <div onClick={props.onCloseModal}
+                 className={"modal-backdrop"}/>
             <div className={"modal-box"}>
                 <form onSubmit={addCustomer}>
-                    <TextField margin="dense" size="small" fullWidth={true} id="name" variant="outlined" label="Name"
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               id="name"
+                               variant="outlined"
+                               label="Name"
                                required/>
-                    <TextField type="email" margin="dense" size="small" fullWidth={true}
-                               id="email" variant="outlined" label="Email" required/>
-                    <Button fullWidth={false} type="submit" variant="contained">Add customer</Button>
-                    <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                    <TextField type="email"
+                               margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               id="email"
+                               variant="outlined"
+                               label="Email"
+                               required/>
+                    <Button fullWidth={false}
+                            type="submit"
+                            variant="contained">Add customer</Button>
+                    <Button fullWidth={false}
+                            id="closeButton"
+                            type="button"
+                            onClick={props.onCloseModal}
                             variant="contained">Close</Button>
                 </form>
             </div>
