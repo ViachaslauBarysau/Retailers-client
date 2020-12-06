@@ -2,7 +2,6 @@ import '../../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -90,15 +89,25 @@ const SupplierAppEditModal = (props) => {
         <div>
             {application && locations &&
             <div className={"modal-wrapper"}>
-                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
+                <div onClick={props.onCloseModal}
+                     className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
-                    <form className="supplier-app-modal" onSubmit={forwardApplication}>
-                        <TextField margin="dense" size="small" fullWidth={true} value={application.applicationNumber}
+                    <form className="supplier-app-modal"
+                          onSubmit={forwardApplication}>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={application.applicationNumber}
                                    variant="outlined"
-                                   label="Application number" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} value={application.supplier.fullName}
+                                   label="Application number"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={application.supplier.fullName}
                                    variant="outlined"
-                                   label="Supplier" disabled/>
+                                   label="Supplier"
+                                   disabled/>
                         <Autocomplete
                             size="small"
                             disabled={application.applicationStatus === "FINISHED_PROCESSING"}
@@ -106,64 +115,103 @@ const SupplierAppEditModal = (props) => {
                             options={locations.map((option) => option.identifier.toString())}
                             defaultValue={application.destinationLocation.identifier}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Warehouse" margin="normal" name="location"
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Warehouse"
+                                           margin="normal"
+                                           name="location"
                                            variant="outlined"
                                            required/>
                             )}
                         />
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined" value={application.creator.firstName
-                        + " " + application.creator.lastName}
-                                   label="Created by" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined" value={application.updater.firstName
-                        + " " + application.updater.lastName}
-                                   label="Updated by" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.creator.firstName + " " + application.creator.lastName}
+                                   label="Created by"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.updater.firstName + " " + application.updater.lastName}
+                                   label="Updated by"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.registrationDateTime}
-                                   label="Registration date and time" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined" value={application.updatingDateTime}
-                                   label="Updating date and time" disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
+                                   label="Registration date and time"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.updatingDateTime}
+                                   label="Updating date and time"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.applicationStatus}
                                    label="Status"
                                    disabled/>
                         <div className="scrollable-box">
-                                <TableContainer component={Paper}>
-                                    <Table className={useStyles.table} size="small" aria-label="a dense table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>UPC</TableCell>
-                                                <TableCell align="right">Amount</TableCell>
-                                                <TableCell align="right">Cost</TableCell>
+                            <TableContainer component={Paper}>
+                                <Table className={useStyles.table}
+                                       size="small"
+                                       aria-label="a dense table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>UPC</TableCell>
+                                            <TableCell align="right">Amount</TableCell>
+                                            <TableCell align="right">Cost</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {application.recordsList.map((record) => (
+                                            <TableRow key={record.product.upc}>
+                                                <TableCell component="th" scope="row">
+                                                    {record.product.upc}
+                                                </TableCell>
+                                                <TableCell align="right">{record.amount}</TableCell>
+                                                <TableCell align="right">{record.cost}</TableCell>
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {application.recordsList.map((record) => (
-                                                <TableRow key={record.product.upc}>
-                                                    <TableCell component="th" scope="row">
-                                                        {record.product.upc}
-                                                    </TableCell>
-                                                    <TableCell align="right">{record.amount}</TableCell>
-                                                    <TableCell align="right">{record.cost}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <br/>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <br/>
                         </div>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.totalProductAmount}
                                    label="Total amount of products"
                                    disabled/>
-                        <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.totalUnitNumber}
-                                   label="Total volume of products" disabled/>
+                                   label="Total volume of products"
+                                   disabled/>
                         <br/>
-                        <Button type="submit" variant="contained"
-                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward application</Button>
-                        <Button variant="contained" onClick={acceptProducts}
-                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept products</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button type="submit"
+                                variant="contained"
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward
+                            application</Button>
+                        <Button variant="contained"
+                                onClick={acceptProducts}
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept
+                            products</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

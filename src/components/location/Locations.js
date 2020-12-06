@@ -11,6 +11,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import LocationEditModal from "./modal/LocationEditModal";
 import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
@@ -22,6 +24,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -30,6 +33,30 @@ export default () => {
     });
 
     const [selectedLocationsNumber, setSelectedLocationsNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -45,7 +72,7 @@ export default () => {
 
     useEffect(() => {
         setLocationsData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -69,16 +96,15 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     function removeLocations(e) {
-        console.log()
         e.preventDefault();
         let locationIdList = [];
         e.target.locations.forEach(element => {
             element.checked && locationIdList.push({id: element.value});
         });
-        fetch('http://localhost:8080/api/locations', {
+        fetch('/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -88,22 +114,34 @@ export default () => {
                 locationIdList
             ),
             method: "DELETE"
-        });
-        //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
-        //TODO логика ниже работает только при успешном удалении всех .then .catch
-        setSelectedLocationsNumber(0);
+        })
+            .then(res => res.json())
+            .then(undeletedProducts => {
+                if (undeletedProducts.length != 0) {
+                    handleOpenSnackBar("Some locations haven't been deleted because " +
+                        "they have open applications or active users.", "warning");
+                } else {
+                    handleOpenSnackBar("Deleted successfully!", "success");
+                }
+                setNeedRefresh(!needRefresh);
+                setLocationsData((prevState) => ({...prevState, locations: []}))
+            } )
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     const {isLoading, error, locations} = locationsData;
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form onSubmit={removeLocations}>
                 {(locations.length !== 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
@@ -127,14 +165,16 @@ export default () => {
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add location
-                </Button>
-                <Button variant="contained" type="submit" disabled={selectedLocationsNumber === 0}>
-                    Remove location
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>Add location</Button>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedLocationsNumber === 0}>Remove location</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
@@ -145,6 +185,11 @@ export default () => {
                                                                      locationId: null
                                                                  })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

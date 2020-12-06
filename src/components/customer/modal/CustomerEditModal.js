@@ -50,19 +50,49 @@ const CustomerEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editCustomer}>
-                        <TextField margin="dense" size="small" fullWidth={true} id="name" variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="name"
+                                   variant="outlined"
                                    label="Name"
                                    value={customer.name}
                                    onChange={handleChange}
-                                   required/>
-                        <TextField type="email" margin="dense" size="small" fullWidth={true} value={customer.email}
-                                   id="email" variant="outlined" label="Email" disabled/>
-                        <TextField type="email" margin="dense" size="small" fullWidth={true} value={customer.registrationDate}
-                                   id="email" variant="outlined" label="Registration date" disabled/>
-                        <TextField type="email" margin="dense" size="small" fullWidth={true} value={customer.customerStatus}
-                                   id="email" variant="outlined" label="Status" disabled/>
-                        <Button fullWidth={false} type="submit" variant="contained">Edit customer</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                                   disabled/>
+                        <TextField type="email"
+                                   margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={customer.email}
+                                   id="email"
+                                   variant="outlined"
+                                   label="Email"
+                                   disabled/>
+                        <TextField type="email"
+                                   margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={customer.registrationDate}
+                                   id="email"
+                                   variant="outlined"
+                                   label="Registration date"
+                                   disabled/>
+                        <TextField type="email"
+                                   margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={customer.customerStatus}
+                                   id="email"
+                                   variant="outlined"
+                                   label="Status"
+                                   disabled/>
+                        <Button fullWidth={false}
+                                type="submit"
+                                variant="contained">Edit customer</Button>
+                        <Button fullWidth={false}
+                                id="closeButton"
+                                type="button"
+                                onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>

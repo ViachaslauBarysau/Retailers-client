@@ -57,20 +57,22 @@ const BillCreateModal = (props) => {
         switch (e.name) {
             case "upc":
                 let billProduct = locationProducts.filter(prod => prod.product.upc === Number(e.value))[0];
+                let itemPrice = 0;
                 if (billProduct) {
-                    let itemPrice = (1 + billProduct.location.address.state.stateTax
+                    itemPrice = (1 + billProduct.location.address.state.stateTax
                         + billProduct.product.category.categoryTax + billProduct.location.locationTax) * billProduct.cost;
-                    setItemRows((prevState) => ({
-                            ...prevState,
-                            items: itemRows.items.map(item => item.key === key ?
-                                {
-                                    ...item,
-                                    upc: e.value,
-                                    price: itemPrice
-                                } : item)
-                        })
-                    );
                 }
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: itemRows.items.map(item => item.key === key ?
+                            {
+                                ...item,
+                                upc: e.value,
+                                price: itemPrice.toFixed(3) / 1,
+                            } : item)
+                    })
+                );
+
 
                 break;
             case "amount":
@@ -112,7 +114,7 @@ const BillCreateModal = (props) => {
         let recordsList = itemRows.items.map((item) => (
             {
                 product: locationProducts.filter((locationProducts) => (locationProducts.product.upc
-                        === Number(item.upc)))[0].product,
+                    === Number(item.upc)))[0].product,
                 productAmount: item.amount,
                 productPrice: item.price
             }
@@ -149,18 +151,40 @@ const BillCreateModal = (props) => {
 
     return (
         <div className={"modal-wrapper"}>
-            <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
+            <div onClick={props.onCloseModal}
+                 className={"modal-backdrop"}/>
             <div className={"modal-box"}>
                 <form onSubmit={createBill}>
-                    <TextField margin="dense" size="small" fullWidth={true} id="billNumber"
-                               variant="outlined" label="Bill number" required/>
-                    <TextField margin="dense" size="small" fullWidth={true} id="locationId"
-                               variant="outlined" value={user.location.identifier} label="Location identifier"
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               id="billNumber"
+                               variant="outlined"
+                               label="Bill number"
+                               required/>
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               id="locationId"
+                               variant="outlined"
+                               value={user.location.identifier}
+                               label="Location identifier"
                                disabled/>
-                    <TextField margin="dense" size="small" fullWidth={true} id="managerInformation" variant="outlined"
-                               label="Manager information" value={`${user.firstName} ${user.lastName}`} disabled/>
-                    <TextField margin="dense" size="small" fullWidth={true} variant="outlined"
-                               label="Registration date and time" value={dateTime} disabled/>
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               id="managerInformation"
+                               variant="outlined"
+                               label="Manager information"
+                               value={`${user.firstName} ${user.lastName}`}
+                               disabled/>
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               variant="outlined"
+                               label="Registration date and time"
+                               value={dateTime}
+                               disabled/>
                     <div className="scrollable-box">
                         <Grid container spacing={1}>
                             <Grid item xm={12}>
@@ -173,11 +197,14 @@ const BillCreateModal = (props) => {
                         </Grid>
                     </div>
                     <br/>
-                    <Button onClick={addRow} variant="contained">Add product</Button>
+                    <Button onClick={addRow}
+                            variant="contained">Add product</Button>
                     <br/>
                     <br/>
-                    <Button type="submit" variant="contained">Add bill</Button>
-                    <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                    <Button type="submit"
+                            variant="contained">Add bill</Button>
+                    <Button id="closeButton"
+                            onClick={props.onCloseModal} variant="contained">Close</Button>
                 </form>
             </div>
         </div>

@@ -65,12 +65,13 @@ export default () => {
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form>
                 {(applications.length !== 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Application number</TableCell>
@@ -83,16 +84,19 @@ export default () => {
                             </TableHead>
                             <TableBody>
                                 {applications.map(application => <SupplierApplications application={application}
-                                                                                    key={application.id}/>)}
+                                                                                       key={application.id}/>)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Add application
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>
+                    Add application</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
@@ -108,19 +112,19 @@ export default () => {
 
     function SupplierApplications({application}) {
         return (
-        <TableRow key={application.applicationNumber}>
-            <TableCell component="th" scope="row">
-                <a href="#" onClick={() => setDisplayEditModal({
-                    displayModal: true,
-                    appId: application.id
-                })}>{application.applicationNumber}</a>
-            </TableCell>
-            <TableCell>{application.supplier.identifier}</TableCell>
-            <TableCell>{application.destinationLocation.identifier}</TableCell>
-            <TableCell>{application.updatingDateTime}</TableCell>
-            <TableCell>{application.updater.firstName} {application.updater.lastName}</TableCell>
-            <TableCell>{application.applicationStatus}</TableCell>
-        </TableRow>
+            <TableRow key={application.applicationNumber}>
+                <TableCell component="th" scope="row">
+                    <a href="#" onClick={() => setDisplayEditModal({
+                        displayModal: true,
+                        appId: application.id
+                    })}>{application.applicationNumber}</a>
+                </TableCell>
+                <TableCell>{application.supplier.identifier}</TableCell>
+                <TableCell>{application.destinationLocation.identifier}</TableCell>
+                <TableCell>{application.updatingDateTime}</TableCell>
+                <TableCell>{application.updater.firstName} {application.updater.lastName}</TableCell>
+                <TableCell>{application.applicationStatus}</TableCell>
+            </TableRow>
         )
     }
 }

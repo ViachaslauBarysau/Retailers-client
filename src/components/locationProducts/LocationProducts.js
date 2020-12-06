@@ -1,4 +1,3 @@
-
 import React, {useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -36,7 +35,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/location_products?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/location_products?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -62,13 +61,13 @@ export default () => {
             })
     }, [pageNumber]);
 
-    const { isLoading, error, locProducts } = productsData;
+    const {isLoading, error, locProducts} = productsData;
 
     console.log(productsData)
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form>
                 {(locProducts.length !== 0
@@ -83,25 +82,28 @@ export default () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {productsData.locProducts.map(locProduct => <LocationProducts locProduct={locProduct} key={locProduct.id}/>)}
+                                {productsData.locProducts.map(locProduct => <LocationProducts locProduct={locProduct}
+                                                                                              key={locProduct.id}/>)}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                    Create write-off act
-                </Button>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}> Create write-off act</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <LocationProductEditModal locProductId={displayEditModal.locProductId}
-                                                                onCloseModal={() => setDisplayEditModal({
-                                                                    displayModal: false,
-                                                                    locProductId: null
-                                                                })}
+                                                                        onCloseModal={() => setDisplayEditModal({
+                                                                            displayModal: false,
+                                                                            locProductId: null
+                                                                        })}
             />}
         </div>
     );

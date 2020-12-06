@@ -9,7 +9,7 @@ const ProductCreateModal = (props) => {
     const [categories, setCategories] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/categories?size=100000', {
+        fetch('/api/categories?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -24,7 +24,7 @@ const ProductCreateModal = (props) => {
 
     function addProduct(e) {
         e.preventDefault();
-        fetch('http://localhost:8080/api/products', {
+        fetch('/api/products', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -54,9 +54,18 @@ const ProductCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={addProduct}>
-                        <TextField margin="dense" size="small" fullWidth={true} id="upc" variant="outlined" label="UPC"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="upc"
+                                   variant="outlined"
+                                   label="UPC"
                                    required/>
-                        <TextField margin="dense" size="small" fullWidth={true} id="label" variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="label"
+                                   variant="outlined"
                                    label="Label"
                                    required/>
                         <Autocomplete
@@ -65,17 +74,29 @@ const ProductCreateModal = (props) => {
                             freeSolo
                             options={categories.map((option) => option.name)}
                             renderInput={(params) => (
-                                <TextField fullWidth={true} {...params} label="Category" margin="normal"
+                                <TextField fullWidth={true}
+                                           {...params}
+                                           label="Category"
+                                           margin="normal"
                                            variant="outlined"
                                            required/>
                             )}
                         />
-                        <TextField margin="dense" size="small" fullWidth={true} id="units" variant="outlined"
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="units"
+                                   variant="outlined"
                                    label="Units"
                                    required/>
                         <br/>
-                        <Button fullWidth={false} type="submit" variant="contained">Add product</Button>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                        <Button fullWidth={false}
+                                type="submit"
+                                variant="contained">Add product</Button>
+                        <Button fullWidth={false}
+                                id="closeButton"
+                                type="button"
+                                onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>

@@ -63,7 +63,7 @@ export default () => {
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             (bills.length != 0
                 ? <TableContainer component={Paper}>
@@ -77,16 +77,20 @@ export default () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {bills.map(bill => <Bills bill={bill} key={bill.id}/>)}
+                            {bills.map(bill => <Bills bill={bill}
+                                                      key={bill.id}/>)}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 : 'Empty list')}
-            <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+            <Pagination count={pageCount}
+                        showFirstButton
+                        showLastButton
+                        page={pageNumber + 1}
                         onChange={handleChangePage}/>
-            <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
-                Add bill
-            </Button>
+            <Button variant="contained"
+                    onClick={() => setDisplayCreateModal(true)}>
+                Add bill</Button>
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <BillCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <BillEditModal billId={displayEditModal.billId}

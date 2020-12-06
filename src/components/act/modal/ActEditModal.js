@@ -33,15 +33,22 @@ const ActEditModal = (props) => {
         <div>
             {act &&
             <div className={"modal-wrapper"}>
-                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
+                <div onClick={props.onCloseModal}
+                     className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form>
-                        <TextField margin="dense" name="actNumber" size="small" fullWidth={true} value={act.writeOffActNumber}
-                                   variant="outlined" label="Write-off act number"
+                        <TextField margin="dense"
+                                   name="actNumber"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={act.writeOffActNumber}
+                                   variant="outlined"
+                                   label="Write-off act number"
                                    disabled/>
                         <div className="scrollable-box">
                             <TableContainer component={Paper}>
-                                <Table size="small" aria-label="a dense table">
+                                <Table size="small"
+                                       aria-label="a dense table">
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>UPC</TableCell>
@@ -52,7 +59,9 @@ const ActEditModal = (props) => {
                                     <TableBody>
                                         {act.writeOffActRecords.map((record) => (
                                             <TableRow key={record.product.upc}>
-                                                <TableCell component="th" scope="row">
+                                                <TableCell component="th"
+                                                           scope="row"
+                                                >
                                                     {record.product.upc}
                                                 </TableCell>
                                                 <TableCell align="right">{record.amount}</TableCell>
@@ -64,14 +73,27 @@ const ActEditModal = (props) => {
                             </TableContainer>
                             <br/>
                         </div>
-                        <TextField margin="dense" name="date" size="small" fullWidth={true}
-                                   value={new Date(new Date(act.actDateTime).getTime() - new Date().getTimezoneOffset()*60*1000)}
-                                   variant="outlined" label="Date and time"
+                        <TextField margin="dense"
+                                   name="date"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={new Date(new Date(act.actDateTime).getTime()
+                                       - new Date().getTimezoneOffset() * 60 * 1000)}
+                                   variant="outlined"
+                                   label="Date and time"
                                    disabled/>
-                        <TextField margin="dense" name="sum" size="small" fullWidth={true} value={act.totalProductSum}
-                                   variant="outlined" label="Total cost of items"
+                        <TextField margin="dense"
+                                   name="sum"
+                                   size="small"
+                                   fullWidth={true}
+                                   value={act.totalProductSum}
+                                   variant="outlined"
+                                   label="Total cost of items"
                                    disabled/>
-                        <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                        <Button fullWidth={false}
+                                id="closeButton"
+                                type="button"
+                                onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
                 </div>

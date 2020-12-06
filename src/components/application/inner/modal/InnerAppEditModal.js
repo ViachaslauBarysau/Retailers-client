@@ -93,12 +93,20 @@ const SupplierAppEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form className="supplier-app-modal" onSubmit={forwardApplication}>
-                        <TextField margin={"dense"} size="small" fullWidth={true} value={application.applicationNumber}
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   value={application.applicationNumber}
                                    variant="outlined"
-                                   label="Application number" disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} value={application.sourceLocation.identifier}
+                                   label="Application number"
+                                   disabled/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   value={application.sourceLocation.identifier}
                                    variant="outlined"
-                                   label="Source location" disabled/>
+                                   label="Source location"
+                                   disabled/>
                         <Autocomplete
                             disabled={application.applicationStatus === "FINISHED_PROCESSING"}
                             size="small"
@@ -111,16 +119,31 @@ const SupplierAppEditModal = (props) => {
                                            required/>
                             )}
                         />
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined" value={application.creator.firstName
-                        + " " + application.creator.lastName}
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.creator.firstName + " " + application.creator.lastName}
                                    label="Created by" disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined" value={application.updater.firstName
-                        + " " + application.updater.lastName}
-                                   label="Updated by" disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined"
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.updater.firstName + " " + application.updater.lastName}
+                                   label="Updated by"
+                                   disabled/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.registrationDateTime}
-                                   label="Registration date and time" disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined" value={application.updatingDateTime}
+                                   label="Registration date and time"
+                                   disabled/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.updatingDateTime}
                                    label="Updating date and time" disabled/>
                         <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined"
                                    value={application.applicationStatus}
@@ -151,18 +174,30 @@ const SupplierAppEditModal = (props) => {
                                 </TableContainer>
                                 <br/>
                         </div>
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined"
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
                                    value={application.totalProductAmount}
                                    label="Total amount of products"
                                    disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} variant="outlined" value={application.totalUnitNumber}
-                                   label="Total volume of products" disabled/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={application.totalUnitNumber}
+                                   label="Total volume of products"
+                                   disabled/>
                         <br/>
-                        <Button type="submit" variant="contained"
+                        <Button type="submit"
+                                variant="contained"
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward application</Button>
-                        <Button variant="contained" onClick={acceptProducts}
+                        <Button variant="contained"
+                                onClick={acceptProducts}
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept products</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

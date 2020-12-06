@@ -1,6 +1,5 @@
 import '../../Modal.css';
-import ReactDom from 'react-dom';
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import StateSelect from '../../StateSelect';
 import {Button, TextField} from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -55,20 +54,38 @@ const LocationCreateModal = (props) => {
 
     return (
         <div className={"modal-wrapper"}>
-            <div onClick={props.onCloseModal} className={"modal-backdrop"} />
+            <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
             <div className={"modal-box"}>
                 <form onSubmit={addLocation}>
-                    <TextField margin="dense" size="small" fullWidth={true} name="identifier" variant="outlined"
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               name="identifier"
+                               variant="outlined"
                                label="Identifier"
                                required/>
                     <InputLabel id="state-label">State:</InputLabel>
-                        <StateSelect onChangeState={updateStateSelectValue}/>
-
-                    <TextField margin="dense" size="small" fullWidth={true} name="city" variant="outlined" label="City"
+                    <StateSelect onChangeState={updateStateSelectValue}/>
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               name="city"
+                               variant="outlined"
+                               label="City"
                                required/>
-                    <TextField margin="dense" size="small" fullWidth={true} name="address1" variant="outlined" label="Address line 1"
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               name="address1"
+                               variant="outlined"
+                               label="Address line 1"
                                required/>
-                    <TextField margin="dense" size="small" fullWidth={true} name="address2" variant="outlined" label="Address line 2"
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               name="address2"
+                               variant="outlined"
+                               label="Address line 2"
                                required/>
                     <InputLabel id="type-label">Type:</InputLabel>
                     <Select
@@ -80,13 +97,29 @@ const LocationCreateModal = (props) => {
                         <MenuItem value={"WAREHOUSE"}>Warehouse</MenuItem>
                         <MenuItem value={"SHOP"}>Shop</MenuItem>
                     </Select>
-                    <br />
-                    <TextField margin="dense" size="small" fullWidth={true} type="number"
-                               InputProps={{ inputProps: { min: 1, step: 1 } }}
-                               name="total_capacity" variant="outlined" label="Total capacity"
+                    <br/>
+                    <TextField margin="dense"
+                               size="small"
+                               fullWidth={true}
+                               type="number"
+                               InputProps={{
+                                   inputProps:
+                                       {
+                                           min: 1,
+                                           step: 1
+                                       }
+                               }}
+                               name="total_capacity"
+                               variant="outlined"
+                               label="Total capacity"
                                required/>
-                    <Button fullWidth={false} type="submit" variant="contained">Add location</Button>
-                    <Button fullWidth={false} id="closeButton" type="button" onClick={props.onCloseModal}
+                    <Button fullWidth={false}
+                            type="submit"
+                            variant="contained">Add location</Button>
+                    <Button fullWidth={false}
+                            id="closeButton"
+                            type="button"
+                            onClick={props.onCloseModal}
                             variant="contained">Close</Button>
                 </form>
             </div>

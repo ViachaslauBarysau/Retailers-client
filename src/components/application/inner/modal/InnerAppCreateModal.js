@@ -14,6 +14,7 @@ const InnerAppCreateModal = (props) => {
         items: [{
             key: new Date().getTime(),
             upc: 0,
+            max: 0,
             amount: 0,
             cost: 0,
             error: false
@@ -52,6 +53,7 @@ const InnerAppCreateModal = (props) => {
                 let newRow = {
                     key: new Date().getTime(),
                     upc: 0,
+                    max: 0,
                     amount: 0,
                     cost: 0,
                     error: false
@@ -68,9 +70,20 @@ const InnerAppCreateModal = (props) => {
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
+                let cost = 0;
+                let max = 0;
+                if (e.value) {
+                    cost = locationProducts.filter(locProduct => locProduct.product.upc == e.value)[0].cost;
+                    max = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0].amount;
+                }
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value} : item)
+                        items: itemRows.items.map(item => item.key === key ? {
+                            ...item,
+                            upc: e.value,
+                            cost,
+                            max
+                        } : item)
                     })
                 );
                 break;
@@ -122,10 +135,8 @@ const InnerAppCreateModal = (props) => {
     const getRecordsList = () => {
         let recordsList = itemRows.items.map((item) => (
             {
-                product: {
-                    id: locationProducts.filter((locationProducts) => (locationProducts.product.upc
-                        === Number(item.upc)))[0].product.id
-                },
+                product: locationProducts.filter((locationProducts) => (locationProducts.product.upc
+                        === Number(item.upc)))[0].product,
                 amount: item.amount,
                 cost: item.cost
             }
@@ -168,11 +179,21 @@ const InnerAppCreateModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={createApplication}>
-                        <TextField margin={"dense"} size="small" fullWidth={true} id="appNumber"
-                                   variant="outlined" label="Application number" required/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   id="appNumber"
+                                   variant="outlined"
+                                   label="Application number"
+                                   required/>
 
-                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationId"
-                                   variant="outlined" value={user.location.identifier} label="Source location"
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   id="locationId"
+                                   variant="outlined"
+                                   value={user.location.identifier}
+                                   label="Source location"
                                    disabled/>
                         <Autocomplete
                             id="location"
@@ -186,15 +207,26 @@ const InnerAppCreateModal = (props) => {
                             )}
                         />
 
-                        <TextField margin={"dense"} size="small" fullWidth={true} id="creator" variant="outlined"
-                                   label="Created by" value={`${user.firstName} ${user.lastName}`} disabled/>
-                        <TextField margin={"dense"} size="small" fullWidth={true} id="locationreg_date_timeId"
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   id="creator"
                                    variant="outlined"
-                                   label="Registration date and time" value={dateTime} disabled/>
+                                   label="Created by"
+                                   value={`${user.firstName} ${user.lastName}`}
+                                   disabled/>
+                        <TextField margin={"dense"}
+                                   size="small"
+                                   fullWidth={true}
+                                   id="locationreg_date_timeId"
+                                   variant="outlined"
+                                   label="Registration date and time"
+                                   value={dateTime}
+                                   disabled/>
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xm={12}>
+                                <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                                    products={locationProducts}
@@ -204,11 +236,15 @@ const InnerAppCreateModal = (props) => {
                             </Grid>
                         </div>
                         <br/>
-                        <Button onClick={addRow} variant="contained">Add product</Button>
+                        <Button onClick={addRow}
+                                variant="contained">Add product</Button>
                         <br/>
                         <br/>
-                        <Button type="submit" variant="contained">Save application</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                        <Button type="submit"
+                                variant="contained">Save application</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

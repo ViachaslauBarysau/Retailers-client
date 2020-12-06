@@ -10,10 +10,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
-export default function Customers(){
+export default function Customers() {
     const [customersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -32,6 +33,30 @@ export default function Customers(){
     });
 
     const [selectedCustomersNumber, setSelectedCustomersNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -82,7 +107,7 @@ export default function Customers(){
             element.checked && customerIdList.push(Number(element.value));
         });
 
-        fetch('http://localhost:8080/api/customers', {
+        fetch('/api/customers', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -91,21 +116,26 @@ export default function Customers(){
             body: JSON.stringify(customerIdList),
             method: "DELETE"
         })
-            .then(()=> {
+            .then(res => res.json())
+            .then(() => {
+                handleOpenSnackBar("Completed successfully!", "success");
                 setNeedRefresh(!needRefresh);
                 setData((prevState) => ({...prevState, customers: []}))
-            })
-
+            } )
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form onSubmit={changeCustomerStatus}>
                 {(customers.length !== 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
+                        <Table size="small"
+                               aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
@@ -128,12 +158,18 @@ export default function Customers(){
                         </Table>
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount} showFirstButton showLastButton page={pageNumber + 1}
+                <Pagination count={pageCount}
+                            showFirstButton
+                            showLastButton
+                            page={pageNumber + 1}
                             onChange={handleChangePage}/>
-                <Button variant="contained" onClick={() => setDisplayCreateModal(true)}>
+                <Button variant="contained"
+                        onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
-                <Button variant="contained" type="submit" disabled={selectedCustomersNumber <= 0}>
+                <Button variant="contained"
+                        type="submit"
+                        disabled={selectedCustomersNumber === 0}>
                     Enable/Disable
                 </Button>
             </form>
@@ -142,11 +178,16 @@ export default function Customers(){
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <CustomerCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <CustomerEditModal customerId={displayEditModal.customerId}
-                                                                onCloseModal={() => setDisplayEditModal({
-                                                                    displayModal: false,
-                                                                    customerId: null
-                                                                })}
+                                                                 onCloseModal={() => setDisplayEditModal({
+                                                                     displayModal: false,
+                                                                     customerId: null
+                                                                 })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

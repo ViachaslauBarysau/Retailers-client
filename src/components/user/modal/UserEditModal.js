@@ -18,7 +18,7 @@ const UserEditModal = (props) => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/locations?size=1000', {
+        fetch('/api/locations?size=1000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -28,7 +28,7 @@ const UserEditModal = (props) => {
             .then(locations => {
                 setLocations(locations.content)
             });
-        fetch('http://localhost:8080/api/users/' + props.userId, {
+        fetch('/api/users/' + props.userId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -43,7 +43,6 @@ const UserEditModal = (props) => {
                 }
             });
     }, []);
-
 
 
     function editUser(e) {
@@ -61,7 +60,7 @@ const UserEditModal = (props) => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
-            body: JSON.stringify({...user, location, userRole:[userRole]}),
+            body: JSON.stringify({...user, location, userRole: [userRole]}),
             method: "PUT"
         });
         props.onCloseModal();
@@ -74,32 +73,66 @@ const UserEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editUser}>
-                        <TextField margin="dense" size="small" name="name" fullWidth={true}
-                                   variant="outlined" value={user.firstName} label="Name" disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="name"
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   value={user.firstName}
+                                   label="Name"
+                                   disabled/>
 
                         <br/>
-                        <TextField margin="dense" size="small" name="surname" value={user.lastName} fullWidth={true}
-                                   variant="outlined" label="Surname" disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="surname"
+                                   value={user.lastName}
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Surname"
+                                   disabled/>
                         <br/>
-                        <TextField margin="dense" size="small" name="date_of_birth" value={user.birthday}
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="date_of_birth"
+                                   value={user.birthday}
                                    fullWidth={true}
-                                   variant="outlined" label="Date of birth" disabled/>
-                        <TextField margin="dense" size="small" name="state" value={user.address.state.name}
+                                   variant="outlined"
+                                   label="Date of birth"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="state"
+                                   value={user.address.state.name}
                                    fullWidth={true}
-                                   variant="outlined" label="State" disabled/>
-
-                        <TextField margin="dense" size="small" name="city" fullWidth={true} value={user.address.city}
-                                   variant="outlined" label="City" disabled/>
-
-                        <TextField margin="dense" size="small" name="address1"
+                                   variant="outlined"
+                                   label="State"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="city"
+                                   fullWidth={true}
+                                   value={user.address.city}
+                                   variant="outlined"
+                                   label="City"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="address1"
                                    value={user.address.firstAddressLine}
                                    fullWidth={true}
-                                   variant="outlined" label="Address line 1" disabled/>
+                                   variant="outlined"
+                                   label="Address line 1"
+                                   disabled/>
 
-                        <TextField margin="dense" size="small" name="address2"
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="address2"
                                    value={user.address.secondAddressLine}
                                    fullWidth={true}
-                                   variant="outlined" label="Address line 2" disabled/>
+                                   variant="outlined"
+                                   label="Address line 2"
+                                   disabled/>
 
                         <InputLabel id="role-label">Role:</InputLabel>
                         <Select
@@ -126,8 +159,12 @@ const UserEditModal = (props) => {
                             options={locations.filter(location => location.locationType === "WAREHOUSE").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Location" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Location"
+                                           margin="dense"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />}
 
@@ -142,22 +179,43 @@ const UserEditModal = (props) => {
                             options={locations.filter(location => location.locationType === "SHOP").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Location" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params}
+                                           fullWidth={true}
+                                           label="Location"
+                                           margin="dense"
+                                           variant="outlined"
+                                           required/>
                             )}
                         />}
-                        <TextField margin="dense" size="small" name="login" fullWidth={true}
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="login"
+                                   fullWidth={true}
                                    value={user.login}
-                                   variant="outlined" label="Login" disabled/>
-
-                        <TextField margin="dense" size="small" name="email" fullWidth={true}
+                                   variant="outlined"
+                                   label="Login"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="email"
+                                   fullWidth={true}
                                    value={user.email}
-                                   variant="outlined" label="Email" disabled/>
-                        <TextField margin="dense" size="small" name="status" fullWidth={true}
+                                   variant="outlined"
+                                   label="Email"
+                                   disabled/>
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="status"
+                                   fullWidth={true}
                                    value={user.userStatus}
-                                   variant="outlined" label="Status" disabled/>
-                        <Button type="submit" variant="contained">Add user</Button>
-                        <Button id="closeButton" onClick={props.onCloseModal} variant="contained">Close</Button>
+                                   variant="outlined"
+                                   label="Status"
+                                   disabled/>
+                        <Button type="submit"
+                                variant="contained">Add user</Button>
+                        <Button id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
                     </form>
                 </div>
             </div>

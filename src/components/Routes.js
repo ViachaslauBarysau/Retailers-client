@@ -19,6 +19,7 @@ import SupplierApplications from "./application/supplier/SupplierApplications";
 import Category from './category/Category';
 import InnerApplications from "./application/inner/InnerApplications";
 import LocationProducts from "./locationProducts/LocationProducts";
+import Suppliers from "./supplier/Suppliers";
 
 export default () => {
     const { user } = useContext(AuthContext);
@@ -39,6 +40,7 @@ export default () => {
                                 <Route path={'/products'} component={withAuth(Products)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/locations'} component={withAuth(Locations)} />
+                                <Route path={'/suppliers'} component={withAuth(Suppliers)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                                 <Route path={'/location_products'} component={withAuth(LocationProducts)} />
                                 <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
