@@ -11,6 +11,8 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
     const [usersData, setData] = useState({
@@ -22,6 +24,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -30,6 +33,30 @@ export default () => {
     });
 
     const [selectedUsersNumber, setSelectedUsersNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -45,7 +72,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('http://localhost:8080/api/users?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/users?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -67,7 +94,38 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
+
+    function changeUserStatus(e) {
+        e.preventDefault();
+        let userIdList = [];
+        e.target.users.forEach(element => {
+            element.checked && userIdList.push(element.value);
+        });
+        fetch('/api/users', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(userIdList),
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(users => {
+                if (users.length != 0) {
+                    handleOpenSnackBar("Some user's status haven't been changed to ACTIVE because " +
+                        "they assigned to deleted locations.", "warning");
+                } else {
+                    handleOpenSnackBar("Completed successfully!", "success");
+                }
+                setNeedRefresh(!needRefresh);
+                setData((prevState) => ({...prevState, users: []}))
+            })
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
+    }
 
     const {isLoading, error, users} = usersData;
 
@@ -121,26 +179,15 @@ export default () => {
                                                                  userId: null
                                                              })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
 
-function changeUserStatus(e) {
-    e.preventDefault();
-    let userIdList = [];
-    e.target.users.forEach(element => {
-        element.checked && userIdList.push(element.value);
-    });
-    fetch('/api/users', {
-        headers: {
-            'Authorization': localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
-        body: JSON.stringify(userIdList),
-        method: "DELETE"
-    });
-}
 
 function User(props) {
     return (

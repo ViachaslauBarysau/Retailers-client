@@ -24,9 +24,8 @@ export default (props) => {
 
     return (
         <Grid container>
-            <Grid item xs={4}>
+            <Grid item xs={5}>
                 <Autocomplete
-                    size="small"
                     componentName="upc"
                     onChange={(e) => handleChangeUPC(e, e.target.innerText)}
                     clearOnEscape
@@ -46,15 +45,20 @@ export default (props) => {
             <Grid item xs={3}>
                 <TextField margin="normal"
                            type="number"
-                           size="small"
                            name="amount"
+                           fullWidth={true}
                            variant="outlined"
                            label="Amount"
                            value={props.item.amount}
                            onChange={changeRecord}
+                           InputProps={{
+                               inputProps: {
+                                   min: 1, max: props.item.max, step: 1
+                               }
+                           }}
                            required/>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
                 <InputLabel id="reason-label">Reason:</InputLabel>
                 <Select labelId="reason-label"
                         id="reason"
@@ -62,7 +66,6 @@ export default (props) => {
                         name="reason"
                         fullWidth={true}
                         variant="outlined"
-                        size="small"
                         value={props.item.reason}
                         onChange={changeRecord}
                         required

@@ -11,6 +11,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
     const [suppliersData, setData] = useState({
@@ -22,6 +24,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -30,6 +33,30 @@ export default () => {
     });
 
     const [selectedSuppliersNumber, setSelectedSuppliersNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -69,11 +96,35 @@ export default () => {
                     error: e
                 }))
             })
-    }, [suppliersData.displayModal]);
+    }, [pageNumber, needRefresh]);
+
+    function changeSupplierStatus(e) {
+        e.preventDefault();
+        let supplierIdList = [];
+        e.target.suppliers.forEach(element => {
+            element.checked && supplierIdList.push(element.value);
+        });
+        fetch('/api/suppliers', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(supplierIdList),
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(() => {
+                handleOpenSnackBar("Completed successfully!", "success");
+                setNeedRefresh(!needRefresh);
+                setData((prevState) => ({...prevState, suppliers: []}))
+            } )
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
+    }
 
     const {isLoading, error, suppliers} = suppliersData;
-
-    console.log(suppliers)
 
     return (
         <div>
@@ -88,6 +139,7 @@ export default () => {
                                     <TableCell></TableCell>
                                     <TableCell>Full name</TableCell>
                                     <TableCell>Identifier</TableCell>
+                                    <TableCell>Status</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -124,26 +176,15 @@ export default () => {
                                                                      supplierId: null
                                                                  })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
 
-function changeSupplierStatus(e) {
-    e.preventDefault();
-    let supplierIdList = [];
-    e.target.suppliers.forEach(element => {
-        element.checked && supplierIdList.push(element.value);
-    });
-    fetch('/api/suppliers', {
-        headers: {
-            'Authorization': localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
-        body: JSON.stringify(supplierIdList),
-        method: "DELETE"
-    });
-}
 
 function Supplier(props) {
     return (
@@ -156,6 +197,7 @@ function Supplier(props) {
             </TableCell>
             <TableCell><a href="#" onClick={props.onClick}>{props.supplier.fullName}</a></TableCell>
             <TableCell>{props.supplier.identifier}</TableCell>
+            <TableCell>{props.supplier.supplierStatus}</TableCell>
         </TableRow>
     )
 }

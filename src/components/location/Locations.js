@@ -11,6 +11,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import LocationEditModal from "./modal/LocationEditModal";
 import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
     const [locationsData, setLocationsData] = useState({
@@ -22,6 +24,7 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -30,6 +33,30 @@ export default () => {
     });
 
     const [selectedLocationsNumber, setSelectedLocationsNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -69,10 +96,9 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     function removeLocations(e) {
-        console.log()
         e.preventDefault();
         let locationIdList = [];
         e.target.locations.forEach(element => {
@@ -88,17 +114,28 @@ export default () => {
                 locationIdList
             ),
             method: "DELETE"
-        });
-        //TODO с бэка принять JSON в котором будет указано что мы не можем удалить конкретную позицию по причине.....
-        //TODO логика ниже работает только при успешном удалении всех .then .catch
-        setSelectedLocationsNumber(0);
+        })
+            .then(res => res.json())
+            .then(undeletedProducts => {
+                if (undeletedProducts.length != 0) {
+                    handleOpenSnackBar("Some locations haven't been deleted because " +
+                        "they have open applications or active users.", "warning");
+                } else {
+                    handleOpenSnackBar("Deleted successfully!", "success");
+                }
+                setNeedRefresh(!needRefresh);
+                setLocationsData((prevState) => ({...prevState, locations: []}))
+            } )
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     const {isLoading, error, locations} = locationsData;
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form onSubmit={removeLocations}>
                 {(locations.length !== 0
@@ -148,6 +185,11 @@ export default () => {
                                                                      locationId: null
                                                                  })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

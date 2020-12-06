@@ -18,7 +18,7 @@ const UserEditModal = (props) => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/locations?size=1000', {
+        fetch('/api/locations?size=1000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -28,7 +28,7 @@ const UserEditModal = (props) => {
             .then(locations => {
                 setLocations(locations.content)
             });
-        fetch('http://localhost:8080/api/users/' + props.userId, {
+        fetch('/api/users/' + props.userId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

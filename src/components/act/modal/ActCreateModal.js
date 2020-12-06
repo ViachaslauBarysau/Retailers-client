@@ -11,6 +11,7 @@ const ActCreateModal = (props) => {
         items: [{
             key: new Date().getTime(),
             upc: 0,
+            max: 0,
             amount: 0,
             reason: "",
             error: false
@@ -38,6 +39,7 @@ const ActCreateModal = (props) => {
                 let newRow = {
                     key: new Date().getTime(),
                     upc: 0,
+                    max: 0,
                     amount: 0,
                     reason: "",
                     error: false
@@ -54,9 +56,13 @@ const ActCreateModal = (props) => {
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
+                let max = 0;
+                if (e.value) {
+                    max = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0].amount;
+                }
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value} : item)
+                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value, max} : item),
                     })
                 );
                 break;
@@ -90,7 +96,6 @@ const ActCreateModal = (props) => {
         let totalCost = 0;
         itemRows.items.forEach((item) => totalCost += locationProducts.filter((locationProducts) =>
             (locationProducts.product.upc === Number(item.upc)))[0].cost * item.amount);
-        console.log(totalCost)
         return totalCost;
     }
 
@@ -116,7 +121,7 @@ const ActCreateModal = (props) => {
     }
 
     let dateTime = useMemo(() => new Date(), [])
-    console.log(dateTime)
+
     const createAct = (e) => {
         e.preventDefault(e);
         fetch('/api/write_off_acts', {
@@ -154,7 +159,7 @@ const ActCreateModal = (props) => {
                                    required/>
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xm={12}>
+                                <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableActRecord item={item}
                                                            products={locationProducts}

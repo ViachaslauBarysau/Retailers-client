@@ -11,6 +11,8 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 export default () => {
     const [productsData, setData] = useState({
@@ -31,6 +33,30 @@ export default () => {
     });
 
     const [selectedProductsNumber, setSelectedProductsNumber] = useState(0);
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     function handleChange(e) {
         if (e.target.checked) {
@@ -92,10 +118,20 @@ export default () => {
             ),
             method: "DELETE"
         })
-            .then(() => {
+            .then(res => res.json())
+            .then(undeletedProducts => {
+                if (undeletedProducts.length != 0) {
+                    handleOpenSnackBar("Some products haven't been deleted because " +
+                        "they are used in open applications or stored in customer's locations.", "warning");
+                } else {
+                    handleOpenSnackBar("Deleted successfully!", "success");
+                }
                 setNeedRefresh(!needRefresh);
                 setData((prevState) => ({...prevState, products: []}))
-            })
+            } )
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -148,6 +184,11 @@ export default () => {
                                                                     productId: null
                                                                 })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

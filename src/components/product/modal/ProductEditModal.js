@@ -10,7 +10,7 @@ const ProductEditModal = (props) => {
     let [categories, setCategories] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/products/' + props.productId, {
+        fetch('/api/products/' + props.productId, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -20,7 +20,7 @@ const ProductEditModal = (props) => {
             .then(product => {
                 setProduct(product);
             });
-        fetch('http://localhost:8080/api/categories?size=100000', {
+        fetch('/api/categories?size=100000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -34,7 +34,7 @@ const ProductEditModal = (props) => {
 
     function editProduct(e) {
         e.preventDefault();
-        fetch('http://localhost:8080/api/products', {
+        fetch('/api/products', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

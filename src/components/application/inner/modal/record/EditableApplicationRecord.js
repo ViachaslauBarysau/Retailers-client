@@ -44,18 +44,25 @@ export default (props) => {
                 <TextField margin="normal"
                            type="number"
                            size="small"
-                           required
                            name="amount"
+                           fullWidth={true}
                            variant="outlined"
                            label="Amount"
                            value={props.item.amount}
-                           onChange={changeRecord}/>
+                           onChange={changeRecord}
+                           InputProps={{
+                               inputProps: {
+                                   min: 1, max: props.item.max, step: 1
+                               }
+                           }}
+                           required/>
             </Grid>
             <Grid item xs={3}>
                 <TextField margin="normal"
                            type="number"
                            size="small"
                            name="cost"
+                           fullWidth={true}
                            variant="outlined"
                            label="Cost"
                            value={props.item.cost}

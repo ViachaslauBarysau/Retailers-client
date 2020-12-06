@@ -14,6 +14,7 @@ const InnerAppCreateModal = (props) => {
         items: [{
             key: new Date().getTime(),
             upc: 0,
+            max: 0,
             amount: 0,
             cost: 0,
             error: false
@@ -52,6 +53,7 @@ const InnerAppCreateModal = (props) => {
                 let newRow = {
                     key: new Date().getTime(),
                     upc: 0,
+                    max: 0,
                     amount: 0,
                     cost: 0,
                     error: false
@@ -69,16 +71,18 @@ const InnerAppCreateModal = (props) => {
         switch (e.name) {
             case "upc":
                 let cost = 0;
+                let max = 0;
                 if (e.value) {
-                    cost = locationProducts.filter(locProduct => locProduct.product.upc == e.value)[0].cost
+                    cost = locationProducts.filter(locProduct => locProduct.product.upc == e.value)[0].cost;
+                    max = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0].amount;
                 }
-
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: itemRows.items.map(item => item.key === key ? {
                             ...item,
                             upc: e.value,
-                            cost
+                            cost,
+                            max
                         } : item)
                     })
                 );
@@ -222,7 +226,7 @@ const InnerAppCreateModal = (props) => {
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xm={12}>
+                                <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                                    products={locationProducts}
