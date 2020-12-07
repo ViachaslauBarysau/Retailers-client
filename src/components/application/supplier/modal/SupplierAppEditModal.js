@@ -159,7 +159,7 @@ const SupplierAppEditModal = (props) => {
                                    value={application.applicationStatus}
                                    label="Status"
                                    disabled/>
-                        <div className="scrollable-box">
+                        <div className="scrollable-box-edit-modal">
                             <TableContainer component={Paper}>
                                 <Table className={useStyles.table}
                                        size="small"
@@ -200,6 +200,21 @@ const SupplierAppEditModal = (props) => {
                                    value={application.totalUnitNumber}
                                    label="Total volume of products"
                                    disabled/>
+
+                        {application.applicationStatus === "OPEN" &&
+                        <div>
+                            <TextField margin={"dense"}
+                                       size="small"
+                                       fullWidth={true}
+                                       variant="outlined"
+                                       value={application.destinationLocation.availableCapacity}
+                                       label="Available capacity at current location"
+                                       InputProps={{
+                                           style: {backgroundColor: "#FFFAF0"},
+                                       }}
+                                       disabled/>
+                        </div>
+                        }
                         <br/>
                         <Button type="submit"
                                 variant="contained"
@@ -207,7 +222,8 @@ const SupplierAppEditModal = (props) => {
                             application</Button>
                         <Button variant="contained"
                                 onClick={acceptProducts}
-                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING" ||
+                                application.totalUnitNumber >= application.destinationLocation.availableCapacity}>Accept
                             products</Button>
                         <Button id="closeButton"
                                 onClick={props.onCloseModal}

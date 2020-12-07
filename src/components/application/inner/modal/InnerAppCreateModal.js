@@ -70,18 +70,19 @@ const InnerAppCreateModal = (props) => {
     const changeRecord = (e, key) => {
         switch (e.name) {
             case "upc":
+                let appProduct = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0];
                 let cost = 0;
                 let max = 0;
                 if (e.value) {
-                    cost = locationProducts.filter(locProduct => locProduct.product.upc == e.value)[0].cost;
-                    max = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0].amount;
+                    cost = appProduct.cost;
+                    max = appProduct.amount;
                 }
                 setItemRows((prevState) => ({
                         ...prevState,
                         items: itemRows.items.map(item => item.key === key ? {
                             ...item,
                             upc: e.value,
-                            cost,
+                            cost: cost.toFixed(3) / 1,
                             max
                         } : item)
                     })

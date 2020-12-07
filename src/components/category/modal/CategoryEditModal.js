@@ -71,8 +71,13 @@ const CategoryEditModal = (props) => {
                                    name="tax"
                                    variant="outlined"
                                    value={category.categoryTax}
-                                   label="Destination location"
+                                   label="Category tax"
                                    onChange={handleTaxChange}
+                                   InputProps={{
+                                       inputProps: {
+                                           min: 0.01, step: 0.01
+                                       }
+                                   }}
                                    required/>
                         <br/>
                         <Button type="submit"

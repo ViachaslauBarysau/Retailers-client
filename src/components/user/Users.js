@@ -188,7 +188,6 @@ export default () => {
     );
 }
 
-
 function User(props) {
     return (
         <TableRow key={props.user.id}>

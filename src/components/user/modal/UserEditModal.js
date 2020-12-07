@@ -54,7 +54,7 @@ const UserEditModal = (props) => {
         } else {
             location = locations.filter(location => location.identifier === e.target.location.value)[0];
         }
-        fetch('http://localhost:8080/api/users', {
+        fetch('/api/users', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',

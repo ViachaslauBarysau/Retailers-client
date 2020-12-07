@@ -2,7 +2,6 @@ import '../../../Modal.css';
 import React, {useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -16,6 +15,7 @@ import TableHead from "@material-ui/core/TableHead";
 const SupplierAppEditModal = (props) => {
     const [application, setApplication] = useState(null)
     const [locations, setLocations] = useState(null)
+
 
     useEffect(() => {
         fetch('/api/inner_applications/' + props.appId, {
@@ -114,7 +114,8 @@ const SupplierAppEditModal = (props) => {
                             options={locations.map((option) => option.identifier.toString())}
                             defaultValue={application.destinationLocation.identifier}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Destination location" margin="normal" name="location"
+                                <TextField {...params} fullWidth={true} label="Destination location" margin="normal"
+                                           name="location"
                                            variant="outlined"
                                            required/>
                             )}
@@ -149,30 +150,30 @@ const SupplierAppEditModal = (props) => {
                                    value={application.applicationStatus}
                                    label="Status"
                                    disabled/>
-                        <div className="scrollable-box">
-                                <TableContainer component={Paper}>
-                                    <Table className={useStyles.table} size="small" aria-label="a dense table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>UPC</TableCell>
-                                                <TableCell align="right">Amount</TableCell>
-                                                <TableCell align="right">Cost</TableCell>
+                        <div className="scrollable-box-edit-modal">
+                            <TableContainer component={Paper}>
+                                <Table className={useStyles.table} size="small" aria-label="a dense table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>UPC</TableCell>
+                                            <TableCell align="right">Amount</TableCell>
+                                            <TableCell align="right">Cost</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {application.recordsList.map((record) => (
+                                            <TableRow key={record.product.upc}>
+                                                <TableCell component="th" scope="row">
+                                                    {record.product.upc}
+                                                </TableCell>
+                                                <TableCell align="right">{record.amount}</TableCell>
+                                                <TableCell align="right">{record.cost}</TableCell>
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {application.recordsList.map((record) => (
-                                                <TableRow key={record.product.upc}>
-                                                    <TableCell component="th" scope="row">
-                                                        {record.product.upc}
-                                                    </TableCell>
-                                                    <TableCell align="right">{record.amount}</TableCell>
-                                                    <TableCell align="right">{record.cost}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <br/>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <br/>
                         </div>
                         <TextField margin={"dense"}
                                    size="small"
@@ -189,12 +190,30 @@ const SupplierAppEditModal = (props) => {
                                    label="Total volume of products"
                                    disabled/>
                         <br/>
+                        {application.applicationStatus === "OPEN" &&
+                        <div>
+                            <TextField margin={"dense"}
+                                       size="small"
+                                       fullWidth={true}
+                                       variant="outlined"
+                                       value={application.destinationLocation.availableCapacity}
+                                       label="Available capacity at current location"
+                                       InputProps={{
+                                           style: {backgroundColor: "#FFFAF0"},
+                                       }}
+                                       disabled/>
+                        </div>
+                        }
+                        <br/>
                         <Button type="submit"
                                 variant="contained"
-                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward application</Button>
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward
+                            application</Button>
                         <Button variant="contained"
                                 onClick={acceptProducts}
-                                disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Accept products</Button>
+                                disabled={application.applicationStatus === "FINISHED_PROCESSING" ||
+                                application.totalUnitNumber >= application.destinationLocation.availableCapacity}>Accept
+                            products</Button>
                         <Button id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>

@@ -67,7 +67,7 @@ export default (props) => {
                            label="Cost"
                            value={props.item.cost}
                            onChange={changeRecord}
-                           required/>
+                           disabled/>
             </Grid>
             <Grid item xs={1}>
                 <IconButton aria-label="delete"

@@ -47,8 +47,14 @@ export default (props) => {
                            type="number"
                            size="small"
                            name="amount"
+                           fullWidth={true}
                            variant="outlined"
                            label="Amount"
+                           InputProps={{
+                               inputProps: {
+                                   min: 1, max: props.item.max, step: 1
+                               }
+                           }}
                            value={props.item.amount}
                            onChange={changeRecord}
                            required/>
@@ -58,6 +64,7 @@ export default (props) => {
                            type="number"
                            size="small"
                            name="price"
+                           fullWidth={true}
                            variant="outlined"
                            label="Price"
                            value={props.item.price}

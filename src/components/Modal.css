@@ -40,3 +40,10 @@
     overflow-x: hidden;
   }
 
+.scrollable-box-edit-modal {
+  width: 600px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+

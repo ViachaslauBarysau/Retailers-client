@@ -65,7 +65,7 @@ const BillCreateModal = (props) => {
                                    label="Registration date and time"
                                    value={bill.registrationDateTime}
                                    disabled/>
-                        <div className="scrollable-box">
+                        <div className="scrollable-box-edit-modal">
                             <TableContainer component={Paper}>
                                 <Table size="small"
                                        aria-label="a dense table">

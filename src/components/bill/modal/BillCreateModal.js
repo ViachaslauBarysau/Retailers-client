@@ -12,6 +12,7 @@ const BillCreateModal = (props) => {
         items: [{
             key: new Date().getTime(),
             upc: 0,
+            max: 0,
             amount: 0,
             price: 0,
             error: false
@@ -58,9 +59,11 @@ const BillCreateModal = (props) => {
             case "upc":
                 let billProduct = locationProducts.filter(prod => prod.product.upc === Number(e.value))[0];
                 let itemPrice = 0;
+                let max = 0;
                 if (billProduct) {
                     itemPrice = (1 + billProduct.location.address.state.stateTax
                         + billProduct.product.category.categoryTax + billProduct.location.locationTax) * billProduct.cost;
+                    max = billProduct.amount;
                 }
                 setItemRows((prevState) => ({
                         ...prevState,
@@ -69,6 +72,7 @@ const BillCreateModal = (props) => {
                                 ...item,
                                 upc: e.value,
                                 price: itemPrice.toFixed(3) / 1,
+                                max
                             } : item)
                     })
                 );
@@ -187,7 +191,7 @@ const BillCreateModal = (props) => {
                                disabled/>
                     <div className="scrollable-box">
                         <Grid container spacing={1}>
-                            <Grid item xm={12}>
+                            <Grid item xs={12}>
                                 {itemRows.items.map((item) => (
                                     <EditableBillRecord item={item}
                                                         products={locationProducts}

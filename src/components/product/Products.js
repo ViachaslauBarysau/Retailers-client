@@ -128,7 +128,7 @@ export default () => {
                 }
                 setNeedRefresh(!needRefresh);
                 setData((prevState) => ({...prevState, products: []}))
-            } )
+            })
             .catch(e => {
                 handleOpenSnackBar("Error happens!", "error");
             });

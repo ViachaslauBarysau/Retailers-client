@@ -176,7 +176,9 @@ export default function Customers() {
 
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <CustomerCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <CustomerCreateModal handleOpenSnackBar={(message, severity) => handleOpenSnackBar(message, severity)}
+                                                        needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                        onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <CustomerEditModal customerId={displayEditModal.customerId}
                                                                  onCloseModal={() => setDisplayEditModal({
                                                                      displayModal: false,
