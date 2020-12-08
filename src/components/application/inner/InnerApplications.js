@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import InnerAppCreateModal from "./modal/InnerAppCreateModal";
 import InnerAppEditModal from "./modal/InnerAppEditModal";
 import Paper from "@material-ui/core/Paper";
@@ -11,8 +11,11 @@ import Button from "@material-ui/core/Button";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import {AuthContext} from "../../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
+
     const [applicationsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -43,7 +46,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(applicationsPage => {
                 setData((prevState) => ({
                     ...prevState,

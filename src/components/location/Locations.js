@@ -1,5 +1,5 @@
 import LocationCreateModal from './modal/LocationCreateModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -13,8 +13,10 @@ import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import {AuthContext} from "../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [locationsData, setLocationsData] = useState({
         isLoading: false,
         error: null,
@@ -80,7 +82,14 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+                ;
+            })
             .then(locationsPage => {
                 setLocationsData((prevState) => ({
                     ...prevState,
@@ -102,7 +111,7 @@ export default () => {
         e.preventDefault();
         let locationIdList = [];
         e.target.locations.forEach(element => {
-            element.checked && locationIdList.push({id: element.value});
+            element.checked && locationIdList.push(element.value);
         });
         fetch('/api/locations', {
             headers: {
@@ -115,9 +124,16 @@ export default () => {
             ),
             method: "DELETE"
         })
-            .then(res => res.json())
-            .then(undeletedProducts => {
-                if (undeletedProducts.length != 0) {
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+                ;
+            })
+            .then(undeletedLocations => {
+                if (undeletedLocations.length != 0) {
                     handleOpenSnackBar("Some locations haven't been deleted because " +
                         "they have open applications or active users.", "warning");
                 } else {
@@ -125,7 +141,7 @@ export default () => {
                 }
                 setNeedRefresh(!needRefresh);
                 setLocationsData((prevState) => ({...prevState, locations: []}))
-            } )
+            })
             .catch(e => {
                 handleOpenSnackBar("Error happens!", "error");
             });
@@ -178,8 +194,14 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <LocationCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <LocationCreateModal handleOpenSnackBar={(message, severity) =>
+                                                            handleOpenSnackBar(message, severity)}
+                                                        needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                        onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <LocationEditModal locationId={displayEditModal.locationId}
+                                                                 handleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                  onCloseModal={() => setDisplayEditModal({
                                                                      displayModal: false,
                                                                      locationId: null

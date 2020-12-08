@@ -65,7 +65,7 @@ const LocationCreateModal = (props) => {
                                label="Identifier"
                                required/>
                     <InputLabel id="state-label">State:</InputLabel>
-                    <StateSelect onChangeState={updateStateSelectValue}/>
+                    <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}

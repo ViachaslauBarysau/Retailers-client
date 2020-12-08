@@ -32,7 +32,7 @@ const CustomerCreateModal = (props) => {
                     case 401:
                         logout();
                         break;
-                    case 400:
+                    case 451:
                         props.handleOpenSnackBar("Email should be unique!", "warning");
                         break;
                 }

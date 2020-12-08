@@ -6,10 +6,10 @@ export default (props) => {
     const [states, setStates] = useState(
         null
     );
-    const [state, setState] = useState(1)
+    const [state, setState] = useState(props.value)
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/states?size=50', {
+        fetch('/api/states?size=50', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

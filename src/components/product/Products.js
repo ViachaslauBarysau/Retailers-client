@@ -105,7 +105,7 @@ export default () => {
         console.log(e.target.products)
         let productIdList = [];
         e.target.products.forEach(element => {
-            element.checked && productIdList.push({id: element.value});
+            element.checked && productIdList.push(element.value);
         });
         fetch('/api/products', {
             headers: {

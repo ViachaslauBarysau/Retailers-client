@@ -71,7 +71,7 @@ const BillCreateModal = (props) => {
                             {
                                 ...item,
                                 upc: e.value,
-                                price: itemPrice.toFixed(3) / 1,
+                                price: itemPrice.toFixed(2) / 1,
                                 max
                             } : item)
                     })
