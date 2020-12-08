@@ -71,13 +71,12 @@ const SupplierAppEditModal = (props) => {
             },
             method: "PUT",
             body: JSON.stringify({
-                id: application.id,
-                destinationLocation: {
-                    id: locations.filter(location => location.identifier === e.target.location.value)[0].id
-                }
-            })
+                    ...application,
+                    destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0]
+                })
         });
         props.onCloseModal();
+        props.needrefresh();
     }
 
     const useStyles = makeStyles({

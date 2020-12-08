@@ -1,10 +1,11 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, TextField} from "@material-ui/core";
+import {AuthContext} from "../../../context/authContext";
 
 
 const CustomerEditModal = (props) => {
-
+    const { logout } = useContext(AuthContext);
     const [customer, setCustomer] = useState(null)
 
     useEffect(() => {
@@ -14,9 +15,18 @@ const CustomerEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
             .then(customer => {
                 setCustomer(customer);
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 
@@ -30,8 +40,19 @@ const CustomerEditModal = (props) => {
             },
             body: JSON.stringify(customer),
             method: "PUT"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                if (res.ok) {
+                    props.handleOpenSnackBar("Customer updated!", "success");
+                    props.onCloseModal();
+                    props.needrefresh();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     let handleChange = (e) => setCustomer(
@@ -40,8 +61,6 @@ const CustomerEditModal = (props) => {
                 {...prevState, name: e.target.value}
             )
         });
-
-    console.log(customer)
 
     return (
         <div>
@@ -58,7 +77,7 @@ const CustomerEditModal = (props) => {
                                    label="Name"
                                    value={customer.name}
                                    onChange={handleChange}
-                                   disabled/>
+                                   required/>
                         <TextField type="email"
                                    margin="dense"
                                    size="small"

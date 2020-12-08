@@ -8,7 +8,7 @@ import {AuthContext} from "../../../../context/authContext";
 import EditableApplicationRecord from "./record/EditableApplicationRecord";
 
 const SupplierAppCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
             key: new Date().getTime(),
@@ -28,9 +28,18 @@ const SupplierAppCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(products => {
                 setProducts(products.content)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
         fetch('/api/suppliers?size=100000', {
             headers: {
@@ -38,9 +47,18 @@ const SupplierAppCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(suppliers => {
                 setSuppliers(suppliers.content)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 
@@ -51,7 +69,7 @@ const SupplierAppCreateModal = (props) => {
                 let newRow = {
                     key: new Date().getTime(),
                     upc: 0,
-                    amount: 0,
+                    amount: 1,
                     cost: 0,
                     error: false
                 };
@@ -83,7 +101,11 @@ const SupplierAppCreateModal = (props) => {
             case "cost":
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, cost: e.value} : item)
+                        items: itemRows.items.map(item => item.key === key ? {
+                                ...item,
+                                cost: Number(e.value).toFixed(2) / 1
+                            }
+                            : item)
                     })
                 );
                 break;
@@ -140,7 +162,7 @@ const SupplierAppCreateModal = (props) => {
             },
             body: JSON.stringify({
                 applicationNumber: Number(e.target.appNumber.value),
-                supplier:suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0],
+                supplier: suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0],
                 destinationLocation: user.location,
                 creator: user,
                 updater: user,
@@ -152,8 +174,25 @@ const SupplierAppCreateModal = (props) => {
                 totalUnitNumber: calculateVolume()
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Application created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Application number should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -167,6 +206,12 @@ const SupplierAppCreateModal = (props) => {
                                    id="appNumber"
                                    variant="outlined"
                                    label="Application number"
+                                   type="number"
+                                   InputProps={{
+                                       inputProps: {
+                                           min: 1, max: 2147483647, step: 1
+                                       }
+                                   }}
                                    required/>
 
                         <Autocomplete
@@ -213,9 +258,9 @@ const SupplierAppCreateModal = (props) => {
                                 <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
-                                                           products={products}
-                                                           changeRecord={changeRecord}
-                                                           key={item.key}/>))}
+                                                                   products={products}
+                                                                   changeRecord={changeRecord}
+                                                                   key={item.key}/>))}
                                 </Grid>
                             </Grid>
                         </div>

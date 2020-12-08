@@ -9,6 +9,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import CategoryEditModal from './modal/CategoryEditModal';
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
     const [categoriesData, setData] = useState({
@@ -20,11 +22,36 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         categoryId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangePage = (event, value) => {
         setPageNumber(value - 1);
@@ -56,13 +83,13 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     const {isLoading, error, categories} = categoriesData;
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             (categories.length != 0
                 ? <TableContainer component={Paper}>
@@ -87,11 +114,19 @@ export default () => {
                         onChange={handleChangePage}/>
             {!isLoading && error && 'Error happens'}
             {displayEditModal.displayModal && <CategoryEditModal categoryId={displayEditModal.categoryId}
-                                                             onCloseModal={() => setDisplayEditModal({
-                                                                 displayModal: false,
-                                                                 categoryId: null
-                                                             })}
+                                                                 handleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                                 onCloseModal={() => setDisplayEditModal({
+                                                                     displayModal: false,
+                                                                     categoryId: null
+                                                                 })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 

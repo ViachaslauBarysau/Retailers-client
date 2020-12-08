@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import InnerAppCreateModal from "./modal/InnerAppCreateModal";
 import InnerAppEditModal from "./modal/InnerAppEditModal";
 import Paper from "@material-ui/core/Paper";
@@ -11,8 +11,13 @@ import Button from "@material-ui/core/Button";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import {AuthContext} from "../../../context/authContext";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
+
     const [applicationsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -22,12 +27,37 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         appId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangePage = (event, value) => {
         setPageNumber(value - 1);
@@ -43,7 +73,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(applicationsPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -59,13 +95,13 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     const {isLoading, error, applications} = applicationsData;
 
     return (
         <div>
-            {isLoading && <LinearProgress  />}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form>
                 {(applications.length !== 0
@@ -100,31 +136,42 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <InnerAppCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <InnerAppCreateModal handleOpenSnackBar={(message, severity) =>
+                                                            handleOpenSnackBar(message, severity)}
+                                                        needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                        onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <InnerAppEditModal appId={displayEditModal.appId}
-                                                                    onCloseModal={() => setDisplayEditModal({
-                                                                        displayModal: false,
-                                                                        appId: null
-                                                                    })}
+                                                                 handleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                                 onCloseModal={() => setDisplayEditModal({
+                                                                     displayModal: false,
+                                                                     appId: null
+                                                                 })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 
     function InnerApplications({application}) {
         return (
-        <TableRow key={application.applicationNumber}>
-            <TableCell component="th" scope="row">
-                <a href="#" onClick={() => setDisplayEditModal({
-                    displayModal: true,
-                    appId: application.id
-                })}>{application.applicationNumber}</a>
-            </TableCell>
-            <TableCell align="right">{application.sourceLocation.identifier}</TableCell>
-            <TableCell align="right">{application.destinationLocation.identifier}</TableCell>
-            <TableCell align="right">{application.updatingDateTime}</TableCell>
-            <TableCell align="right">{application.updater.firstName} {application.updater.lastName}</TableCell>
-            <TableCell align="right">{application.applicationStatus}</TableCell>
-        </TableRow>
+            <TableRow key={application.applicationNumber}>
+                <TableCell component="th" scope="row">
+                    <a href="#" onClick={() => setDisplayEditModal({
+                        displayModal: true,
+                        appId: application.id
+                    })}>{application.applicationNumber}</a>
+                </TableCell>
+                <TableCell align="right">{application.sourceLocation.identifier}</TableCell>
+                <TableCell align="right">{application.destinationLocation.identifier}</TableCell>
+                <TableCell align="right">{application.updatingDateTime}</TableCell>
+                <TableCell align="right">{application.updater.firstName} {application.updater.lastName}</TableCell>
+                <TableCell align="right">{application.applicationStatus}</TableCell>
+            </TableRow>
         )
     }
 }

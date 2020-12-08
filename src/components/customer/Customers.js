@@ -1,6 +1,6 @@
 import CustomerCreateModal from './modal/CustomerCreateModal';
 import CustomerEditModal from './modal/CustomerEditModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -13,8 +13,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import {AuthContext} from "../../context/authContext";
 
 export default function Customers() {
+    const { logout } = useContext(AuthContext);
     const [customersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -80,7 +82,13 @@ export default function Customers() {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
             .then(customersPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -116,7 +124,13 @@ export default function Customers() {
             body: JSON.stringify(customerIdList),
             method: "DELETE"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(() => {
                 handleOpenSnackBar("Completed successfully!", "success");
                 setNeedRefresh(!needRefresh);
@@ -176,10 +190,14 @@ export default function Customers() {
 
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <CustomerCreateModal handleOpenSnackBar={(message, severity) => handleOpenSnackBar(message, severity)}
+            {displayCreateModal && <CustomerCreateModal handleOpenSnackBar={(message, severity) =>
+                                                            handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}
                                                         onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <CustomerEditModal customerId={displayEditModal.customerId}
+                                                                 handleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                  onCloseModal={() => setDisplayEditModal({
                                                                      displayModal: false,
                                                                      customerId: null

@@ -1,21 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from '@material-ui/core/Select';
+import {AuthContext} from "../context/authContext";
 
 export default (props) => {
+    const { logout } = useContext(AuthContext);
     const [states, setStates] = useState(
         null
     );
-    const [state, setState] = useState(1)
+    const [state, setState] = useState(props.value)
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/states?size=50', {
+        fetch('/api/states?size=50', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
             .then(states => {
                 setStates(
                     states.content

@@ -9,7 +9,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../context/authContext";
 
 const UserCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [stateId, setStateId] = useState(1);
     const [role, setRole] = useState("DIRECTOR");
     const [locations, setLocations] = useState(null);
@@ -29,7 +29,13 @@ const UserCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locations => {
                 setLocations(locations.content)
             });
@@ -70,8 +76,25 @@ const UserCreateModal = (props) => {
                 },
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("User created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Login and email should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -110,7 +133,7 @@ const UserCreateModal = (props) => {
                             }}
                         />
                         <InputLabel id="state-label">State:</InputLabel>
-                        <StateSelect MenuProps={{autoFocus: true}} onChangeState={updateStateSelectValue}/>
+                        <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
 
                         <TextField margin="dense"
                                    size="small"

@@ -46,6 +46,11 @@ export default (props) => {
                            name="amount"
                            variant="outlined"
                            label="Amount"
+                           InputProps={{
+                               inputProps: {
+                                   min: 1
+                               }
+                           }}
                            value={props.item.amount}
                            onChange={changeRecord}
                            required />
@@ -57,6 +62,11 @@ export default (props) => {
                            name="cost"
                            variant="outlined"
                            label="Cost"
+                           InputProps={{
+                               inputProps: {
+                                   min: 0.01, step: 0.01
+                               }
+                           }}
                            value={props.item.cost}
                            onChange={changeRecord}
                            required/>

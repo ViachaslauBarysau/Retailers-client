@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import SupplierAppCreateModal from './modal/SupplierAppCreateModal';
 import SupplierAppEditModal from "./modal/SupplierAppEditModal";
@@ -11,8 +11,12 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import {AuthContext} from "../../../context/authContext";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [applicationsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -22,12 +26,37 @@ export default () => {
     const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
     const [pageCount, setPageCount] = useState(1)
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         appId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangePage = (event, value) => {
         setPageNumber(value - 1);
@@ -59,7 +88,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, needRefresh]);
 
     const {isLoading, error, applications} = applicationsData;
 
@@ -100,13 +129,24 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <SupplierAppCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <SupplierAppCreateModal handleOpenSnackBar={(message, severity) =>
+                                                                handleOpenSnackBar(message, severity)}
+                                                           needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                           onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierAppEditModal appId={displayEditModal.appId}
+                                                                    handleOpenSnackBar={(message, severity) =>
+                                                                        handleOpenSnackBar(message, severity)}
+                                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                     onCloseModal={() => setDisplayEditModal({
                                                                         displayModal: false,
                                                                         appId: null
                                                                     })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 

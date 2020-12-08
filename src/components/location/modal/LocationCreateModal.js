@@ -1,12 +1,14 @@
 import '../../Modal.css';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import StateSelect from '../../StateSelect';
 import {Button, TextField} from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import {AuthContext} from "../../../context/authContext";
 
 const LocationCreateModal = (props) => {
+    const {user, logout} = useContext(AuthContext);
     const [stateId, setStateId] = useState(1);
 
     function updateStateSelectValue(e) {
@@ -48,8 +50,24 @@ const LocationCreateModal = (props) => {
                 status: "ACTIVE"
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        }).then(res => {
+            switch (res.status) {
+                case 201:
+                    props.handleOpenSnackBar("Location created!", "success");
+                    props.onCloseModal();
+                    props.needrefresh();
+                    break;
+                case 401:
+                    logout();
+                    break;
+                case 451:
+                    props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                    break;
+            }
+        })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -65,7 +83,7 @@ const LocationCreateModal = (props) => {
                                label="Identifier"
                                required/>
                     <InputLabel id="state-label">State:</InputLabel>
-                    <StateSelect onChangeState={updateStateSelectValue}/>
+                    <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}

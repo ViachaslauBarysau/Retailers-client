@@ -1,10 +1,11 @@
 import '../../Modal.css';
-import ReactDom from 'react-dom';
-import React, {useState, useEffect} from 'react';
-import {FormControl, TextField, Button} from '@material-ui/core';
+import React, {useContext, useEffect, useState} from 'react';
+import {Button, TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import {AuthContext} from "../../../context/authContext";
 
 const ProductCreateModal = (props) => {
+    const {user, logout} = useContext(AuthContext);
 
     const [categories, setCategories] = useState(null);
 
@@ -19,7 +20,6 @@ const ProductCreateModal = (props) => {
             .then(categories => {
                 setCategories(categories.content);
             })
-
     }, []);
 
     function addProduct(e) {
@@ -38,13 +38,30 @@ const ProductCreateModal = (props) => {
                     name: e.target.category.value,
                 },
                 customer: {
-                    id: JSON.parse(localStorage.getItem("user")).customer.id
+                    id: user.customer.id
                 },
                 status: "ACTIVE"
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Product created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("UPC should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -105,7 +122,5 @@ const ProductCreateModal = (props) => {
         </div>
     )
 }
-
-
 
 export default ProductCreateModal;

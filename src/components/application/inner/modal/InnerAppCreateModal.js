@@ -9,11 +9,11 @@ import EditableApplicationRecord from "./record/EditableApplicationRecord";
 
 
 const InnerAppCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
             key: new Date().getTime(),
-            upc: 0,
+            upc: null,
             max: 0,
             amount: 0,
             cost: 0,
@@ -30,9 +30,18 @@ const InnerAppCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locationProducts => {
                 setLocationProducts(locationProducts.content)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
         fetch('/api/locations/shops', {
             headers: {
@@ -40,9 +49,18 @@ const InnerAppCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locations => {
                 setLocations(locations)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 
@@ -72,7 +90,7 @@ const InnerAppCreateModal = (props) => {
             case "upc":
                 let appProduct = locationProducts.filter(locationProduct => locationProduct.product.upc === Number(e.value))[0];
                 let cost = 0;
-                let max = 0;
+                let max = 1;
                 if (e.value) {
                     cost = appProduct.cost;
                     max = appProduct.amount;
@@ -82,16 +100,22 @@ const InnerAppCreateModal = (props) => {
                         items: itemRows.items.map(item => item.key === key ? {
                             ...item,
                             upc: e.value,
-                            cost: cost.toFixed(3) / 1,
+                            cost: cost.toFixed(2) / 1,
                             max
                         } : item)
                     })
                 );
                 break;
             case "amount":
+                let amount;
+                if (e.value < 1) {
+                    amount = 1;
+                } else if (e.value > itemRows.items.filter(item => item.key === key)[0].max) {
+                    amount = itemRows.items.filter(item => item.key === key)[0].max;
+                }
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
+                        items: itemRows.items.map(item => item.key === key ? {...item, amount} : item)
                     })
                 );
                 break;
@@ -137,7 +161,7 @@ const InnerAppCreateModal = (props) => {
         let recordsList = itemRows.items.map((item) => (
             {
                 product: locationProducts.filter((locationProducts) => (locationProducts.product.upc
-                        === Number(item.upc)))[0].product,
+                    === Number(item.upc)))[0].product,
                 amount: item.amount,
                 cost: item.cost
             }
@@ -219,7 +243,6 @@ const InnerAppCreateModal = (props) => {
                         <TextField margin={"dense"}
                                    size="small"
                                    fullWidth={true}
-                                   id="locationreg_date_timeId"
                                    variant="outlined"
                                    label="Registration date and time"
                                    value={dateTime}

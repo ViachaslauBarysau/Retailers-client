@@ -1,12 +1,10 @@
 import '../../Modal.css';
-import React, {useContext, useMemo, useState} from 'react';
+import React, {useContext, useMemo} from 'react';
 import {Button, TextField} from "@material-ui/core";
 import {AuthContext} from "../../../context/authContext";
-import Alert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
 
 const CustomerCreateModal = (props) => {
-    const { logout } = useContext(AuthContext);
+    const {logout} = useContext(AuthContext);
 
     function addCustomer(e) {
         e.preventDefault();
@@ -25,24 +23,23 @@ const CustomerCreateModal = (props) => {
             method: "POST"
         })
             .then(res => {
-                let resStatus = res.status;
-                switch (resStatus){
+                switch (res.status) {
                     case 201:
                         props.handleOpenSnackBar("Customer created!", "success");
                         props.onCloseModal();
                         props.needrefresh();
-                    break;
+                        break;
                     case 401:
                         logout();
-                    break;
-                    case 400:
+                        break;
+                    case 451:
                         props.handleOpenSnackBar("Email should be unique!", "warning");
-                    break;
+                        break;
                 }
             })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
-        });
+            });
     }
 
     let dateTime = useMemo(() => new Date(), [])
@@ -81,6 +78,5 @@ const CustomerCreateModal = (props) => {
         </div>
     )
 }
-
 
 export default CustomerCreateModal;

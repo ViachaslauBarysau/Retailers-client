@@ -1,9 +1,72 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Button, TextField} from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import StateSelect from "../../StateSelect";
+import {AuthContext} from "../../../context/authContext";
 
 const LocationEditModal = (props) => {
-    let [location, setLocation] = useState(null);
+    const {logout} = useContext(AuthContext);
+    const [location, setLocation] = useState(null);
+
+    let updateStateSelectValue = (e) => setLocation(
+        (prevState) => {
+            return (
+                {
+                    ...prevState,
+                    address: {
+                        ...prevState.address,
+                        state: {
+                            id: e.target.value
+                        }
+                    }
+                })
+        });
+
+    let handleCityChange = (e) => setLocation(
+        (prevState) => {
+            return (
+                {
+                    ...prevState,
+                    address: {
+                        ...prevState.address,
+                        city: e.target.value
+                    }
+                })
+        });
+
+    let handleAddressFirstChange = (e) => setLocation(
+        (prevState) => {
+            return (
+                {
+                    ...prevState,
+                    address: {
+                        ...prevState.address,
+                        firstAddressLine: e.target.value
+                    }
+                })
+        });
+
+    let handleAddressSecondChange = (e) => setLocation(
+        (prevState) => {
+            return (
+                {
+                    ...prevState,
+                    address: {
+                        ...prevState.address,
+                        secondAddressLine: e.target.value
+                    }
+                })
+        });
+
+    let handleIdentifierChange = (e) => setLocation(
+        (prevState) => {
+            return (
+                {
+                    ...prevState,
+                    identifier: e.target.value
+                })
+        });
 
     useEffect(() => {
         fetch('/api/locations/' + props.locationId, {
@@ -12,62 +75,100 @@ const LocationEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(location => {
                 setLocation(location);
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 
+    function editLocation(e) {
+        e.preventDefault();
+        fetch('/api/locations', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify(location),
+            method: "PUT"
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 200:
+                        props.handleOpenSnackBar("Location updated!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
+    }
+
 
     return (
-
         <div>
             {location &&
             <div className={"modal-wrapper"}>
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
-                    <form>
+                    <form onSubmit={editLocation}>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Identifier"
                                    value={location.identifier}
-                                   disabled/>
-                        <TextField margin="dense"
-                                   size="small"
-                                   fullWidth={true}
-                                   variant="outlined"
-                                   label="State"
-                                   value={location.address.state.name}
-                                   disabled/>
+                                   onChange={handleIdentifierChange}
+                                   required/>
+                        <InputLabel id="state-label">State:</InputLabel>
+                        <StateSelect onChangeState={updateStateSelectValue} value={location.address.state.id}/>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
                                    value={location.address.city}
                                    variant="outlined"
                                    label="City"
-                                   disabled/>
+                                   onChange={handleCityChange}
+                                   required/>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
                                    value={location.address.firstAddressLine}
                                    variant="outlined"
                                    label="Address line 1"
-                                   disabled/>
+                                   onChange={handleAddressFirstChange}
+                                   required/>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
                                    value={location.address.secondAddressLine}
                                    variant="outlined"
                                    label="Address line 2"
-                                   disabled/>
+                                   onChange={handleAddressSecondChange}
+                                   required/>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
-                                   value={location.Type}
+                                   value={location.locationType}
                                    variant="outlined"
-                                   label="Address line 2"
+                                   label="Type"
                                    disabled/>
                         <TextField margin="dense"
                                    type="number"
@@ -93,12 +194,12 @@ const LocationEditModal = (props) => {
                                    label="Location tax"
                                    value={location.locationTax}
                                    disabled/>
-                        <Button variant="contained"
-                                onClick={props.onCloseModal}>Close</Button>
+                        <Button variant="contained" type="submit">Edit location</Button>
+                        <Button variant="contained" onClick={props.onCloseModal}>Close</Button>
                     </form>
                 </div>
-            </div>}
-
+            </div>
+            }
         </div>
 
     )
