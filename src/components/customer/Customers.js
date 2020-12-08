@@ -129,7 +129,7 @@ export default function Customers() {
                     return res.json();
                 } else if (res.status === 401) {
                     logout();
-                };
+                }
             })
             .then(() => {
                 handleOpenSnackBar("Completed successfully!", "success");

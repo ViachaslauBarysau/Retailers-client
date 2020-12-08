@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from '@material-ui/core/Select';
+import {AuthContext} from "../context/authContext";
 
 export default (props) => {
+    const { logout } = useContext(AuthContext);
     const [states, setStates] = useState(
         null
     );
@@ -15,7 +17,13 @@ export default (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
             .then(states => {
                 setStates(
                     states.content

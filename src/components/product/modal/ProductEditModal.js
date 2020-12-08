@@ -1,13 +1,31 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import {AuthContext} from "../../../context/authContext";
 
 const ProductEditModal = (props) => {
-
+    const {logout} = useContext(AuthContext);
     let [product, setProduct] = useState(null);
-
     let [categories, setCategories] = useState(null);
+
+    let handleCategoryChange = (value) => setProduct(
+        (prevState) => {
+            return (
+                {...prevState,
+                    category: {
+                        name: value,
+                    },
+                }
+            )
+        });
+
+    let handleLabelChange = (e) => setProduct(
+        (prevState) => {
+            return (
+                {...prevState, label: e.target.value}
+            )
+        });
 
     useEffect(() => {
         fetch('/api/products/' + props.productId, {
@@ -26,7 +44,13 @@ const ProductEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(categories => {
                 setCategories(categories.content);
             })
@@ -40,30 +64,22 @@ const ProductEditModal = (props) => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
-            body: JSON.stringify({
-                id: product.id,
-                upc: product.upc,
-                label: e.target.label.value,
-                volume: product.volume,
-                category: {
-                    name: e.target.category.value,
-                },
-                customer: {
-                    id: JSON.parse(localStorage.getItem("user")).customer.id
-                },
-                status: "ACTIVE"
-            }),
+            body: JSON.stringify(product),
             method: "PUT"
-        });
-        props.onCloseModal();
-    }
-
-    let handleChange = (e) => setProduct(
-        (prevState) => {
-            return (
-                {...prevState, label: e.target.value}
-            )
         })
+            .then(res => {
+                if (res.ok) {
+                    props.handleOpenSnackBar("Product updated!", "success");
+                    props.onCloseModal();
+                    props.needrefresh();
+                } else if (res.status === 401) {
+                    logout();
+                };
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
+    }
 
     return (
         <div>
@@ -87,7 +103,7 @@ const ProductEditModal = (props) => {
                                    id="label"
                                    variant="outlined"
                                    label="Label"
-                                   onChange={handleChange}
+                                   onChange={handleLabelChange}
                                    required/>
                         <Autocomplete
                             id="category"
@@ -95,6 +111,7 @@ const ProductEditModal = (props) => {
                             freeSolo
                             defaultValue={product.category.name}
                             options={categories.map((option) => option.name)}
+                            onChange={(e) => handleCategoryChange(e.target.innerText)}
                             renderInput={(params) => (
                                 <TextField fullWidth={true}
                                            {...params}

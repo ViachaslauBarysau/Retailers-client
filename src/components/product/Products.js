@@ -1,6 +1,6 @@
 import ProductCreateModal from './modal/ProductCreateModal';
 import ProductEditModal from './modal/ProductEditModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -13,8 +13,11 @@ import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import {AuthContext} from "../../context/authContext";
+import CustomerCreateModal from "../customer/modal/CustomerCreateModal";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [productsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -102,7 +105,6 @@ export default () => {
 
     function removeProducts(e) {
         e.preventDefault();
-        console.log(e.target.products)
         let productIdList = [];
         e.target.products.forEach(element => {
             element.checked && productIdList.push(element.value);
@@ -118,7 +120,13 @@ export default () => {
             ),
             method: "DELETE"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(undeletedProducts => {
                 if (undeletedProducts.length != 0) {
                     handleOpenSnackBar("Some products haven't been deleted because " +
@@ -177,8 +185,14 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ProductCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <ProductCreateModal handleOpenSnackBar={(message, severity) =>
+                                                            handleOpenSnackBar(message, severity)}
+                                                       needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                       onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
+                                                                handleOpenSnackBar={(message, severity) =>
+                                                                    handleOpenSnackBar(message, severity)}
+                                                                needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                 onCloseModal={() => setDisplayEditModal({
                                                                     displayModal: false,
                                                                     productId: null

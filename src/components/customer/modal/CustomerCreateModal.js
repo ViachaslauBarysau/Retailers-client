@@ -79,5 +79,4 @@ const CustomerCreateModal = (props) => {
     )
 }
 
-
 export default CustomerCreateModal;
