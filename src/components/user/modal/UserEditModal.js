@@ -1,20 +1,26 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import {AuthContext} from "../../../context/authContext";
 
 const UserEditModal = (props) => {
+    const {logout} = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
     const [locations, setLocations] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
 
     function handleRoleChange(e) {
-        setRole(e.target.value);
+        setRole(e.target.value)
         setUserLocation(null);
+    }
+
+    const handleLocationChange = (e) => {
+        setUserLocation(e.target.innerText);
     }
 
     useEffect(() => {
@@ -34,13 +40,23 @@ const UserEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(user => {
                 setUser(user);
                 setRole(user.userRole[0]);
                 if (user.userRole[0] != "DIRECTOR") {
                     setUserLocation(user.location.identifier);
                 }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+                props.onCloseModal();
             });
     }, []);
 
@@ -52,7 +68,7 @@ const UserEditModal = (props) => {
         if (role === "DIRECTOR") {
             location = null;
         } else {
-            location = locations.filter(location => location.identifier === e.target.location.value)[0];
+            location = locations.filter(location => location.identifier === userLocation)[0];
         }
         fetch('/api/users', {
             headers: {
@@ -60,10 +76,26 @@ const UserEditModal = (props) => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
-            body: JSON.stringify({...user, location, userRole: [userRole]}),
+            body: JSON.stringify({
+                ...user,
+                location,
+                userRole: [role]
+            }),
             method: "PUT"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                if (res.ok) {
+                    props.handleOpenSnackBar("User updated!", "success");
+                    props.onCloseModal();
+                    props.needrefresh();
+                } else if (res.status === 401) {
+                    logout();
+                }
+                ;
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -154,8 +186,9 @@ const UserEditModal = (props) => {
                             size="small"
                             name="location"
                             clearOnEscape
-                            defaultValue={userLocation}
+                            value={userLocation}
                             disabled={role === "DIRECTOR"}
+                            onChange={handleLocationChange}
                             options={locations.filter(location => location.locationType === "WAREHOUSE").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
@@ -174,8 +207,9 @@ const UserEditModal = (props) => {
                             size="small"
                             name="location"
                             clearOnEscape
-                            defaultValue={userLocation}
+                            value={userLocation}
                             disabled={role === "DIRECTOR"}
+                            onChange={handleLocationChange}
                             options={locations.filter(location => location.locationType === "SHOP").map((option) =>
                                 option.identifier.toString())}
                             renderInput={(params) => (
@@ -212,7 +246,7 @@ const UserEditModal = (props) => {
                                    label="Status"
                                    disabled/>
                         <Button type="submit"
-                                variant="contained">Add user</Button>
+                                variant="contained">Edit user</Button>
                         <Button id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>

@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {AuthContext} from "../../../context/authContext";
 
 const ProductCreateModal = (props) => {
-    const {logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
 
     const [categories, setCategories] = useState(null);
 
@@ -39,7 +39,7 @@ const ProductCreateModal = (props) => {
                     name: e.target.category.value,
                 },
                 customer: {
-                    id: JSON.parse(localStorage.getItem("user")).customer.id
+                    id: user.customer.id
                 },
                 status: "ACTIVE"
             }),

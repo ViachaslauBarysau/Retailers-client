@@ -88,7 +88,6 @@ export default () => {
                 } else if (res.status === 401) {
                     logout();
                 }
-                ;
             })
             .then(locationsPage => {
                 setLocationsData((prevState) => ({

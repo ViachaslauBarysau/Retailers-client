@@ -1,6 +1,6 @@
 import UserCreateModal from './modal/UserCreateModal';
 import UserEditModal from './modal/UserEditModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -13,8 +13,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import {AuthContext} from "../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [usersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -78,7 +80,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(usersPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -111,8 +119,15 @@ export default () => {
             body: JSON.stringify(userIdList),
             method: "DELETE"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(users => {
+                console.log(users)
                 if (users.length != 0) {
                     handleOpenSnackBar("Some user's status haven't been changed to ACTIVE because " +
                         "they assigned to deleted locations.", "warning");
@@ -172,8 +187,14 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <UserCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <UserCreateModal handleOpenSnackBar={(message, severity) =>
+                handleOpenSnackBar(message, severity)}
+                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <UserEditModal userId={displayEditModal.userId}
+                                                             handleOpenSnackBar={(message, severity) =>
+                                                                 handleOpenSnackBar(message, severity)}
+                                                             needrefresh={() => setNeedRefresh(!needRefresh)}
                                                              onCloseModal={() => setDisplayEditModal({
                                                                  displayModal: false,
                                                                  userId: null

@@ -14,7 +14,6 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import {AuthContext} from "../../context/authContext";
-import CustomerCreateModal from "../customer/modal/CustomerCreateModal";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -83,7 +82,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(productsPage => {
                 setData((prevState) => ({
                     ...prevState,

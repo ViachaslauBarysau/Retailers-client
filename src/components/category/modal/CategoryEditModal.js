@@ -1,10 +1,11 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import {Button, TextField} from '@material-ui/core';
+import {AuthContext} from "../../../context/authContext";
 
 const CategoryEditModal = (props) => {
-
+    const {logout} = useContext(AuthContext);
     const [category, setCategory] = useState(null);
 
     function handleNameChange(e) {
@@ -15,10 +16,9 @@ const CategoryEditModal = (props) => {
     }
 
     function handleTaxChange(e) {
-        console.log(e.target.value)
         setCategory({
             ...category,
-            categoryTax: e.target.value
+            categoryTax: Number(e.target.value).toFixed(2)/1
         })
     }
 
@@ -29,9 +29,15 @@ const CategoryEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
-            .then(bill => {
-                setCategory(bill)
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
+            .then(category => {
+                setCategory(category)
             });
     }, []);
 
@@ -46,8 +52,25 @@ const CategoryEditModal = (props) => {
             },
             body: JSON.stringify(category),
             method: "PUT"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 200:
+                        props.handleOpenSnackBar("Category updated!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Name should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -66,6 +89,7 @@ const CategoryEditModal = (props) => {
                                    value={category.name}
                                    required/>
                         <TextField margin="dense"
+                                   type="number"
                                    size="small"
                                    fullWidth={true}
                                    name="tax"
