@@ -178,14 +178,14 @@ const SupplierAppCreateModal = (props) => {
             .then(res => {
                 switch (res.status) {
                     case 201:
-                        props.handleOpenSnackBar("Customer created!", "success");
+                        props.handleOpenSnackBar("Application created!", "success");
                         props.onCloseModal();
                         props.needrefresh();
                         break;
                     case 401:
                         logout();
                         break;
-                    case 400:
+                    case 451:
                         props.handleOpenSnackBar("Application number should be unique!", "warning");
                         break;
                 }

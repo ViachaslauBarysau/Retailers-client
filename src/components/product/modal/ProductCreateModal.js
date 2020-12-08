@@ -20,7 +20,6 @@ const ProductCreateModal = (props) => {
             .then(categories => {
                 setCategories(categories.content);
             })
-
     }, []);
 
     function addProduct(e) {

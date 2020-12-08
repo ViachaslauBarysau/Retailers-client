@@ -73,10 +73,10 @@ const SupplierAppEditModal = (props) => {
             body: JSON.stringify({
                     ...application,
                     destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0]
-                }
-            )
+                })
         });
         props.onCloseModal();
+        props.needrefresh();
     }
 
     const useStyles = makeStyles({

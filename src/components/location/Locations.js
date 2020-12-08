@@ -129,7 +129,6 @@ export default () => {
                 } else if (res.status === 401) {
                     logout();
                 }
-                ;
             })
             .then(undeletedLocations => {
                 if (undeletedLocations.length != 0) {
