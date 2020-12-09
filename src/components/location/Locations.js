@@ -120,9 +120,13 @@ export default () => {
     function removeLocations(e) {
         e.preventDefault();
         let locationIdList = [];
-        e.target.locations.forEach(element => {
-            element.checked && locationIdList.push(element.value);
-        });
+        if (e.target.locations.length === undefined) {
+            e.target.locations.checked && locationIdList.push(Number(e.target.locations.value));
+        } else {
+            e.target.locations.forEach(element => {
+                element.checked && locationIdList.push(element.value);
+            });
+        }
         fetch('/api/locations', {
             headers: {
                 'Authorization': localStorage.getItem("token"),

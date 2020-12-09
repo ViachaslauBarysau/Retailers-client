@@ -60,10 +60,12 @@ const BillCreateModal = (props) => {
                 let billProduct = locationProducts.filter(prod => prod.product.upc === Number(e.value))[0];
                 let itemPrice = 0;
                 let max = 0;
+                let itemCost = 0;
                 if (billProduct) {
                     itemPrice = (1 + billProduct.location.address.state.stateTax
                         + billProduct.product.category.categoryTax + billProduct.location.locationTax) * billProduct.cost;
                     max = billProduct.amount;
+                    itemCost = billProduct.cost;
                 }
                 setItemRows((prevState) => ({
                         ...prevState,
@@ -72,23 +74,24 @@ const BillCreateModal = (props) => {
                                 ...item,
                                 upc: e.value,
                                 price: itemPrice.toFixed(2) / 1,
-                                max
+                                max,
+                                cost: itemCost
                             } : item)
                     })
                 );
 
 
                 break;
-            case "amount":
-                setItemRows((prevState) => ({
-                        ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
-                    })
-                );
-                break;
-            default:
-                if (itemRows.items.length > 1) {
+                case "amount":
                     setItemRows((prevState) => ({
+                            ...prevState,
+                            items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
+                        })
+                    );
+                    break;
+                default:
+                    if (itemRows.items.length > 1) {
+                        setItemRows((prevState) => ({
                             ...prevState,
                             items: prevState.items.filter((item) => (item.key !== key))
                         })
@@ -103,6 +106,12 @@ const BillCreateModal = (props) => {
         itemRows.items.forEach((item) => totalPrice += item.price * item.amount);
         console.log(totalPrice)
         return totalPrice;
+    }
+
+    function calculateCost() {
+        let totalCost = 0;
+        itemRows.items.forEach((item) => totalCost += item.cost * item.amount);
+        return totalCost;
     }
 
     const calculateAmount = () => {
@@ -146,7 +155,8 @@ const BillCreateModal = (props) => {
                 registrationDateTime: dateTime,
                 recordList: getRecordsList(),
                 totalProductAmount: calculateAmount(),
-                totalPrice: calculatePrice()
+                totalPrice: calculatePrice(),
+                totalCost: calculateCost()
             }),
             method: "POST"
         });
