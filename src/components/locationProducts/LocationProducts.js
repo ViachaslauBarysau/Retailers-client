@@ -11,6 +11,7 @@ import ActCreateModal from "../act/modal/ActCreateModal";
 import LocationProductEditModal from "./modal/LocationProductEditModal";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default () => {
     const [productsData, setData] = useState({
@@ -19,9 +20,9 @@ export default () => {
         locProducts: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [elementsOnPage, setElementsOnPage] = useState(10);
+    const [totalElements, setTotalElements] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -29,8 +30,13 @@ export default () => {
         locProductId: null
     });
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -50,7 +56,10 @@ export default () => {
                     isLoading: false,
                     locProducts: locProductsPage.content
                 }));
-                setPageCount(locProductsPage.totalPages);
+                setTotalElements(locProductsPage.totalElements)
+                if (pageNumber > locProductsPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -59,7 +68,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, elementsOnPage]);
 
     const {isLoading, error, locProducts} = productsData;
 
@@ -69,7 +78,7 @@ export default () => {
         <div>
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
-            <form>
+            <div>
                 {(locProducts.length !== 0
                     ? <TableContainer component={Paper}>
                         <Table size="small" aria-label="a dense table">
@@ -86,16 +95,20 @@ export default () => {
                                                                                               key={locProduct.id}/>)}
                             </TableBody>
                         </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 20]}
+                            component="div"
+                            count={totalElements}
+                            page={pageNumber}
+                            onChangePage={handleChangePage}
+                            rowsPerPage={elementsOnPage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount}
-                            showFirstButton
-                            showLastButton
-                            page={pageNumber + 1}
-                            onChange={handleChangePage}/>
                 <Button variant="contained"
                         onClick={() => setDisplayCreateModal(true)}> Create write-off act</Button>
-            </form>
+            </div>
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}

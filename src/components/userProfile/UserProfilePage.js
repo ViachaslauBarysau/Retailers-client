@@ -23,19 +23,6 @@ export default () => {
         users: []
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
-    const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
-    const [needRefresh, setNeedRefresh] = useState(false);
-
-    const [displayCreateModal, setDisplayCreateModal] = useState(false);
-    const [displayEditModal, setDisplayEditModal] = useState({
-        displayModal: false,
-        userId: null
-    });
-
-    const [selectedUsersNumber, setSelectedUsersNumber] = useState(0);
-
     const [snackBar, setSnackBar] = useState({
         display: false,
         message: "",
@@ -60,87 +47,9 @@ export default () => {
         });
     };
 
-    function handleChange(e) {
-        if (e.target.checked) {
-            setSelectedUsersNumber(selectedUsersNumber + 1);
-        } else {
-            setSelectedUsersNumber(selectedUsersNumber - 1);
-        }
-    }
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
-    };
 
-    useEffect(() => {
-        setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/users?page=' + pageNumber + '&size=' + elementsOnPage, {
-            headers: {
-                "Authorization": localStorage.getItem("token")
-            },
-            method: "GET"
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                } else if (res.status === 401) {
-                    logout();
-                }
-            })
-            .then(usersPage => {
-                setData((prevState) => ({
-                    ...prevState,
-                    isLoading: false,
-                    users: usersPage.content
-                }));
-                setPageCount(usersPage.totalPages);
-            })
-            .catch(e => {
-                setData((prevState) => ({
-                    ...prevState,
-                    isLoading: false,
-                    error: e
-                }))
-            })
-    }, [pageNumber, needRefresh]);
 
-    function changeUserStatus(e) {
-        e.preventDefault();
-        let userIdList = [];
-        e.target.users.forEach(element => {
-            element.checked && userIdList.push(element.value);
-        });
-        fetch('/api/users', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(userIdList),
-            method: "DELETE"
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                } else if (res.status === 401) {
-                    logout();
-                }
-            })
-            .then(users => {
-                console.log(users)
-                if (users.length != 0) {
-                    handleOpenSnackBar("Some user's status haven't been changed to ACTIVE because " +
-                        "they assigned to deleted locations.", "warning");
-                } else {
-                    handleOpenSnackBar("Completed successfully!", "success");
-                }
-                setNeedRefresh(!needRefresh);
-                setData((prevState) => ({...prevState, users: []}))
-            })
-            .catch(e => {
-                handleOpenSnackBar("Error happens!", "error");
-            });
-    }
 
     const {isLoading, error, users} = usersData;
 
@@ -148,58 +57,11 @@ export default () => {
         <div>
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
-            <form onSubmit={changeUserStatus}>
-                {(users.length != 0
-                    ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell>Full name</TableCell>
-                                    <TableCell>Birthday</TableCell>
-                                    <TableCell>Role</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {users.map(user => <User
-                                    user={user}
-                                    key={user.id}
-                                    onChange={handleChange}
-                                    onClick={() => setDisplayEditModal({
-                                        displayModal: true,
-                                        userId: user.id
-                                    })}
-                                />)}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    : 'Empty list')}
-                <Pagination count={pageCount}
-                            showFirstButton
-                            showLastButton
-                            page={pageNumber + 1}
-                            onChange={handleChangePage}/>
-                <Button variant="contained"
-                        onClick={() => setDisplayCreateModal(true)}>Add user</Button>
-                <Button variant="contained"
-                        type="submit"
-                        disabled={selectedUsersNumber === 0}>Enable/Disable</Button>
+            <form>
+
             </form>
             }
-            {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <UserCreateModal handleOpenSnackBar={(message, severity) =>
-                handleOpenSnackBar(message, severity)}
-                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <UserEditModal userId={displayEditModal.userId}
-                                                             handleOpenSnackBar={(message, severity) =>
-                                                                 handleOpenSnackBar(message, severity)}
-                                                             needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                             onCloseModal={() => setDisplayEditModal({
-                                                                 displayModal: false,
-                                                                 userId: null
-                                                             })}
-            />}
+
             <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
                 <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
                     {snackBar.message}
@@ -209,19 +71,4 @@ export default () => {
     );
 }
 
-function User(props) {
-    return (
-        <TableRow key={props.user.id}>
-            <TableCell component="th" scope="row">
-                <input type="checkbox"
-                       value={props.user.id}
-                       name={"users"}
-                       onChange={props.onChange}/>
-            </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></TableCell>
-            <TableCell>{props.user.birthday}</TableCell>
-            <TableCell>{props.user.userRole}</TableCell>
-        </TableRow>
-    )
-}
 

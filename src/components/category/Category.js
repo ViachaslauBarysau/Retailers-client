@@ -11,6 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import CategoryEditModal from './modal/CategoryEditModal';
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default () => {
     const [categoriesData, setData] = useState({
@@ -19,9 +20,10 @@ export default () => {
         categories: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [elementsOnPage, setElementsOnPage] = useState(10);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
+    const [totalElements, setTotalElements] = useState(0);
+
     const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -53,8 +55,13 @@ export default () => {
         });
     };
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -74,7 +81,10 @@ export default () => {
                     isLoading: false,
                     categories: categoriesPage.content
                 }));
-                setPageCount(categoriesPage.totalPages);
+                setTotalElements(categoriesPage.totalElements)
+                if (pageNumber > categoriesPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -83,7 +93,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber, needRefresh]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     const {isLoading, error, categories} = categoriesData;
 
@@ -105,13 +115,17 @@ export default () => {
                                                                   key={category.id}/>)}
                         </TableBody>
                     </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 20]}
+                        component="div"
+                        count={totalElements}
+                        page={pageNumber}
+                        onChangePage={handleChangePage}
+                        rowsPerPage={elementsOnPage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
                 </TableContainer>
                 : 'Empty list')}
-            <Pagination count={pageCount}
-                        showFirstButton
-                        showLastButton
-                        page={pageNumber + 1}
-                        onChange={handleChangePage}/>
             {!isLoading && error && 'Error happens'}
             {displayEditModal.displayModal && <CategoryEditModal categoryId={displayEditModal.categoryId}
                                                                  handleOpenSnackBar={(message, severity) =>

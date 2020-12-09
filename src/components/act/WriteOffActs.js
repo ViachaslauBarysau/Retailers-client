@@ -11,6 +11,8 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
 import {editToLocalTimeAndGet} from "../../util/DateAndTime";
+import TablePagination from "@material-ui/core/TablePagination";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 export default () => {
     const [actsData, setData] = useState({
@@ -19,9 +21,9 @@ export default () => {
         acts: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [elementsOnPage, setElementsOnPage] = useState(10);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
+    const [totalElements, setTotalElements] = useState(0);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
@@ -29,8 +31,13 @@ export default () => {
         actId: null
     });
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -48,7 +55,10 @@ export default () => {
                     isLoading: false,
                     acts: actsPage.content
                 }));
-                setPageCount(actsPage.totalPages);
+                setTotalElements(actsPage.totalElements)
+                if (pageNumber > actsPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -57,13 +67,13 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber]);
+    }, [pageNumber, elementsOnPage]);
 
     const {isLoading, error, acts} = actsData;
 
     return (
         <div>
-            {isLoading && 'Loading....'}
+            {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             (acts.length != 0
                 ? <TableContainer component={Paper}>
@@ -81,14 +91,17 @@ export default () => {
                             {acts.map(act => <Acts act={act} key={act.id}/>)}
                         </TableBody>
                     </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 20]}
+                        component="div"
+                        count={totalElements}
+                        page={pageNumber}
+                        onChangePage={handleChangePage}
+                        rowsPerPage={elementsOnPage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
                 </TableContainer>
                 : 'Empty list')}
-            <Pagination count={pageCount}
-                        showFirstButton
-                        showLastButton
-                        page={pageNumber + 1}
-                        onChange={handleChangePage}/>
-
             <Button variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act</Button>

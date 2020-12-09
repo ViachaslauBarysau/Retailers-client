@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -23,9 +24,10 @@ export default () => {
         users: []
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
+    const [elementsOnPage, setElementsOnPage] = useState(10);
+    const [totalElements, setTotalElements] = useState(0);
+
     const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
@@ -68,8 +70,13 @@ export default () => {
         }
     }
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -93,7 +100,10 @@ export default () => {
                     isLoading: false,
                     users: usersPage.content
                 }));
-                setPageCount(usersPage.totalPages);
+                setTotalElements(usersPage.totalElements)
+                if (pageNumber > usersPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -102,7 +112,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber, needRefresh]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     function changeUserStatus(e) {
         e.preventDefault();
@@ -154,7 +164,7 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell></TableCell>
+                                    <TableCell width={10}></TableCell>
                                     <TableCell>Full name</TableCell>
                                     <TableCell>Birthday</TableCell>
                                     <TableCell>Role</TableCell>
@@ -172,13 +182,17 @@ export default () => {
                                 />)}
                             </TableBody>
                         </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 20]}
+                            component="div"
+                            count={totalElements}
+                            page={pageNumber}
+                            onChangePage={handleChangePage}
+                            rowsPerPage={elementsOnPage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount}
-                            showFirstButton
-                            showLastButton
-                            page={pageNumber + 1}
-                            onChange={handleChangePage}/>
                 <Button variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add user</Button>
                 <Button variant="contained"

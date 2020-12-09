@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import {AuthContext} from "../../context/authContext";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -23,9 +24,10 @@ export default () => {
         products: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [elementsOnPage, setElementsOnPage] = useState(10);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
+    const [totalElements, setTotalElements] = useState(0);
+
     const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
@@ -68,8 +70,13 @@ export default () => {
         }
     }
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -95,7 +102,10 @@ export default () => {
                     isLoading: false,
                     products: productsPage.content
                 }));
-                setPageCount(productsPage.totalPages);
+                setTotalElements(productsPage.totalElements)
+                if (pageNumber > productsPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -104,13 +114,14 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber, needRefresh]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     const {isLoading, error, products} = productsData;
 
     function removeProducts(e) {
         e.preventDefault();
         let productIdList = [];
+        console.log(e.target.products)
         e.target.products.forEach(element => {
             element.checked && productIdList.push(element.value);
         });
@@ -153,8 +164,7 @@ export default () => {
             {!isLoading && !error &&
             <form onSubmit={removeProducts}>
                 {(products.length !== 0
-                    ? <div>
-                        <TableContainer component={Paper}>
+                    ? <TableContainer component={Paper}>
                             <Table size="small" aria-label="a dense table">
                                 <TableHead>
                                     <TableRow>
@@ -176,13 +186,16 @@ export default () => {
                                     />)}
                                 </TableBody>
                             </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 20]}
+                            component="div"
+                            count={totalElements}
+                            page={pageNumber}
+                            onChangePage={handleChangePage}
+                            rowsPerPage={elementsOnPage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
                         </TableContainer>
-                        <Pagination count={pageCount}
-                                    showFirstButton
-                                    showLastButton
-                                    page={pageNumber + 1}
-                                    onChange={handleChangePage}/>
-                    </div>
                     : 'Empty list')}
                 <Button variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add product</Button>
