@@ -33,8 +33,9 @@
 }
 
 .scrollable-box {
+    padding: 5px;
     background-color: #eaf2f8;
-    width: 600px;
+    width: auto;
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;

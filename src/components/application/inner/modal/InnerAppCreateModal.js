@@ -250,7 +250,7 @@ const InnerAppCreateModal = (props) => {
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} >
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                                    products={locationProducts}
