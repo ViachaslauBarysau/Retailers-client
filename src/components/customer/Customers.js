@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
+import TablePagination from "@material-ui/core/TablePagination";
 
 export default function Customers() {
     const { logout } = useContext(AuthContext);
@@ -23,9 +24,11 @@ export default function Customers() {
         customers: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [elementsOnPage, setElementsOnPage] = useState(10);
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageCount, setPageCount] = useState(1)
+    const [totalElements, setTotalElements] = useState(0);
+
+
     const [needRefresh, setNeedRefresh] = useState(false);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
@@ -68,8 +71,13 @@ export default function Customers() {
         }
     }
 
-    const handleChangePage = (event, value) => {
-        setPageNumber(value - 1);
+    const handleChangeRowsPerPage = (event) => {
+        setElementsOnPage(+event.target.value);
+        setPageNumber(0);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPageNumber(newPage);
     };
 
     useEffect(() => {
@@ -95,7 +103,10 @@ export default function Customers() {
                     isLoading: false,
                     customers: customersPage.content
                 }));
-                setPageCount(customersPage.totalPages);
+                setTotalElements(customersPage.totalElements)
+                if (pageNumber > customersPage.totalPages - 1) {
+                    setPageNumber(pageNumber - 1);
+                }
             })
             .catch(e => {
                 setData((prevState) => ({
@@ -104,7 +115,7 @@ export default function Customers() {
                     error: e
                 }))
             })
-    }, [pageNumber, needRefresh]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     const {isLoading, error, customers} = customersData;
 
@@ -170,13 +181,17 @@ export default function Customers() {
                                 />)}
                             </TableBody>
                         </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 20]}
+                            component="div"
+                            count={totalElements}
+                            page={pageNumber}
+                            onChangePage={handleChangePage}
+                            rowsPerPage={elementsOnPage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
                     </TableContainer>
                     : 'Empty list')}
-                <Pagination count={pageCount}
-                            showFirstButton
-                            showLastButton
-                            page={pageNumber + 1}
-                            onChange={handleChangePage}/>
                 <Button variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>
                     Add customer
