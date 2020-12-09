@@ -10,6 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Pagination from "@material-ui/lab/Pagination";
+import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 
 export default () => {
     const [actsData, setData] = useState({
@@ -111,7 +112,7 @@ export default () => {
                         actId: act.id
                     })}>{act.writeOffActNumber}</a>
                 </TableCell>
-                <TableCell>{act.actDateTime}</TableCell>
+                <TableCell>{editToLocalTimeAndGet(act.actDateTime)}</TableCell>
                 <TableCell>{act.totalProductAmount}</TableCell>
                 <TableCell>{act.totalProductSum}</TableCell>
             </TableRow>

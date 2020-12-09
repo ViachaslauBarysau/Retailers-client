@@ -1,4 +1,5 @@
-import LocationCreateModal from './modal/LocationCreateModal';
+import UserCreateModal from './modal/UserCreateModal';
+import UserEditModal from './modal/UserEditModal';
 import React, {useContext, useEffect, useState} from 'react';
 import {Button} from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
@@ -8,8 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import LocationEditModal from "./modal/LocationEditModal";
-import Pagination from '@material-ui/lab/Pagination';
+import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -17,10 +17,10 @@ import {AuthContext} from "../../context/authContext";
 
 export default () => {
     const {logout} = useContext(AuthContext);
-    const [locationsData, setLocationsData] = useState({
+    const [usersData, setData] = useState({
         isLoading: false,
         error: null,
-        locations: [],
+        users: []
     });
 
     const [elementsOnPage, setElementsOnPage] = useState(5);
@@ -31,10 +31,10 @@ export default () => {
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
-        locationId: null
+        userId: null
     });
 
-    const [selectedLocationsNumber, setSelectedLocationsNumber] = useState(0);
+    const [selectedUsersNumber, setSelectedUsersNumber] = useState(0);
 
     const [snackBar, setSnackBar] = useState({
         display: false,
@@ -62,9 +62,9 @@ export default () => {
 
     function handleChange(e) {
         if (e.target.checked) {
-            setSelectedLocationsNumber(selectedLocationsNumber + 1);
+            setSelectedUsersNumber(selectedUsersNumber + 1);
         } else {
-            setSelectedLocationsNumber(selectedLocationsNumber - 1);
+            setSelectedUsersNumber(selectedUsersNumber - 1);
         }
     }
 
@@ -73,12 +73,10 @@ export default () => {
     };
 
     useEffect(() => {
-        setLocationsData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/locations?page=' + pageNumber + '&size=' + elementsOnPage, {
+        setData(prevState => ({...prevState, isLoading: true}));
+        fetch('/api/users?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
+                "Authorization": localStorage.getItem("token")
             },
             method: "GET"
         })
@@ -89,16 +87,16 @@ export default () => {
                     logout();
                 }
             })
-            .then(locationsPage => {
-                setLocationsData((prevState) => ({
+            .then(usersPage => {
+                setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    locations: locationsPage.content
+                    users: usersPage.content
                 }));
-                setPageCount(locationsPage.totalPages);
+                setPageCount(usersPage.totalPages);
             })
             .catch(e => {
-                setLocationsData((prevState) => ({
+                setData((prevState) => ({
                     ...prevState,
                     isLoading: false,
                     error: e
@@ -106,21 +104,19 @@ export default () => {
             })
     }, [pageNumber, needRefresh]);
 
-    function removeLocations(e) {
+    function changeUserStatus(e) {
         e.preventDefault();
-        let locationIdList = [];
-        e.target.locations.forEach(element => {
-            element.checked && locationIdList.push(element.value);
+        let userIdList = [];
+        e.target.users.forEach(element => {
+            element.checked && userIdList.push(element.value);
         });
-        fetch('/api/locations', {
+        fetch('/api/users', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
-            body: JSON.stringify(
-                locationIdList
-            ),
+            body: JSON.stringify(userIdList),
             method: "DELETE"
         })
             .then(res => {
@@ -130,49 +126,48 @@ export default () => {
                     logout();
                 }
             })
-            .then(undeletedLocations => {
-                if (undeletedLocations.length != 0) {
-                    handleOpenSnackBar("Some locations haven't been deleted because " +
-                        "they have open applications or active users.", "warning");
+            .then(users => {
+                console.log(users)
+                if (users.length != 0) {
+                    handleOpenSnackBar("Some user's status haven't been changed to ACTIVE because " +
+                        "they assigned to deleted locations.", "warning");
                 } else {
-                    handleOpenSnackBar("Deleted successfully!", "success");
+                    handleOpenSnackBar("Completed successfully!", "success");
                 }
                 setNeedRefresh(!needRefresh);
-                setLocationsData((prevState) => ({...prevState, locations: []}))
+                setData((prevState) => ({...prevState, users: []}))
             })
             .catch(e => {
                 handleOpenSnackBar("Error happens!", "error");
             });
     }
 
-    const {isLoading, error, locations} = locationsData;
+    const {isLoading, error, users} = usersData;
 
     return (
         <div>
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
-            <form onSubmit={removeLocations}>
-                {(locations.length !== 0
+            <form onSubmit={changeUserStatus}>
+                {(users.length != 0
                     ? <TableContainer component={Paper}>
-                        <Table size="small"
-                               aria-label="a dense table">
+                        <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell width={1}></TableCell>
-                                    <TableCell>Identifier</TableCell>
-                                    <TableCell>Type</TableCell>
-                                    <TableCell>Full address</TableCell>
-                                    <TableCell>Available/Total capacity</TableCell>
+                                    <TableCell></TableCell>
+                                    <TableCell>Full name</TableCell>
+                                    <TableCell>Birthday</TableCell>
+                                    <TableCell>Role</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {locations.map(location => <Location
-                                    key={location.id}
-                                    location={location}
+                                {users.map(user => <User
+                                    user={user}
+                                    key={user.id}
                                     onChange={handleChange}
                                     onClick={() => setDisplayEditModal({
                                         displayModal: true,
-                                        locationId: location.id
+                                        userId: user.id
                                     })}
                                 />)}
                             </TableBody>
@@ -185,25 +180,25 @@ export default () => {
                             page={pageNumber + 1}
                             onChange={handleChangePage}/>
                 <Button variant="contained"
-                        onClick={() => setDisplayCreateModal(true)}>Add location</Button>
+                        onClick={() => setDisplayCreateModal(true)}>Add user</Button>
                 <Button variant="contained"
                         type="submit"
-                        disabled={selectedLocationsNumber === 0}>Remove location</Button>
+                        disabled={selectedUsersNumber === 0}>Enable/Disable</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <LocationCreateModal handleOpenSnackBar={(message, severity) =>
-                                                            handleOpenSnackBar(message, severity)}
-                                                        needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                        onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <LocationEditModal locationId={displayEditModal.locationId}
-                                                                 handleOpenSnackBar={(message, severity) =>
-                                                                     handleOpenSnackBar(message, severity)}
-                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                                 onCloseModal={() => setDisplayEditModal({
-                                                                     displayModal: false,
-                                                                     locationId: null
-                                                                 })}
+            {displayCreateModal && <UserCreateModal handleOpenSnackBar={(message, severity) =>
+                handleOpenSnackBar(message, severity)}
+                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <UserEditModal userId={displayEditModal.userId}
+                                                             handleOpenSnackBar={(message, severity) =>
+                                                                 handleOpenSnackBar(message, severity)}
+                                                             needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                             onCloseModal={() => setDisplayEditModal({
+                                                                 displayModal: false,
+                                                                 userId: null
+                                                             })}
             />}
             <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
                 <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
@@ -214,19 +209,18 @@ export default () => {
     );
 }
 
-function Location(props) {
+function User(props) {
     return (
-        <TableRow key={props.location.identifier}>
+        <TableRow key={props.user.id}>
             <TableCell component="th" scope="row">
                 <input type="checkbox"
-                       value={props.location.id}
-                       name="locations"
+                       value={props.user.id}
+                       name={"users"}
                        onChange={props.onChange}/>
             </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></TableCell>
-            <TableCell>{props.location.locationType}</TableCell>
-            <TableCell>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</TableCell>
-            <TableCell>{props.location.availableCapacity}/{props.location.totalCapacity}</TableCell>
+            <TableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></TableCell>
+            <TableCell>{props.user.birthday}</TableCell>
+            <TableCell>{props.user.userRole}</TableCell>
         </TableRow>
     )
 }

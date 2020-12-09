@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import {Link} from "react-router-dom";
 import { AuthContext } from '../context/authContext';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,25 +20,13 @@ export default () => {
         (
             <div>
                 <IconButton
+                    component={Link}
+                    to={"/bills"}
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     color="inherit">
                     <AccountCircle/>
                     <Typography>{user.email}</Typography>
                 </IconButton>
-                <Menu
-                    anchorEl={anchorEl}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    open={open}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={() => {
-                        logout();
-                        handleClose();
-                    }}>Logout</MenuItem>
-                </Menu>
             </div>
         );
 }

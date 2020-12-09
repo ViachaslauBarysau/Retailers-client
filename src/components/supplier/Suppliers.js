@@ -136,7 +136,7 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell></TableCell>
+                                    <TableCell width={10}></TableCell>
                                     <TableCell>Full name</TableCell>
                                     <TableCell>Identifier</TableCell>
                                     <TableCell>Status</TableCell>

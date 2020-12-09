@@ -11,6 +11,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import BillEditModal from "./modal/BillEditModal";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
+import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 
 export default () => {
     const [billsData, setData] = useState({
@@ -66,28 +67,32 @@ export default () => {
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             (bills.length != 0
-                ? <TableContainer component={Paper}>
-                    <Table size="small" aria-label="a dense table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Bill number</TableCell>
-                                <TableCell align="right">Total amount of items</TableCell>
-                                <TableCell align="right">Total price of items</TableCell>
-                                <TableCell align="right">Date and Time</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {bills.map(bill => <Bills bill={bill}
-                                                      key={bill.id}/>)}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                ?
+                <div>
+                    <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Bill number</TableCell>
+                                    <TableCell>Total amount of items</TableCell>
+                                    <TableCell>Total price of items</TableCell>
+                                    <TableCell>Date and Time</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {bills.map(bill => <Bills bill={bill}
+                                                          key={bill.id}/>)}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Pagination count={pageCount}
+                                showFirstButton
+                                showLastButton
+                                page={pageNumber + 1}
+                                onChange={handleChangePage}/>
+                </div>
                 : 'Empty list')}
-            <Pagination count={pageCount}
-                        showFirstButton
-                        showLastButton
-                        page={pageNumber + 1}
-                        onChange={handleChangePage}/>
+
             <Button variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add bill</Button>
@@ -112,9 +117,9 @@ export default () => {
                     })}
                     >{bill.billNumber}</a>
                 </TableCell>
-                <TableCell align="right">{bill.totalProductAmount}</TableCell>
-                <TableCell align="right">{bill.totalPrice}</TableCell>
-                <TableCell align="right">{bill.registrationDateTime}</TableCell>
+                <TableCell align="left">{bill.totalProductAmount}</TableCell>
+                <TableCell align="left">{bill.totalPrice}</TableCell>
+                <TableCell align="left">{editToLocalTimeAndGet(bill.registrationDateTime)}</TableCell>
             </TableRow>
         )
     }

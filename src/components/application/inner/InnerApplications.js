@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import {AuthContext} from "../../../context/authContext";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import {editToLocalTimeAndGet} from "../../../util/DateAndTime";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -168,9 +169,9 @@ export default () => {
                 </TableCell>
                 <TableCell align="right">{application.sourceLocation.identifier}</TableCell>
                 <TableCell align="right">{application.destinationLocation.identifier}</TableCell>
-                <TableCell align="right">{application.updatingDateTime}</TableCell>
-                <TableCell align="right">{application.updater.firstName} {application.updater.lastName}</TableCell>
-                <TableCell align="right">{application.applicationStatus}</TableCell>
+                <TableCell>{editToLocalTimeAndGet(application.updatingDateTime)}</TableCell>
+                <TableCell>{application.updater.firstName} {application.updater.lastName}</TableCell>
+                <TableCell>{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</TableCell>
             </TableRow>
         )
     }

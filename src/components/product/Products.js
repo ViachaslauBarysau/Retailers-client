@@ -153,35 +153,37 @@ export default () => {
             {!isLoading && !error &&
             <form onSubmit={removeProducts}>
                 {(products.length !== 0
-                    ? <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a dense table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell>UPC</TableCell>
-                                    <TableCell>Label</TableCell>
-                                    <TableCell>Category</TableCell>
-                                    <TableCell>Units</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {products.map(product => <Product product={product}
-                                                                  key={product.id}
-                                                                  onChange={handleChange}
-                                                                  onClick={() => setDisplayEditModal({
-                                                                      displayModal: true,
-                                                                      productId: product.id
-                                                                  })}
-                                />)}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    ? <div>
+                        <TableContainer component={Paper}>
+                            <Table size="small" aria-label="a dense table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" width={10}></TableCell>
+                                        <TableCell>UPC</TableCell>
+                                        <TableCell>Label</TableCell>
+                                        <TableCell>Category</TableCell>
+                                        <TableCell>Units</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {products.map(product => <Product product={product}
+                                                                      key={product.id}
+                                                                      onChange={handleChange}
+                                                                      onClick={() => setDisplayEditModal({
+                                                                          displayModal: true,
+                                                                          productId: product.id
+                                                                      })}
+                                    />)}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Pagination count={pageCount}
+                                    showFirstButton
+                                    showLastButton
+                                    page={pageNumber + 1}
+                                    onChange={handleChangePage}/>
+                    </div>
                     : 'Empty list')}
-                <Pagination count={pageCount}
-                            showFirstButton
-                            showLastButton
-                            page={pageNumber + 1}
-                            onChange={handleChangePage}/>
                 <Button variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add product</Button>
                 <Button variant="contained"
@@ -191,7 +193,7 @@ export default () => {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <ProductCreateModal handleOpenSnackBar={(message, severity) =>
-                                                            handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                        needrefresh={() => setNeedRefresh(!needRefresh)}
                                                        onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ProductEditModal productId={displayEditModal.productId}
@@ -214,18 +216,18 @@ export default () => {
 
 function Product(props) {
     return (
-        <TableRow key={props.product.id}>
+        <TableRow align="left" key={props.product.id}>
             <TableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.product.id}
                        name={"products"}
                        onChange={props.onChange}/>
             </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.product.upc}</a>
+            <TableCell align="left"><a href="#" onClick={props.onClick}>{props.product.upc}</a>
             </TableCell>
-            <TableCell>{props.product.label}</TableCell>
-            <TableCell>{props.product.category.name}</TableCell>
-            <TableCell>{props.product.volume}</TableCell>
+            <TableCell align="left">{props.product.label}</TableCell>
+            <TableCell align="left">{props.product.category.name}</TableCell>
+            <TableCell align="left">{props.product.volume}</TableCell>
         </TableRow>
     )
 }
