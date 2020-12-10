@@ -4,8 +4,17 @@ import {Button, TextField} from "@material-ui/core";
 import {AuthContext} from "../../../context/authContext";
 import Grid from "@material-ui/core/Grid";
 import EditableActRecord from "./record/EditableActRecord";
-
+import { makeStyles } from '@material-ui/core/styles';
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+    },
+}));
 const ActCreateModal = (props) => {
+
+
     const {user} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
@@ -142,7 +151,7 @@ const ActCreateModal = (props) => {
         });
         props.onCloseModal();
     }
-
+    const classes = useStyles();
     return (
         <div>
             {locationProducts &&
@@ -168,9 +177,11 @@ const ActCreateModal = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
+                        <div className={classes.root}>
                         <Button onClick={addRow}
                                 variant="contained">
                             Add product</Button>
+                        </div>
                         <TextField value={dateTime}
                                    margin="dense"
                                    name="date"
@@ -179,6 +190,7 @@ const ActCreateModal = (props) => {
                                    variant="outlined"
                                    label="Date and time"
                                    disabled/>
+                        <div className={classes.root}>
                         <Button fullWidth={false}
                                 type="submit"
                                 variant="contained">Add act</Button>
@@ -187,12 +199,12 @@ const ActCreateModal = (props) => {
                                 type="button"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
+                        </div>
                     </form>
                 </div>
             </div>
             }
         </div>
-
     )
 }
 
