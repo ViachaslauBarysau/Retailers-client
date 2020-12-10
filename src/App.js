@@ -10,7 +10,7 @@ import Structure from "./Structure";
 function App() {
     return (
         <React.Fragment>
-        <Structure/>
+            <Structure/>
         </React.Fragment>
     )
 }

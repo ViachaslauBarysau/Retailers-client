@@ -1,4 +1,3 @@
-import '../../../UpperModal.css';
 import React from 'react';
 import {Button, TextField} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";

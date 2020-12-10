@@ -3,23 +3,22 @@ import { Switch, Route } from "react-router-dom";
 
 import withAuth from "../hoc/withAuth";
 
-import Index from '../pages/Index';
-import Login from '../pages/Login';
+import Index from './Index';
+import Login from './Login';
 import Users from './user/Users';
 import Customers from './customer/Customers';
 import WriteOffActs from './act/WriteOffActs';
 import Products from './product/Products';
 import Bills from './bill/Bills';
 import Locations from './location/Locations';
-// import SupplierApplications from './application/supplier/SupplierApplications';
-import Test from "../pages/Test";
+
 import {AuthContext} from "../context/authContext";
-import {useStyles} from "../App.styles";
 import SupplierApplications from "./application/supplier/SupplierApplications";
 import Category from './category/Category';
 import InnerApplications from "./application/inner/InnerApplications";
 import LocationProducts from "./locationProducts/LocationProducts";
 import Suppliers from "./supplier/Suppliers";
+import UserProfilePage from "./userProfile/UserProfilePage";
 
 export default () => {
     const { user } = useContext(AuthContext);
@@ -44,6 +43,7 @@ export default () => {
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                                 <Route path={'/location_products'} component={withAuth(LocationProducts)} />
                                 <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)} />
                                 <Route component={Index} />
                             </Switch>
                         </div>
@@ -147,8 +147,6 @@ export default () => {
                                 <Route path={'/locations'} component={withAuth(Locations)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
-                                <Route path={'/test'} component={Test} />
-                                {/*<Route component={Login} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>

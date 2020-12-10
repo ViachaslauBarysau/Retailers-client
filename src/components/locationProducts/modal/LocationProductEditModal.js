@@ -1,9 +1,11 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import React, {useContext, useEffect, useState} from 'react';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
+import {AuthContext} from "../../../context/authContext";
 
 const LocationProductEditModal = (props) => {
-
+    const {logout} = useContext(AuthContext);
     let [locationProduct, setProduct] = useState(null);
 
     useEffect(() => {
@@ -13,13 +15,20 @@ const LocationProductEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locationProduct => {
                 setProduct(locationProduct);
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
-
-    console.log(locationProduct)
 
     return (
         <div>
@@ -70,7 +79,7 @@ const LocationProductEditModal = (props) => {
                                    variant="outlined"
                                    label="Total units number"
                                    disabled/>
-                        <Button fullWidth={false}
+                        <Button my={1} fullWidth={false}
                                 id="closeButton"
                                 type="button"
                                 onClick={props.onCloseModal}

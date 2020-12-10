@@ -1,7 +1,7 @@
 import CustomerCreateModal from './modal/CustomerCreateModal';
 import CustomerEditModal from './modal/CustomerEditModal';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -9,7 +9,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from "@material-ui/lab/Pagination";
+import {StyledTableRow} from "../Table"
+import {StyledTableCell} from "../Table"
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -167,11 +168,11 @@ export default function Customers() {
                                aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Registration date</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Admin's email</TableCell>
+                                    <StyledTableCell width={10}></StyledTableCell>
+                                    <StyledTableCell>Name</StyledTableCell>
+                                    <StyledTableCell align="right">Registration date</StyledTableCell>
+                                    <StyledTableCell align="right">Status</StyledTableCell>
+                                    <StyledTableCell align="right">Admin's email</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -196,11 +197,11 @@ export default function Customers() {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>
                     Add customer
                 </Button>
-                <Button variant="contained"
+                <Button m={1} variant="contained"
                         type="submit"
                         disabled={selectedCustomersNumber === 0}>
                     Enable/Disable
@@ -233,19 +234,19 @@ export default function Customers() {
 
 function Customer(props) {
     return (
-        <TableRow key={props.customer.id}>
-            <TableCell component="th" scope="row">
+        <StyledTableRow key={props.customer.id}>
+            <StyledTableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.customer.id}
                        name={"customers"}
                        onChange={props.onChange}/>
-            </TableCell>
-            <TableCell>
+            </StyledTableCell>
+            <StyledTableCell>
                 <a href="#" onClick={props.onClick}>{props.customer.name}</a>
-            </TableCell>
-            <TableCell>{props.customer.registrationDate}</TableCell>
-            <TableCell>{props.customer.customerStatus}</TableCell>
-            <TableCell>{props.customer.email}</TableCell>
-        </TableRow>
+            </StyledTableCell>
+            <StyledTableCell align="right">{props.customer.registrationDate}</StyledTableCell>
+            <StyledTableCell align="right">{props.customer.customerStatus}</StyledTableCell>
+            <StyledTableCell align="right">{props.customer.email}</StyledTableCell>
+        </StyledTableRow>
     )
 }

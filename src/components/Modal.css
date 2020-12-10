@@ -12,7 +12,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 1210;
     background-color: rgba(0,0,0,0.3);
   }
 
@@ -27,21 +27,22 @@
     overflow-y: auto;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
-    z-index: 101;
+    z-index: 1211;
     padding: 40px;
     /*overflow: scroll;*/
   }
 
   .scrollable-box {
+    padding: 10px;
     background-color: #eaf2f8;
-    width: 600px;
+    width: 520px;
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
   }
 
 .scrollable-box-edit-modal {
-  width: 600px;
+  width: 520px;
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;

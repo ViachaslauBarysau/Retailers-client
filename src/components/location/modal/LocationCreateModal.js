@@ -1,7 +1,8 @@
 import '../../Modal.css';
 import React, {useContext, useState} from 'react';
 import StateSelect from '../../StateSelect';
-import {Button, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
+import Button from '../../Button';
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -31,9 +32,7 @@ const LocationCreateModal = (props) => {
             },
             body: JSON.stringify({
                 identifier: e.target.identifier.value,
-                customer: {
-                    id: JSON.parse(localStorage.getItem("user")).customer.id
-                },
+                customer: user.customer,
                 address: {
                     state:
                         {
@@ -50,21 +49,22 @@ const LocationCreateModal = (props) => {
                 status: "ACTIVE"
             }),
             method: "POST"
-        }).then(res => {
-            switch (res.status) {
-                case 201:
-                    props.handleOpenSnackBar("Location created!", "success");
-                    props.onCloseModal();
-                    props.needrefresh();
-                    break;
-                case 401:
-                    logout();
-                    break;
-                case 451:
-                    props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                    break;
-            }
         })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Location created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
             });
@@ -131,10 +131,10 @@ const LocationCreateModal = (props) => {
                                variant="outlined"
                                label="Total capacity"
                                required/>
-                    <Button fullWidth={false}
+                    <Button my={1} fullWidth={false}
                             type="submit"
                             variant="contained">Add location</Button>
-                    <Button fullWidth={false}
+                    <Button m={1} fullWidth={false}
                             id="closeButton"
                             type="button"
                             onClick={props.onCloseModal}

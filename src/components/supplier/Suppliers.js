@@ -1,6 +1,6 @@
 import SupplierModal from './modal/SupplierCreateModal';
-import React, {useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import React, {useContext, useEffect, useState} from 'react';
+import Button from '../Button';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import SupplierEditModal from "./modal/SupplierEditModal";
 import Paper from "@material-ui/core/Paper";
@@ -14,8 +14,12 @@ import Pagination from "@material-ui/lab/Pagination";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
+import {AuthContext} from "../../context/authContext";
+import ProductEditModal from "../product/modal/ProductEditModal";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [suppliersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -87,7 +91,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(suppliersPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -127,7 +137,13 @@ export default () => {
             body: JSON.stringify(supplierIdList),
             method: "DELETE"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status == 201) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(() => {
                 handleOpenSnackBar("Completed successfully!", "success");
                 setNeedRefresh(!needRefresh);
@@ -150,10 +166,10 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell width={10}></TableCell>
-                                    <TableCell>Full name</TableCell>
-                                    <TableCell>Identifier</TableCell>
-                                    <TableCell>Status</TableCell>
+                                    <StyledTableCell width={10}></StyledTableCell>
+                                    <StyledTableCell>Full name</StyledTableCell>
+                                    <StyledTableCell>Identifier</StyledTableCell>
+                                    <StyledTableCell>Status</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -178,16 +194,22 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add supplier</Button>
-                <Button variant="contained"
+                <Button m={1} variant="contained"
                         type="submit"
                         disabled={selectedSuppliersNumber === 0}>Enable/Disable</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <SupplierModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <SupplierModal andleOpenSnackBar={(message, severity) =>
+                                                     handleOpenSnackBar(message, severity)}
+                                                  needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                  onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierEditModal userId={displayEditModal.supplierId}
+                                                                 andleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                  onCloseModal={() => setDisplayEditModal({
                                                                      displayModal: false,
                                                                      supplierId: null
@@ -202,19 +224,18 @@ export default () => {
     );
 }
 
-
 function Supplier(props) {
     return (
-        <TableRow key={props.supplier.id}>
-            <TableCell component="th" scope="row">
+        <StyledTableRow key={props.supplier.id}>
+            <StyledTableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.supplier.id}
                        name={"suppliers"}
                        onChange={props.onChange}/>
-            </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.supplier.fullName}</a></TableCell>
-            <TableCell>{props.supplier.identifier}</TableCell>
-            <TableCell>{props.supplier.supplierStatus}</TableCell>
-        </TableRow>
+            </StyledTableCell>
+            <StyledTableCell><a href="#" onClick={props.onClick}>{props.supplier.fullName}</a></StyledTableCell>
+            <StyledTableCell>{props.supplier.identifier}</StyledTableCell>
+            <StyledTableCell>{props.supplier.supplierStatus}</StyledTableCell>
+        </StyledTableRow>
     )
 }

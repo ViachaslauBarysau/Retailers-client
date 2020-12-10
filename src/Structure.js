@@ -16,40 +16,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import SideBar from "./components/SideBar";
 import UserProfile from "./components/UserProfile";
 import Routes from "./components/Routes";
-const drawerWidth = 240;
-
-
-const useStyles = makeStyles((theme) => ({
-    menuLink: {
-        marginRight: theme.spacing(2),
-        color: theme.palette.common.white
-    },
-    lastMenuLink: {
-        flexGrow: 1,
-        marginRight: theme.spacing(2),
-        color: theme.palette.common.white
-    },
-    root: {
-        display: 'flex',
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    drawerContainer: {
-        overflow: 'auto',
-    },
-    content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-    },
-}));
+import { useStyles } from './App.styles';
 
 export default function ClippedDrawer() {
     const classes = useStyles();

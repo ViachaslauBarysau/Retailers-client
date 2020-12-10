@@ -1,19 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import {StyledTableRow} from "../Table"
+import {StyledTableCell} from "../Table"
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import CategoryEditModal from './modal/CategoryEditModal';
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import TablePagination from "@material-ui/core/TablePagination";
+import {AuthContext} from "../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [categoriesData, setData] = useState({
         isLoading: false,
         error: null,
@@ -74,7 +77,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(categoriesPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -106,8 +115,8 @@ export default () => {
                     <Table size="small" aria-label="a dense table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Category name</TableCell>
-                                <TableCell align="right">Category tax</TableCell>
+                                <StyledTableCell>Category name</StyledTableCell>
+                                <StyledTableCell>Category tax</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -146,16 +155,16 @@ export default () => {
 
     function Category({category}) {
         return (
-            <TableRow key={category.id}>
-                <TableCell component="th" scope="row">
+            <StyledTableRow key={category.id}>
+                <StyledTableCell component="th" scope="row">
                     <a href="#" onClick={() => setDisplayEditModal({
                         displayModal: true,
                         categoryId: category.id
                     })}
                     >{category.name}</a>
-                </TableCell>
-                <TableCell align="right">{category.categoryTax}</TableCell>
-            </TableRow>
+                </StyledTableCell>
+                <StyledTableCell>{category.categoryTax}</StyledTableCell>
+            </StyledTableRow>
         )
     }
 }

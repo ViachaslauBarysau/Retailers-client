@@ -1,12 +1,15 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Button, TextField} from "@material-ui/core";
+import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 import Grid from "@material-ui/core/Grid";
 import EditableActRecord from "./record/EditableActRecord";
+import { makeStyles } from '@material-ui/core/styles';
+import { useStyles } from '../../../App.styles';
+import TextField from "@material-ui/core/TextField";
 
 const ActCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
             key: new Date().getTime(),
@@ -26,10 +29,19 @@ const ActCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locationProducts => {
                 setLocationProducts(locationProducts.content)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
     const addRow = (e) => {
@@ -132,6 +144,7 @@ const ActCreateModal = (props) => {
             },
             body: JSON.stringify({
                 writeOffActNumber: Number(e.target.actNumber.value),
+                customer: user.customer,
                 location: user.location,
                 actDateTime: dateTime,
                 writeOffActRecords: getRecordsList(),
@@ -139,8 +152,25 @@ const ActCreateModal = (props) => {
                 totalProductSum: calculateCost()
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Act created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -168,7 +198,7 @@ const ActCreateModal = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
-                        <Button onClick={addRow}
+                        <Button my={1} onClick={addRow}
                                 variant="contained">
                             Add product</Button>
                         <TextField value={dateTime}
@@ -179,10 +209,10 @@ const ActCreateModal = (props) => {
                                    variant="outlined"
                                    label="Date and time"
                                    disabled/>
-                        <Button fullWidth={false}
+                        <Button my={1} fullWidth={false}
                                 type="submit"
                                 variant="contained">Add act</Button>
-                        <Button fullWidth={false}
+                        <Button m={1} fullWidth={false}
                                 id="closeButton"
                                 type="button"
                                 onClick={props.onCloseModal}
@@ -192,7 +222,6 @@ const ActCreateModal = (props) => {
             </div>
             }
         </div>
-
     )
 }
 

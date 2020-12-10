@@ -1,7 +1,8 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
 
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 
 const CategoryEditModal = (props) => {
@@ -38,7 +39,10 @@ const CategoryEditModal = (props) => {
             })
             .then(category => {
                 setCategory(category)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
 
@@ -104,9 +108,9 @@ const CategoryEditModal = (props) => {
                                    }}
                                    required/>
                         <br/>
-                        <Button type="submit"
+                        <Button my={1} type="submit"
                                 variant="contained">Edit category</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

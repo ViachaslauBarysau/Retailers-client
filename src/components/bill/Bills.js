@@ -1,20 +1,23 @@
 import BillCreateModal from './modal/BillCreateModal';
-import React, {useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import React, {useContext, useEffect, useState} from 'react';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import BillEditModal from "./modal/BillEditModal";
-import Pagination from "@material-ui/lab/Pagination";
+import {StyledTableCell, StyledTableRow} from "../Table"
 import TablePagination from '@material-ui/core/TablePagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import {editToLocalTimeAndGet} from "../../util/DateAndTime";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
+import {AuthContext} from "../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [billsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -25,11 +28,37 @@ export default () => {
     const [pageNumber, setPageNumber] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
 
+    const [needRefresh, setNeedRefresh] = useState(false);
+
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         billId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangeRowsPerPage = (event) => {
         setElementsOnPage(+event.target.value);
@@ -48,7 +77,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(billsPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -67,7 +102,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber, elementsOnPage]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     const {isLoading, error, bills} = billsData;
 
@@ -82,10 +117,10 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Bill number</TableCell>
-                                    <TableCell>Total amount of items</TableCell>
-                                    <TableCell>Total price of items</TableCell>
-                                    <TableCell>Date and Time</TableCell>
+                                    <StyledTableCell>Bill number</StyledTableCell>
+                                    <StyledTableCell>Total amount of items</StyledTableCell>
+                                    <StyledTableCell>Total price of items</StyledTableCell>
+                                    <StyledTableCell>Date and Time</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -106,34 +141,45 @@ export default () => {
 
                 </div>
                 : 'Empty list')}
-            <Button variant="contained"
+            <Button my={1} variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add bill</Button>
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <BillCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <BillEditModal billId={displayEditModal.billId}
+            {displayCreateModal && <BillCreateModal handleOpenSnackBar={(message, severity) =>
+                                                        handleOpenSnackBar(message, severity)}
+                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayEditModal.displayModal && <BillEditModal handleOpenSnackBar={(message, severity) =>
+                                                                handleOpenSnackBar(message, severity)}
+                                                             needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                             billId={displayEditModal.billId}
                                                              onCloseModal={() => setDisplayEditModal({
                                                                  displayModal: false,
                                                                  billId: null
                                                              })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 
     function Bills({bill}) {
         return (
-            <TableRow key={bill.billNumber}>
-                <TableCell component="th" scope="row">
+            <StyledTableRow key={bill.billNumber}>
+                <StyledTableCell component="th" scope="row">
                     <a href="#" onClick={() => setDisplayEditModal({
                         displayModal: true,
                         billId: bill.id
                     })}
                     >{bill.billNumber}</a>
-                </TableCell>
-                <TableCell align="left">{bill.totalProductAmount}</TableCell>
-                <TableCell align="left">{bill.totalPrice}</TableCell>
-                <TableCell align="left">{editToLocalTimeAndGet(bill.registrationDateTime)}</TableCell>
-            </TableRow>
+                </StyledTableCell>
+                <StyledTableCell align="left">{bill.totalProductAmount}</StyledTableCell>
+                <StyledTableCell align="left">{bill.totalPrice}</StyledTableCell>
+                <StyledTableCell align="left">{editToLocalTimeAndGet(bill.registrationDateTime)}</StyledTableCell>
+            </StyledTableRow>
         )
     }
 }

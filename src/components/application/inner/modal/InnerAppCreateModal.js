@@ -1,7 +1,8 @@
 import '../../../Modal.css';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../../Button';
 import Grid from "@material-ui/core/Grid";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../../context/authContext";
@@ -194,8 +195,25 @@ const InnerAppCreateModal = (props) => {
                 totalUnitNumber: calculateVolume()
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Application created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Application number should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (
@@ -259,14 +277,12 @@ const InnerAppCreateModal = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
-                        <br/>
-                        <Button onClick={addRow}
+                        <Button my={1} onClick={addRow}
                                 variant="contained">Add product</Button>
                         <br/>
-                        <br/>
-                        <Button type="submit"
+                        <Button my={1} type="submit"
                                 variant="contained">Save application</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

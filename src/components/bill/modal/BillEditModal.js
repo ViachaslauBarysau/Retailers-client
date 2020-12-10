@@ -1,7 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
-
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -12,7 +12,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 
 const BillCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [bill, setIBill] = useState(null);
 
     useEffect(() => {
@@ -22,10 +22,19 @@ const BillCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(bill => {
                 setIBill(bill)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
 
@@ -104,7 +113,7 @@ const BillCreateModal = (props) => {
                                    value={bill.totalPrice}
                                    label="Total price"
                                    disabled/>
-                        <Button id="closeButton"
+                        <Button my={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

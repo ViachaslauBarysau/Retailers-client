@@ -1,6 +1,7 @@
 import '../../../Modal.css';
-import React, {useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import React, {useContext, useEffect, useState} from 'react';
+import {TextField} from '@material-ui/core';
+import Button from '../../../Button';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -10,9 +11,11 @@ import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
+import {AuthContext} from "../../../../context/authContext";
 
 
 const SupplierAppEditModal = (props) => {
+    const {logout} = useContext(AuthContext);
     const [application, setApplication] = useState(null)
     const [locations, setLocations] = useState(null)
 
@@ -69,21 +72,21 @@ const SupplierAppEditModal = (props) => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
-            method: "PUT",
             body: JSON.stringify({
                     ...application,
                     destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0]
-                })
-        });
-        props.onCloseModal();
-        props.needrefresh();
+                }),
+            method: "PUT"
+        })
+            .then(res => {
+                if (res.status === 401) {
+                    logout();
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
-
-    const useStyles = makeStyles({
-        table: {
-            minWidth: 650,
-        },
-    });
 
     return (
         <div>
@@ -151,7 +154,7 @@ const SupplierAppEditModal = (props) => {
                                    disabled/>
                         <div className="scrollable-box-edit-modal">
                             <TableContainer component={Paper}>
-                                <Table className={useStyles.table} size="small" aria-label="a dense table">
+                                <Table size="small" aria-label="a dense table">
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>UPC</TableCell>
@@ -203,17 +206,16 @@ const SupplierAppEditModal = (props) => {
                                        disabled/>
                         </div>
                         }
-                        <br/>
-                        <Button type="submit"
+                        <Button m={1} type="submit"
                                 variant="contained"
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward
                             application</Button>
-                        <Button variant="contained"
+                        <Button m={1} variant="contained"
                                 onClick={acceptProducts}
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING" ||
                                 application.totalUnitNumber >= application.destinationLocation.availableCapacity}>Accept
                             products</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
