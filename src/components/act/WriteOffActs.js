@@ -1,20 +1,24 @@
 import ActCreateModal from './modal/ActCreateModal';
 import ActEditModal from './modal/ActEditModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import {StyledTableRow} from "../Table"
-import {StyledTableCell} from "../Table"
+import {StyledTableCell, StyledTableRow} from "../Table"
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 import TablePagination from "@material-ui/core/TablePagination";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import LocationCreateModal from "../location/modal/LocationCreateModal";
+import {AuthContext} from "../../context/authContext";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [actsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -25,11 +29,37 @@ export default () => {
     const [pageNumber, setPageNumber] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
 
+    const [needRefresh, setNeedRefresh] = useState(false);
+
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
         actId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangeRowsPerPage = (event) => {
         setElementsOnPage(+event.target.value);
@@ -48,7 +78,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(actsPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -67,7 +103,7 @@ export default () => {
                     error: e
                 }))
             })
-    }, [pageNumber, elementsOnPage]);
+    }, [pageNumber, needRefresh, elementsOnPage]);
 
     const {isLoading, error, acts} = actsData;
 
@@ -106,13 +142,24 @@ export default () => {
                     onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act</Button>
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <ActCreateModal handleOpenSnackBar={(message, severity) =>
+                                                        handleOpenSnackBar(message, severity)}
+                                                   needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                   onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ActEditModal actId={displayEditModal.actId}
+                                                            handleOpenSnackBar={(message, severity) =>
+                                                                handleOpenSnackBar(message, severity)}
+                                                            needrefresh={() => setNeedRefresh(!needRefresh)}
                                                             onCloseModal={() => setDisplayEditModal({
                                                                 displayModal: false,
                                                                 actId: null
                                                             })}
             />}
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 

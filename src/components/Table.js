@@ -8,8 +8,10 @@ export const StyledTableCell = withStyles((theme) => ({
         backgroundColor: theme.palette.common.black,
         color: theme.palette.common.white,
         fontSize: 16,
+        height: 45
     },
     body: {
+        height: 40,
         fontSize: 14,
     },
 }))(TableCell);

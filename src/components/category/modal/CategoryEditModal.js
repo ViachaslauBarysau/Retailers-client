@@ -39,7 +39,10 @@ const CategoryEditModal = (props) => {
             })
             .then(category => {
                 setCategory(category)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
 

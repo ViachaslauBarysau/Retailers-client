@@ -32,9 +32,7 @@ const LocationCreateModal = (props) => {
             },
             body: JSON.stringify({
                 identifier: e.target.identifier.value,
-                customer: {
-                    id: JSON.parse(localStorage.getItem("user")).customer.id
-                },
+                customer: user.customer,
                 address: {
                     state:
                         {
@@ -51,21 +49,22 @@ const LocationCreateModal = (props) => {
                 status: "ACTIVE"
             }),
             method: "POST"
-        }).then(res => {
-            switch (res.status) {
-                case 201:
-                    props.handleOpenSnackBar("Location created!", "success");
-                    props.onCloseModal();
-                    props.needrefresh();
-                    break;
-                case 401:
-                    logout();
-                    break;
-                case 451:
-                    props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                    break;
-            }
         })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Location created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
             });

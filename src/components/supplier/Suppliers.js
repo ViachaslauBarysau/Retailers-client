@@ -1,5 +1,5 @@
 import SupplierModal from './modal/SupplierCreateModal';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Button from '../Button';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import SupplierEditModal from "./modal/SupplierEditModal";
@@ -15,8 +15,11 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
+import {AuthContext} from "../../context/authContext";
+import ProductEditModal from "../product/modal/ProductEditModal";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [suppliersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -88,7 +91,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(suppliersPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -128,7 +137,13 @@ export default () => {
             body: JSON.stringify(supplierIdList),
             method: "DELETE"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status == 201) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(() => {
                 handleOpenSnackBar("Completed successfully!", "success");
                 setNeedRefresh(!needRefresh);
@@ -187,8 +202,14 @@ export default () => {
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <SupplierModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <SupplierModal andleOpenSnackBar={(message, severity) =>
+                                                     handleOpenSnackBar(message, severity)}
+                                                  needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                  onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierEditModal userId={displayEditModal.supplierId}
+                                                                 andleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                  onCloseModal={() => setDisplayEditModal({
                                                                      displayModal: false,
                                                                      supplierId: null
@@ -202,7 +223,6 @@ export default () => {
         </div>
     );
 }
-
 
 function Supplier(props) {
     return (

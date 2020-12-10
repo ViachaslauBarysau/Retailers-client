@@ -92,7 +92,6 @@ const UserEditModal = (props) => {
                 } else if (res.status === 401) {
                     logout();
                 }
-                ;
             })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -13,8 +13,10 @@ import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
+import {AuthContext} from "../../context/authContext";
 
 export default () => {
+    const {logout} = useContext(AuthContext);
     const [productsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -30,6 +32,30 @@ export default () => {
         displayModal: false,
         locProductId: null
     });
+
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const handleChangeRowsPerPage = (event) => {
         setElementsOnPage(+event.target.value);
@@ -50,7 +76,13 @@ export default () => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locProductsPage => {
                 setData((prevState) => ({
                     ...prevState,
@@ -72,8 +104,6 @@ export default () => {
     }, [pageNumber, elementsOnPage]);
 
     const {isLoading, error, locProducts} = productsData;
-
-    console.log(productsData)
 
     return (
         <div>
@@ -112,7 +142,9 @@ export default () => {
             </div>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <ActCreateModal onCloseModal={() => setDisplayCreateModal(false)}/>}
+            {displayCreateModal && <ActCreateModal handleOpenSnackBar={(message, severity) =>
+                                                        handleOpenSnackBar(message, severity)}
+                                                   onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <LocationProductEditModal locProductId={displayEditModal.locProductId}
                                                                         onCloseModal={() => setDisplayEditModal({
                                                                             displayModal: false,

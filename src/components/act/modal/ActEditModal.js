@@ -1,5 +1,5 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import TableContainer from "@material-ui/core/TableContainer";
@@ -9,8 +9,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import {AuthContext} from "../../../context/authContext";
 
 const ActEditModal = (props) => {
+    const {logout} = useContext(AuthContext);
     let [act, setAct] = useState(null);
 
     useEffect(() => {
@@ -20,10 +22,19 @@ const ActEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(act => {
                 setAct(act);
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
     return (
@@ -74,8 +85,7 @@ const ActEditModal = (props) => {
                                    name="date"
                                    size="small"
                                    fullWidth={true}
-                                   value={new Date(new Date(act.actDateTime).getTime()
-                                       - new Date().getTimezoneOffset() * 60 * 1000)}
+                                   value={act.actDateTime}
                                    variant="outlined"
                                    label="Date and time"
                                    disabled/>

@@ -8,7 +8,7 @@ import EditableBillRecord from "./record/EditableBillRecord";
 import {AuthContext} from "../../../context/authContext";
 
 const BillCreateModal = (props) => {
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
             key: new Date().getTime(),
@@ -29,10 +29,19 @@ const BillCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locationProducts => {
                 setLocationProducts(locationProducts.content)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
     const addRow = (e) => {
@@ -83,16 +92,16 @@ const BillCreateModal = (props) => {
 
 
                 break;
-                case "amount":
+            case "amount":
+                setItemRows((prevState) => ({
+                        ...prevState,
+                        items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
+                    })
+                );
+                break;
+            default:
+                if (itemRows.items.length > 1) {
                     setItemRows((prevState) => ({
-                            ...prevState,
-                            items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
-                        })
-                    );
-                    break;
-                default:
-                    if (itemRows.items.length > 1) {
-                        setItemRows((prevState) => ({
                             ...prevState,
                             items: prevState.items.filter((item) => (item.key !== key))
                         })
@@ -149,10 +158,9 @@ const BillCreateModal = (props) => {
             },
             body: JSON.stringify({
                 billNumber: Number(e.target.billNumber.value),
+                customer: user.customer,
                 location: user.location,
-                shopManager: {
-                    id: user.id
-                },
+                shopManager: user,
                 registrationDateTime: dateTime,
                 recordList: getRecordsList(),
                 totalProductAmount: calculateAmount(),
@@ -160,8 +168,25 @@ const BillCreateModal = (props) => {
                 totalCost: calculateCost()
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Act created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (

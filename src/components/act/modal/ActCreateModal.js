@@ -9,8 +9,7 @@ import { useStyles } from '../../../App.styles';
 import TextField from "@material-ui/core/TextField";
 
 const ActCreateModal = (props) => {
-    const classes = useStyles();
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [itemRows, setItemRows] = useState({
         items: [{
             key: new Date().getTime(),
@@ -30,10 +29,19 @@ const ActCreateModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locationProducts => {
                 setLocationProducts(locationProducts.content)
-            });
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
     }, []);
 
     const addRow = (e) => {
@@ -136,6 +144,7 @@ const ActCreateModal = (props) => {
             },
             body: JSON.stringify({
                 writeOffActNumber: Number(e.target.actNumber.value),
+                customer: user.customer,
                 location: user.location,
                 actDateTime: dateTime,
                 writeOffActRecords: getRecordsList(),
@@ -143,8 +152,25 @@ const ActCreateModal = (props) => {
                 totalProductSum: calculateCost()
             }),
             method: "POST"
-        });
-        props.onCloseModal();
+        })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                        props.handleOpenSnackBar("Act created!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                        break;
+                    case 401:
+                        logout();
+                        break;
+                    case 451:
+                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                        break;
+                }
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            });
     }
 
     return (

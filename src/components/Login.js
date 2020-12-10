@@ -64,7 +64,7 @@ export default (props) => {
                 <Box style={{marginBottom: 40}}>
                     <FormControl
                         fullWidth={true}>
-                        <InputLabel htmlFor="username">Username</InputLabel>
+                        <InputLabel htmlFor="username">Email</InputLabel>
                         <Input type={"text"}
                                error={loginState.loginFailed}
                                value={fields['username']}

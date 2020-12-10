@@ -11,10 +11,8 @@ import WriteOffActs from './act/WriteOffActs';
 import Products from './product/Products';
 import Bills from './bill/Bills';
 import Locations from './location/Locations';
-// import SupplierApplications from './application/supplier/SupplierApplications';
-import Test from "../pages/Test";
+
 import {AuthContext} from "../context/authContext";
-import {useStyles} from "../App.styles";
 import SupplierApplications from "./application/supplier/SupplierApplications";
 import Category from './category/Category';
 import InnerApplications from "./application/inner/InnerApplications";
@@ -147,8 +145,6 @@ export default () => {
                                 <Route path={'/locations'} component={withAuth(Locations)} />
                                 <Route path={'/bills'} component={withAuth(Bills)} />
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
-                                <Route path={'/test'} component={Test} />
-                                {/*<Route component={Login} />*/}
                             </Switch>
                         </div>
                     </React.Fragment>

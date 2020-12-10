@@ -116,11 +116,11 @@ export default () => {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Application number</StyledTableCell>
-                                    <StyledTableCell align="right">Supplier identifier</StyledTableCell>
-                                    <StyledTableCell align="right">Destination location</StyledTableCell>
-                                    <StyledTableCell align="right">Update date and time</StyledTableCell>
-                                    <StyledTableCell align="right">Last updated by</StyledTableCell>
-                                    <StyledTableCell align="right">Status</StyledTableCell>
+                                    <StyledTableCell>Supplier identifier</StyledTableCell>
+                                    <StyledTableCell>Destination location</StyledTableCell>
+                                    <StyledTableCell>Update date and time</StyledTableCell>
+                                    <StyledTableCell>Last updated by</StyledTableCell>
+                                    <StyledTableCell align="center">Status</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -175,11 +175,11 @@ export default () => {
                         appId: application.id
                     })}>{application.applicationNumber}</a>
                 </StyledTableCell>
-                <StyledTableCell align="right">{application.supplier.identifier}</StyledTableCell>
-                <StyledTableCell align="right">{application.destinationLocation.identifier}</StyledTableCell>
-                <StyledTableCell align="right">{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
-                <StyledTableCell align="right">{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
-                <StyledTableCell align="right">{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
+                <StyledTableCell>{application.supplier.identifier}</StyledTableCell>
+                <StyledTableCell>{application.destinationLocation.identifier}</StyledTableCell>
+                <StyledTableCell>{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
+                <StyledTableCell>{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
+                <StyledTableCell>{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
             </StyledTableRow>
         )
     }
