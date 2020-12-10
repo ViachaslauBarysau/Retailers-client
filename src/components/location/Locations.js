@@ -1,6 +1,6 @@
 import LocationCreateModal from './modal/LocationCreateModal';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -15,6 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -173,11 +174,11 @@ export default () => {
                                aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell width={1}></TableCell>
-                                    <TableCell>Identifier</TableCell>
-                                    <TableCell>Type</TableCell>
-                                    <TableCell>Full address</TableCell>
-                                    <TableCell>Available/Total capacity</TableCell>
+                                    <StyledTableCell width={10}></StyledTableCell>
+                                    <StyledTableCell>Identifier</StyledTableCell>
+                                    <StyledTableCell>Type</StyledTableCell>
+                                    <StyledTableCell>Full address</StyledTableCell>
+                                    <StyledTableCell>Available/Total capacity</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -203,9 +204,9 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add location</Button>
-                <Button variant="contained"
+                <Button m={1} variant="contained"
                         type="submit"
                         disabled={selectedLocationsNumber === 0}>Remove location</Button>
             </form>
@@ -235,18 +236,18 @@ export default () => {
 
 function Location(props) {
     return (
-        <TableRow key={props.location.identifier}>
-            <TableCell component="th" scope="row">
+        <StyledTableRow key={props.location.identifier}>
+            <StyledTableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.location.id}
                        name="locations"
                        onChange={props.onChange}/>
-            </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></TableCell>
-            <TableCell>{props.location.locationType}</TableCell>
-            <TableCell>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</TableCell>
-            <TableCell>{props.location.availableCapacity}/{props.location.totalCapacity}</TableCell>
-        </TableRow>
+            </StyledTableCell>
+            <StyledTableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></StyledTableCell>
+            <StyledTableCell>{props.location.locationType === "SHOP" ? "Shop" : "Warehouse"}</StyledTableCell>
+            <StyledTableCell>{props.location.address.state.name}, {props.location.address.city}, {props.location.address.firstAddressLine}</StyledTableCell>
+            <StyledTableCell>{props.location.availableCapacity}/{props.location.totalCapacity}</StyledTableCell>
+        </StyledTableRow>
     )
 }
 

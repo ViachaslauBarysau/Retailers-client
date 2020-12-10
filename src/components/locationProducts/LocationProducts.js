@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -12,6 +12,7 @@ import LocationProductEditModal from "./modal/LocationProductEditModal";
 import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
 
 export default () => {
     const [productsData, setData] = useState({
@@ -84,10 +85,10 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>UPC</TableCell>
-                                    <TableCell>Label</TableCell>
-                                    <TableCell>Category</TableCell>
-                                    <TableCell>Units</TableCell>
+                                    <StyledTableCell>UPC</StyledTableCell>
+                                    <StyledTableCell>Label</StyledTableCell>
+                                    <StyledTableCell>Category</StyledTableCell>
+                                    <StyledTableCell>Units</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -106,7 +107,7 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}> Create write-off act</Button>
             </div>
             }
@@ -123,16 +124,16 @@ export default () => {
 
     function LocationProducts({locProduct}) {
         return (
-            <TableRow key={locProduct.id}>
-                <TableCell><a href="#" onClick={() => setDisplayEditModal({
+            <StyledTableRow key={locProduct.id}>
+                <StyledTableCell><a href="#" onClick={() => setDisplayEditModal({
                     displayModal: true,
                     locProductId: locProduct.id
                 })}>{locProduct.product.upc}</a>
-                </TableCell>
-                <TableCell>{locProduct.product.label}</TableCell>
-                <TableCell>{locProduct.product.category.name}</TableCell>
-                <TableCell>{locProduct.product.volume}</TableCell>
-            </TableRow>
+                </StyledTableCell>
+                <StyledTableCell>{locProduct.product.label}</StyledTableCell>
+                <StyledTableCell>{locProduct.product.category.name}</StyledTableCell>
+                <StyledTableCell>{locProduct.product.volume}</StyledTableCell>
+            </StyledTableRow>
         )
     }
 }

@@ -1,15 +1,15 @@
 import ActCreateModal from './modal/ActCreateModal';
 import ActEditModal from './modal/ActEditModal';
 import React, {useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
+import {StyledTableRow} from "../Table"
+import {StyledTableCell} from "../Table"
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from "@material-ui/lab/Pagination";
 import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 import TablePagination from "@material-ui/core/TablePagination";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -81,10 +81,10 @@ export default () => {
                            aria-label="a dense table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Identifier</TableCell>
-                                <TableCell>Date and Time</TableCell>
-                                <TableCell>Total amount of products</TableCell>
-                                <TableCell>Total price of products</TableCell>
+                                <StyledTableCell>Identifier</StyledTableCell>
+                                <StyledTableCell>Date and Time</StyledTableCell>
+                                <StyledTableCell>Total amount of products</StyledTableCell>
+                                <StyledTableCell>Total price of products</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -102,7 +102,7 @@ export default () => {
                     />
                 </TableContainer>
                 : 'Empty list')}
-            <Button variant="contained"
+            <Button mt={1} variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act</Button>
             {!isLoading && error && 'Error happens'}
@@ -118,17 +118,17 @@ export default () => {
 
     function Acts({act}) {
         return (
-            <TableRow>
-                <TableCell>
+            <StyledTableRow>
+                <StyledTableCell>
                     <a href="#" onClick={() => setDisplayEditModal({
                         displayModal: true,
                         actId: act.id
                     })}>{act.writeOffActNumber}</a>
-                </TableCell>
-                <TableCell>{editToLocalTimeAndGet(act.actDateTime)}</TableCell>
-                <TableCell>{act.totalProductAmount}</TableCell>
-                <TableCell>{act.totalProductSum}</TableCell>
-            </TableRow>
+                </StyledTableCell>
+                <StyledTableCell>{editToLocalTimeAndGet(act.actDateTime)}</StyledTableCell>
+                <StyledTableCell>{act.totalProductAmount}</StyledTableCell>
+                <StyledTableCell>{act.totalProductSum}</StyledTableCell>
+            </StyledTableRow>
         )
     }
 }

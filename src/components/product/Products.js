@@ -1,7 +1,7 @@
 import ProductCreateModal from './modal/ProductCreateModal';
 import ProductEditModal from './modal/ProductEditModal';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -15,6 +15,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -171,11 +172,11 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="left" width={10}></TableCell>
-                                    <TableCell>UPC</TableCell>
-                                    <TableCell>Label</TableCell>
-                                    <TableCell>Category</TableCell>
-                                    <TableCell>Units</TableCell>
+                                    <StyledTableCell align="left" width={10}></StyledTableCell>
+                                    <StyledTableCell>UPC</StyledTableCell>
+                                    <StyledTableCell>Label</StyledTableCell>
+                                    <StyledTableCell>Category</StyledTableCell>
+                                    <StyledTableCell>Units</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -200,9 +201,9 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add product</Button>
-                <Button variant="contained"
+                <Button m={1} variant="contained"
                         type="submit"
                         disabled={selectedProductsNumber === 0}>Remove product</Button>
             </form>
@@ -232,18 +233,18 @@ export default () => {
 
 function Product(props) {
     return (
-        <TableRow align="left" key={props.product.id}>
-            <TableCell component="th" scope="row">
+        <StyledTableRow align="left" key={props.product.id}>
+            <StyledTableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.product.id}
                        name={"products"}
                        onChange={props.onChange}/>
-            </TableCell>
-            <TableCell align="left"><a href="#" onClick={props.onClick}>{props.product.upc}</a>
-            </TableCell>
-            <TableCell align="left">{props.product.label}</TableCell>
-            <TableCell align="left">{props.product.category.name}</TableCell>
-            <TableCell align="left">{props.product.volume}</TableCell>
-        </TableRow>
+            </StyledTableCell>
+            <StyledTableCell align="left"><a href="#" onClick={props.onClick}>{props.product.upc}</a>
+            </StyledTableCell>
+            <StyledTableCell align="left">{props.product.label}</StyledTableCell>
+            <StyledTableCell align="left">{props.product.category.name}</StyledTableCell>
+            <StyledTableCell align="left">{props.product.volume}</StyledTableCell>
+        </StyledTableRow>
     )
 }

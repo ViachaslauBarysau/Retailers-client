@@ -41,7 +41,7 @@ export default (props) => {
                     )}
                 />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
                 <TextField margin="normal"
                            type="number"
                            size="small"
@@ -59,7 +59,7 @@ export default (props) => {
                            }}
                            required/>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <TextField margin="normal"
                            type="number"
                            size="small"

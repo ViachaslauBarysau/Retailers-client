@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Button, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
+import Button from '../../Button';
 import InputLabel from "@material-ui/core/InputLabel";
 import StateSelect from "../../StateSelect";
 import {AuthContext} from "../../../context/authContext";
@@ -194,8 +195,8 @@ const LocationEditModal = (props) => {
                                    label="Location tax"
                                    value={location.locationTax}
                                    disabled/>
-                        <Button variant="contained" type="submit">Edit location</Button>
-                        <Button variant="contained" onClick={props.onCloseModal}>Close</Button>
+                        <Button my={1} variant="contained" type="submit">Edit location</Button>
+                        <Button m={1} variant="contained" onClick={props.onCloseModal}>Close</Button>
                     </form>
                 </div>
             </div>

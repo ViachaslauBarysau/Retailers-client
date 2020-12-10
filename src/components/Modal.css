@@ -33,15 +33,16 @@
   }
 
   .scrollable-box {
+    padding: 10px;
     background-color: #eaf2f8;
-    width: 600px;
+    width: 520px;
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
   }
 
 .scrollable-box-edit-modal {
-  width: 600px;
+  width: 520px;
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;

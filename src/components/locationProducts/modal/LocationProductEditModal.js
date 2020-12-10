@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 
 const LocationProductEditModal = (props) => {
 
@@ -18,8 +19,6 @@ const LocationProductEditModal = (props) => {
                 setProduct(locationProduct);
             });
     }, []);
-
-    console.log(locationProduct)
 
     return (
         <div>
@@ -70,7 +69,7 @@ const LocationProductEditModal = (props) => {
                                    variant="outlined"
                                    label="Total units number"
                                    disabled/>
-                        <Button fullWidth={false}
+                        <Button my={1} fullWidth={false}
                                 id="closeButton"
                                 type="button"
                                 onClick={props.onCloseModal}

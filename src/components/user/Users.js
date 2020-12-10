@@ -1,7 +1,7 @@
 import UserCreateModal from './modal/UserCreateModal';
 import UserEditModal from './modal/UserEditModal';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
+import Button from '../Button';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -15,6 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -168,10 +169,10 @@ export default () => {
                         <Table size="small" aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell width={10}></TableCell>
-                                    <TableCell>Full name</TableCell>
-                                    <TableCell>Birthday</TableCell>
-                                    <TableCell>Role</TableCell>
+                                    <StyledTableCell width={10}></StyledTableCell>
+                                    <StyledTableCell>Full name</StyledTableCell>
+                                    <StyledTableCell>Birthday</StyledTableCell>
+                                    <StyledTableCell>Role</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -197,9 +198,9 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add user</Button>
-                <Button variant="contained"
+                <Button m={1} variant="contained"
                         type="submit"
                         disabled={selectedUsersNumber === 0}>Enable/Disable</Button>
             </form>
@@ -229,17 +230,17 @@ export default () => {
 
 function User(props) {
     return (
-        <TableRow key={props.user.id}>
-            <TableCell component="th" scope="row">
+        <StyledTableRow key={props.user.id}>
+            <StyledTableCell component="th" scope="row">
                 <input type="checkbox"
                        value={props.user.id}
                        name={"users"}
                        onChange={props.onChange}/>
-            </TableCell>
-            <TableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></TableCell>
-            <TableCell>{props.user.birthday}</TableCell>
-            <TableCell>{String(props.user.userRole).toLowerCase().replace("_", " ")}</TableCell>
-        </TableRow>
+            </StyledTableCell>
+            <StyledTableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></StyledTableCell>
+            <StyledTableCell>{props.user.birthday}</StyledTableCell>
+            <StyledTableCell>{String(props.user.userRole).toLowerCase().replace("_", " ")}</StyledTableCell>
+        </StyledTableRow>
     )
 }
 

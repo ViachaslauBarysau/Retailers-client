@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -245,9 +246,9 @@ const UserEditModal = (props) => {
                                    variant="outlined"
                                    label="Status"
                                    disabled/>
-                        <Button type="submit"
+                        <Button my={1} type="submit"
                                 variant="contained">Edit user</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

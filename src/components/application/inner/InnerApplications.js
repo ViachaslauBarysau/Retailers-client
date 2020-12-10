@@ -7,9 +7,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Button from "@material-ui/core/Button";
+import Button from '../../Button';
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from "@material-ui/lab/Pagination";
+import {StyledTableRow} from "../../Table"
+import {StyledTableCell} from "../../Table"
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import {AuthContext} from "../../../context/authContext";
 import Alert from "@material-ui/lab/Alert";
@@ -122,12 +123,12 @@ export default () => {
                                aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Application number</TableCell>
-                                    <TableCell align="right">Source Location</TableCell>
-                                    <TableCell align="right">Destination location</TableCell>
-                                    <TableCell align="right">Update date and time</TableCell>
-                                    <TableCell align="right">Last updated by</TableCell>
-                                    <TableCell align="right">Status</TableCell>
+                                    <StyledTableCell>Application number</StyledTableCell>
+                                    <StyledTableCell align="right">Source Location</StyledTableCell>
+                                    <StyledTableCell align="right">Destination location</StyledTableCell>
+                                    <StyledTableCell align="right">Update date and time</StyledTableCell>
+                                    <StyledTableCell align="right">Last updated by</StyledTableCell>
+                                    <StyledTableCell align="right">Status</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -146,7 +147,7 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button variant="contained"
+                <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add application</Button>
             </form>
             }
@@ -174,19 +175,19 @@ export default () => {
 
     function InnerApplications({application}) {
         return (
-            <TableRow key={application.applicationNumber}>
-                <TableCell component="th" scope="row">
+            <StyledTableRow key={application.applicationNumber}>
+                <StyledTableCell component="th" scope="row">
                     <a href="#" onClick={() => setDisplayEditModal({
                         displayModal: true,
                         appId: application.id
                     })}>{application.applicationNumber}</a>
-                </TableCell>
-                <TableCell align="right">{application.sourceLocation.identifier}</TableCell>
-                <TableCell align="right">{application.destinationLocation.identifier}</TableCell>
-                <TableCell>{editToLocalTimeAndGet(application.updatingDateTime)}</TableCell>
-                <TableCell>{application.updater.firstName} {application.updater.lastName}</TableCell>
-                <TableCell>{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</TableCell>
-            </TableRow>
+                </StyledTableCell>
+                <StyledTableCell align="right">{application.sourceLocation.identifier}</StyledTableCell>
+                <StyledTableCell align="right">{application.destinationLocation.identifier}</StyledTableCell>
+                <StyledTableCell align="right">{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
+                <StyledTableCell align="right">{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
+                <StyledTableCell align="right">{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
+            </StyledTableRow>
         )
     }
 }

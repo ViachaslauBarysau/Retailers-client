@@ -1,7 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
-
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -104,7 +104,7 @@ const BillCreateModal = (props) => {
                                    value={bill.totalPrice}
                                    label="Total price"
                                    disabled/>
-                        <Button id="closeButton"
+                        <Button my={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

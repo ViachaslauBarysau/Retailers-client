@@ -1,6 +1,7 @@
 import '../../../Modal.css';
 import React, {useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core'
+import Button from '../../../Button';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -214,17 +215,16 @@ const SupplierAppEditModal = (props) => {
                                        disabled/>
                         </div>
                         }
-                        <br/>
-                        <Button type="submit"
+                        <Button m={1} type="submit"
                                 variant="contained"
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING"}>Forward
                             application</Button>
-                        <Button variant="contained"
+                        <Button m={1} variant="contained"
                                 onClick={acceptProducts}
                                 disabled={application.applicationStatus === "FINISHED_PROCESSING" ||
                                 application.totalUnitNumber >= application.destinationLocation.availableCapacity}>Accept
                             products</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>

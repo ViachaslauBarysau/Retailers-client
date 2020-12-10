@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {AuthContext} from "../../../context/authContext";
 
@@ -135,10 +136,10 @@ const ProductEditModal = (props) => {
                                    variant="outlined"
                                    label="Units"
                                    disabled/>
-                        <Button fullWidth={false}
+                        <Button my={1} fullWidth={false}
                                 type="submit"
                                 variant="contained">Edit product</Button>
-                        <Button fullWidth={false}
+                        <Button m={1} fullWidth={false}
                                 id="closeButton"
                                 type="button"
                                 onClick={props.onCloseModal}

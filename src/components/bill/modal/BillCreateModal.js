@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import Grid from "@material-ui/core/Grid";
 import EditableBillRecord from "./record/EditableBillRecord";
 
@@ -210,14 +211,12 @@ const BillCreateModal = (props) => {
                             </Grid>
                         </Grid>
                     </div>
-                    <br/>
-                    <Button onClick={addRow}
+                    <Button my={1} onClick={addRow}
                             variant="contained">Add product</Button>
                     <br/>
-                    <br/>
-                    <Button type="submit"
+                    <Button my={1} type="submit"
                             variant="contained">Add bill</Button>
-                    <Button id="closeButton"
+                    <Button m={1} id="closeButton"
                             onClick={props.onCloseModal} variant="contained">Close</Button>
                 </form>
             </div>

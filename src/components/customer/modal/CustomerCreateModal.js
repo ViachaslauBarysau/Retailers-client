@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useMemo} from 'react';
-import {Button, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
+import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 
 const CustomerCreateModal = (props) => {
@@ -65,10 +66,10 @@ const CustomerCreateModal = (props) => {
                                variant="outlined"
                                label="Email"
                                required/>
-                    <Button fullWidth={false}
+                    <Button my={1} fullWidth={false}
                             type="submit"
                             variant="contained">Add customer</Button>
-                    <Button fullWidth={false}
+                    <Button m={1} fullWidth={false}
                             id="closeButton"
                             type="button"
                             onClick={props.onCloseModal}

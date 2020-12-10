@@ -1,6 +1,7 @@
 import '../../Modal.css';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../../Button';
 import StateSelect from '../../StateSelect';
 import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -227,9 +228,9 @@ const UserCreateModal = (props) => {
                                    label="Email"
                                    required/>
 
-                        <Button type="submit"
+                        <Button my={1} type="submit"
                                 variant="contained">Add user</Button>
-                        <Button id="closeButton"
+                        <Button m={1} id="closeButton"
                                 onClick={props.onCloseModal}
                                 variant="contained">Close</Button>
                     </form>
