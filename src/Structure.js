@@ -1,35 +1,29 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import SideBar from "./components/SideBar";
 import UserProfile from "./components/UserProfile";
 import Routes from "./components/Routes";
-import { useStyles } from './App.styles';
+import {useStyles} from './App.styles';
 
 export default function ClippedDrawer() {
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap classes={classes.lastMenuLink}>
+                    <Typography variant="h6" noWrap>
                         Customer App
                     </Typography>
-                    <UserProfile />
+                    <div style={{position: "fixed", right: 20}}>
+                        <UserProfile/>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -39,7 +33,7 @@ export default function ClippedDrawer() {
                     paper: classes.drawerPaper,
                 }}
             >
-                <Toolbar />
+                <Toolbar/>
                 <div className={classes.drawerContainer}>
                     <List>
                         <SideBar/>
@@ -47,7 +41,7 @@ export default function ClippedDrawer() {
                 </div>
             </Drawer>
             <main className={classes.content}>
-                <Toolbar />
+                <Toolbar/>
                 <Routes/>
             </main>
         </div>
