@@ -21,8 +21,7 @@ export default () => {
             <div>
                 <IconButton
                     component={Link}
-                    to={"/bills"}
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    to={"/profile"}
                     color="inherit">
                     <AccountCircle/>
                     <Typography>{user.email}</Typography>

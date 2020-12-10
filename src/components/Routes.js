@@ -18,6 +18,7 @@ import Category from './category/Category';
 import InnerApplications from "./application/inner/InnerApplications";
 import LocationProducts from "./locationProducts/LocationProducts";
 import Suppliers from "./supplier/Suppliers";
+import UserProfilePage from "./userProfile/UserProfilePage";
 
 export default () => {
     const { user } = useContext(AuthContext);
@@ -42,6 +43,7 @@ export default () => {
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                                 <Route path={'/location_products'} component={withAuth(LocationProducts)} />
                                 <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)} />
                                 <Route component={Index} />
                             </Switch>
                         </div>

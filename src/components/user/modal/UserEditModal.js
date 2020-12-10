@@ -31,9 +31,18 @@ const UserEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locations => {
                 setLocations(locations.content)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
         fetch('/api/users/' + props.userId, {
             headers: {
