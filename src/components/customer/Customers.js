@@ -17,7 +17,7 @@ import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
 
 export default function Customers() {
-    const { logout } = useContext(AuthContext);
+    const {logout} = useContext(AuthContext);
     const [customersData, setData] = useState({
         isLoading: false,
         error: null,
@@ -104,7 +104,7 @@ export default function Customers() {
                     customers: customersPage.content
                 }));
                 setTotalElements(customersPage.totalElements)
-                if (pageNumber > customersPage.totalPages - 1) {
+                if (pageNumber > customersPage.totalPages === 0 && customersPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })
@@ -122,9 +122,13 @@ export default function Customers() {
     function changeCustomerStatus(e) {
         e.preventDefault();
         let customerIdList = [];
-        e.target.customers.forEach(element => {
-            element.checked && customerIdList.push(Number(element.value));
-        });
+        if (e.target.customers.length === undefined) {
+            e.target.customers.checked && customerIdList.push(Number(e.target.customers.value));
+        } else {
+            e.target.customers.forEach(element => {
+                element.checked && customerIdList.push(Number(element.value));
+            });
+        }
 
         fetch('/api/customers', {
             headers: {
@@ -146,7 +150,7 @@ export default function Customers() {
                 handleOpenSnackBar("Completed successfully!", "success");
                 setNeedRefresh(!needRefresh);
                 setData((prevState) => ({...prevState, customers: []}))
-            } )
+            })
             .catch(e => {
                 handleOpenSnackBar("Error happens!", "error");
             });
@@ -206,7 +210,7 @@ export default function Customers() {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <CustomerCreateModal handleOpenSnackBar={(message, severity) =>
-                                                            handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}
                                                         onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <CustomerEditModal customerId={displayEditModal.customerId}

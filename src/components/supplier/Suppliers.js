@@ -111,9 +111,13 @@ export default () => {
     function changeSupplierStatus(e) {
         e.preventDefault();
         let supplierIdList = [];
-        e.target.suppliers.forEach(element => {
-            element.checked && supplierIdList.push(element.value);
-        });
+        if (e.target.suppliers.length === undefined) {
+            e.target.suppliers.checked && supplierIdList.push(Number(e.target.suppliers.value));
+        } else {
+            e.target.suppliers.forEach(element => {
+                element.checked && supplierIdList.push(element.value);
+            });
+        }
         fetch('/api/suppliers', {
             headers: {
                 'Authorization': localStorage.getItem("token"),

@@ -117,9 +117,13 @@ export default () => {
     function changeUserStatus(e) {
         e.preventDefault();
         let userIdList = [];
-        e.target.users.forEach(element => {
-            element.checked && userIdList.push(element.value);
-        });
+        if (e.target.users.length === undefined) {
+            e.target.users.checked && userIdList.push(Number(e.target.users.value));
+        } else {
+            e.target.users.forEach(element => {
+                element.checked && userIdList.push(element.value);
+            });
+        }
         fetch('/api/users', {
             headers: {
                 'Authorization': localStorage.getItem("token"),
@@ -234,7 +238,7 @@ function User(props) {
             </TableCell>
             <TableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></TableCell>
             <TableCell>{props.user.birthday}</TableCell>
-            <TableCell>{props.user.userRole}</TableCell>
+            <TableCell>{String(props.user.userRole).toLowerCase().replace("_", " ")}</TableCell>
         </TableRow>
     )
 }
