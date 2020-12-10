@@ -3,8 +3,8 @@ import { Switch, Route } from "react-router-dom";
 
 import withAuth from "../hoc/withAuth";
 
-import Index from '../pages/Index';
-import Login from '../pages/Login';
+import Index from './Index';
+import Login from './Login';
 import Users from './user/Users';
 import Customers from './customer/Customers';
 import WriteOffActs from './act/WriteOffActs';

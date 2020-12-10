@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Redirect} from 'react-router-dom';
 import {AuthContext} from "../context/authContext";
 import FormControl from "@material-ui/core/FormControl";
@@ -8,11 +8,36 @@ import Button from "@material-ui/core/Button";
 import {Typography} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 export default (props) => {
     const {user, setUser} = useContext(AuthContext);
     const prevPageLocation = props?.history?.location?.state?.from || '/';
 
+    const [snackBar, setSnackBar] = useState({
+        display: false,
+        message: "",
+        severity: "success"
+    });
+
+    const handleOpenSnackBar = (message, severity) => {
+        setSnackBar({
+            display: true,
+            message,
+            severity
+        });
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBar({
+            display: false,
+            message: ""
+        });
+    };
 
     const [fields, setField] = useState({
         username: '',
@@ -41,6 +66,7 @@ export default (props) => {
                         fullWidth={true}>
                         <InputLabel htmlFor="username">Username</InputLabel>
                         <Input type={"text"}
+                               error={loginState.loginFailed}
                                value={fields['username']}
                                onChange={handleInput('username')}/>
                     </FormControl>
@@ -48,6 +74,7 @@ export default (props) => {
                         fullWidth={true}>
                         <InputLabel htmlFor="password">Password</InputLabel>
                         <Input type={"password"}
+                               error={loginState.loginFailed}
                                value={fields['password']}
                                onChange={handleInput('password')}/>
                     </FormControl>
@@ -69,21 +96,33 @@ export default (props) => {
                                 password: fields.password
                             })
                         })
-                            .then(resp => resp.json())
-                            .then(data => {
-                                if (data.message) {
-                                    alert("Not work %(")
-                                    //Тут прописываем логику
-                                } else {
-                                    let prefix = "Bearer_";
-                                    localStorage.setItem("token", prefix + data.token);
-                                    setUser(data.user);
+                            .then(res => {
+                                if (res.ok) {
+                                    return res.json();
+                                } else if (res.status === 403) {
+                                    handleOpenSnackBar("Wrong email or password!", "error");
+                                    changeLoginState({
+                                            user: null,
+                                            loginFailed: true
+                                        }
+                                    )
+                                    return Promise.reject(res.json());
                                 }
-                            });
+                            })
+                            .then(data => {
+                                let prefix = "Bearer_";
+                                localStorage.setItem("token", prefix + data.token);
+                                setUser(data.user);
+                            })
                     }}>
                     Login
                 </Button>
             </Container>
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     )
 
