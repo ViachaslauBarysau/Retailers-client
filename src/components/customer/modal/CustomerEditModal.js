@@ -3,11 +3,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
+import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
 
 
 const CustomerEditModal = (props) => {
     const { logout } = useContext(AuthContext);
     const [customer, setCustomer] = useState(null)
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     useEffect(() => {
         fetch('/api/customers/' + props.customerId, {
@@ -33,27 +35,30 @@ const CustomerEditModal = (props) => {
 
     function editCustomer(e) {
         e.preventDefault();
-        fetch('/api/customers', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(customer),
-            method: "PUT"
-        })
-            .then(res => {
-                if (res.ok) {
-                    props.handleOpenSnackBar("Customer updated!", "success");
-                    props.onCloseModal();
-                    props.needrefresh();
-                } else if (res.status === 401) {
-                    logout();
-                };
+        setValidationResults(validateCustomerEdition(customer))
+        if (validationResults.length === 0) {
+            fetch('/api/customers', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(customer),
+                method: "PUT"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    if (res.ok) {
+                        props.handleOpenSnackBar("Customer updated!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                    } else if (res.status === 401) {
+                        logout();
+                    };
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     let handleChange = (e) => setCustomer(
@@ -70,15 +75,15 @@ const CustomerEditModal = (props) => {
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
                 <div className={"modal-box"}>
                     <form onSubmit={editCustomer}>
-                        <TextField margin="dense"
-                                   size="small"
+                        <TextField size="small"
                                    fullWidth={true}
                                    id="name"
                                    variant="outlined"
                                    label="Name"
                                    value={customer.name}
-                                   onChange={handleChange}
-                                   required/>
+                                   error={validationResults.includes("name")}
+                                   helperText={validationResults.includes("name") ? "Name length must be between 4 and 40 characters!" : ""}
+                                   onChange={handleChange}/>
                         <TextField type="email"
                                    margin="dense"
                                    size="small"

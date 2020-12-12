@@ -7,13 +7,15 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../context/authContext";
+import {validateUserCreation, validateUserEditingByAdmin} from "../../../validation/UserValidator";
 
 const UserEditModal = (props) => {
     const {logout} = useContext(AuthContext);
     const [user, setUser] = useState(null);
-    const [role, setRole] = useState(null);
+    const [role, setRole] = useState("");
     const [locations, setLocations] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     function handleRoleChange(e) {
         setRole(e.target.value)
@@ -73,38 +75,35 @@ const UserEditModal = (props) => {
 
     function editUser(e) {
         e.preventDefault();
-        let location;
-        let userRole = role;
-        if (role === "DIRECTOR") {
-            location = null;
-        } else {
-            location = locations.filter(location => location.identifier === userLocation)[0];
-        }
-        fetch('/api/users', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                ...user,
-                location,
-                userRole: [role]
-            }),
-            method: "PUT"
-        })
-            .then(res => {
-                if (res.ok) {
-                    props.handleOpenSnackBar("User updated!", "success");
-                    props.onCloseModal();
-                    props.needrefresh();
-                } else if (res.status === 401) {
-                    logout();
-                }
+        let location = role === "DIRECTOR" ? null : locations.filter(location => location.identifier === e.target.location.value)[0];
+        setValidationResults(validateUserEditingByAdmin(e))
+        if (validationResults.length === 0) {
+            fetch('/api/users', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    ...user,
+                    location,
+                    userRole: [role]
+                }),
+                method: "PUT"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    if (res.ok) {
+                        props.handleOpenSnackBar("User updated!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                    } else if (res.status === 401) {
+                        logout();
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -122,8 +121,6 @@ const UserEditModal = (props) => {
                                    value={user.firstName}
                                    label="Name"
                                    disabled/>
-
-                        <br/>
                         <TextField margin="dense"
                                    size="small"
                                    name="surname"
@@ -132,7 +129,6 @@ const UserEditModal = (props) => {
                                    variant="outlined"
                                    label="Surname"
                                    disabled/>
-                        <br/>
                         <TextField margin="dense"
                                    size="small"
                                    name="date_of_birth"
@@ -180,6 +176,7 @@ const UserEditModal = (props) => {
                             variant="outlined"
                             labelId="role-label"
                             id="role"
+                            name="role"
                             value={role}
                             onChange={handleRoleChange}
                         >
@@ -206,7 +203,10 @@ const UserEditModal = (props) => {
                                            label="Location"
                                            margin="dense"
                                            variant="outlined"
-                                           required/>
+                                           error={validationResults.includes("location")}
+                                           helperText={validationResults.includes("location") ?
+                                               "Choose location." : ""}
+                                />
                             )}
                         />}
 
@@ -227,7 +227,10 @@ const UserEditModal = (props) => {
                                            label="Location"
                                            margin="dense"
                                            variant="outlined"
-                                           required/>
+                                           error={validationResults.includes("location")}
+                                           helperText={validationResults.includes("location") ?
+                                               "Choose location." : ""}
+                                />
                             )}
                         />}
                         <TextField margin="dense"

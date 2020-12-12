@@ -4,10 +4,11 @@ import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {AuthContext} from "../../../context/authContext";
+import {validateProductCreation} from "../../../validation/ProductValidator";
 
 const ProductCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
-
+    const [validationResults, setValidationResults] = useState(["errors"]);
     const [categories, setCategories] = useState(null);
 
     useEffect(() => {
@@ -25,44 +26,45 @@ const ProductCreateModal = (props) => {
 
     function addProduct(e) {
         e.preventDefault();
-        fetch('/api/products', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                upc: Number(e.target.upc.value),
-                label: e.target.label.value,
-                volume: e.target.units.value,
-                category: {
-                    name: e.target.category.value,
+        setValidationResults(validateProductCreation(e))
+        if (validationResults.length === 0) {
+            fetch('/api/products', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
                 },
-                customer: {
-                    id: user.customer.id
-                },
-                status: "ACTIVE"
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Product created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("UPC should be unique!", "warning");
-                        break;
-                }
+                body: JSON.stringify({
+                    upc: e.target.upc.value,
+                    label: e.target.label.value,
+                    volume: e.target.units.value,
+                    category: {
+                        name: e.target.category.value,
+                    },
+                    customer: user.customer,
+                    status: "ACTIVE"
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Product created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("UPC should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -74,20 +76,26 @@ const ProductCreateModal = (props) => {
                     <form onSubmit={addProduct}>
                         <TextField margin="dense"
                                    size="small"
+                                   type="number"
                                    fullWidth={true}
                                    id="upc"
                                    variant="outlined"
-                                   label="UPC"
-                                   required/>
+                                   error={validationResults.includes("upc")}
+                                   helperText={validationResults.includes("upc") ? "Incorrect UPC!" : ""}
+                                   label="UPC"/>
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
                                    id="label"
                                    variant="outlined"
                                    label="Label"
-                                   required/>
+                                   error={validationResults.includes("label")}
+                                   helperText={validationResults.includes("label") ?
+                                       "Label length must be between 3 and 30 characters!" : ""}
+                        />
                         <Autocomplete
                             id="category"
+                            margin="dense"
                             size="small"
                             freeSolo
                             options={categories.map((option) => option.name)}
@@ -97,16 +105,23 @@ const ProductCreateModal = (props) => {
                                            label="Category"
                                            margin="normal"
                                            variant="outlined"
-                                           required/>
+                                           error={validationResults.includes("categoryName")}
+                                           helperText={validationResults.includes("categoryName") ?
+                                               "Category name length must be between 3 and 30 characters!" : ""}
+                                />
                             )}
                         />
                         <TextField margin="dense"
                                    size="small"
+                                   type="number"
                                    fullWidth={true}
                                    id="units"
                                    variant="outlined"
                                    label="Units"
-                                   required/>
+                                   error={validationResults.includes("volume")}
+                                   helperText={validationResults.includes("volume") ?
+                                       "Volume must be greater than 0!" : ""}
+                        />
                         <Button my={1} fullWidth={false}
                                 type="submit"
                                 variant="contained">Add product</Button>

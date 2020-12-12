@@ -1,8 +1,12 @@
 import React, {useContext, useState} from 'react';
 import {Button, TextField} from '@material-ui/core';
 import {AuthContext} from "../../context/authContext";
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from "@material-ui/core/Paper";
+import {makeStyles} from '@material-ui/core/styles';
+import StateSelect from "../StateSelect";
+import InputLabel from "@material-ui/core/InputLabel";
+import {validateUserEditingByUser} from "../../validation/UserValidator";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,13 +21,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default () => {
-    const {user, logout} = useContext(AuthContext);
+    const {user, logout, setUser} = useContext(AuthContext);
+    const [validationResults, setValidationResults] = useState(["errors"]);
     const classes = useStyles();
+    const [updatedUser, setUpdatedUser] = useState(user)
 
     const [snackBar, setSnackBar] = useState({
         display: false,
         message: "",
-        severity: "success"
+        severity: ""
     });
 
     const handleOpenSnackBar = (message, severity) => {
@@ -44,144 +50,247 @@ export default () => {
         });
     };
 
+    const updateStateSelectValue = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                address: {
+                    ...updatedUser.address,
+                    state: {
+                        id: e.target.value,
+                    }
+                }
+            }
+        );
+    }
+
+    const handleCityChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                address: {
+                    ...updatedUser.address,
+                    city: e.target.value,
+                }
+            }
+        );
+    }
+
+    const handleFirstAddressLineChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                address: {
+                    ...updatedUser.address,
+                    firstAddressLine: e.target.value,
+                }
+            }
+        );
+    }
+
+    const handleSecondAddressLineChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                address: {
+                    ...updatedUser.address,
+                    secondAddressLine: e.target.value,
+                }
+            }
+        );
+    }
+
+    const handleLoginChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                login: e.target.value,
+            }
+        );
+    }
+
+    const handleEmailChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                email: e.target.value,
+            }
+        );
+    }
+
+    const handleBirthdayChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                birthday: e.target.value,
+            }
+        );
+    }
+
+    const handleNameChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                firstName: e.target.value,
+            }
+        );
+    }
+
+    const handleSurnameChange = (e) => {
+        setUpdatedUser({
+                ...updatedUser,
+                lastName: e.target.value,
+            }
+        );
+    }
+
+    function editUser(e) {
+        e.preventDefault();
+        setValidationResults(validateUserEditingByUser(updatedUser))
+        if (validationResults.length === 0) {
+            fetch('/api/users', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(updatedUser),
+                method: "PUT"
+            })
+                .then(res => {
+                    if (res.ok) {
+                        setUser(updatedUser);
+                        handleOpenSnackBar("User updated!", "success");
+                    } else if (res.status === 401) {
+                        logout();
+                    } else if (res.status === 451) {
+                        handleOpenSnackBar("Login and email must be unique!", "warning");
+                    }
+                })
+                .catch(e => {
+                    handleOpenSnackBar("Error happens!", "error");
+                });
+        }
+    }
+
     return (
         <div>
-            {user &&
+            {updatedUser &&
             <div className={classes.root}>
-                <form>
-                    <Paper elevation={0}>
+                <form onSubmit={editUser}>
+                    <div>
                         <TextField margin="dense"
                                    size="small"
                                    name="name"
                                    fullWidth={true}
                                    variant="outlined"
-                                   value={user.firstName}
+                                   value={updatedUser.firstName}
                                    label="Name"
-                                   disabled/>
-
-                        <br/>
+                                   onChange={handleNameChange}
+                                   error={validationResults.includes("name")}
+                                   helperText={validationResults.includes("name") ?
+                                       "First name minimum length 2 symbols." : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    name="surname"
-                                   value={user.lastName}
+                                   value={updatedUser.lastName}
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Surname"
-                                   disabled/>
-                        <br/>
-                        <TextField margin="dense"
-                                   size="small"
-                                   name="date_of_birth"
-                                   value={user.birthday}
-                                   fullWidth={true}
-                                   variant="outlined"
-                                   label="Date of birth"
-                                   disabled/>
-                        <TextField margin="dense"
-                                   size="small"
-                                   name="state"
-                                   value={user.address.state.name}
-                                   fullWidth={true}
-                                   variant="outlined"
-                                   label="State"
-                                   disabled/>
+                                   onChange={handleSurnameChange}
+                                   error={validationResults.includes("surname")}
+                                   helperText={validationResults.includes("surname") ?
+                                       "Last name minimum length 2 symbols." : ""}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            name="date_of_birth"
+                            label="Date of birth"
+                            type="date"
+                            defaultValue={updatedUser.birthday}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleBirthdayChange}
+                            error={validationResults.includes("birthday")}
+                            helperText={validationResults.includes("birthday") ?
+                                "User's age must be between 18 and 100 years." : "  "}
+                        />
+                        <InputLabel id="state-label">State:</InputLabel>
+                        <StateSelect onChangeState={updateStateSelectValue} value={updatedUser.address.state.id}/>
                         <TextField margin="dense"
                                    size="small"
                                    name="city"
                                    fullWidth={true}
-                                   value={user.address.city}
+                                   value={updatedUser.address.city}
                                    variant="outlined"
                                    label="City"
-                                   disabled/>
+                                   onChange={handleCityChange}
+                                   error={validationResults.includes("city")}
+                                   helperText={validationResults.includes("city") ?
+                                       "Min length 3 symbols." : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    name="address1"
-                                   value={user.address.firstAddressLine}
+                                   value={updatedUser.address.firstAddressLine}
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Address line 1"
-                                   disabled/>
+                                   onChange={handleFirstAddressLineChange}
+                                   error={validationResults.includes("firstAddressLine")}
+                                   helperText={validationResults.includes("firstAddressLine") ?
+                                       "Min length 5 symbols." : ""}
+                        />
 
                         <TextField margin="dense"
                                    size="small"
                                    name="address2"
-                                   value={user.address.secondAddressLine}
+                                   value={updatedUser.address.secondAddressLine}
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Address line 2"
-                                   disabled/>
+                                   onChange={handleSecondAddressLineChange}
+                        />
 
-                        {/*<InputLabel id="role-label">Role:</InputLabel>*/}
-                        {/*<Select*/}
-                        {/*    variant="outlined"*/}
-                        {/*    labelId="role-label"*/}
-                        {/*    id="role"*/}
-                        {/*    value={role}*/}
-                        {/*    onChange={handleRoleChange}*/}
-                        {/*>*/}
-                        {/*    <MenuItem value={"DISPATCHER"}>Dispatcher</MenuItem>*/}
-                        {/*    <MenuItem value={"WAREHOUSE_MANAGER"}>Warehouse manager</MenuItem>*/}
-                        {/*    <MenuItem value={"SHOP_MANAGER"}>Shop manager</MenuItem>*/}
-                        {/*    <MenuItem value={"DIRECTOR"}>Director</MenuItem>*/}
-                        {/*</Select>*/}
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="role"
+                                   value={String(updatedUser.userRole).toLowerCase().replace("_", " ")}
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Role"
+                                   disabled
+                        />
 
-                        {/*{(role === "DISPATCHER" || role === "WAREHOUSE_MANAGER") &&*/}
-                        {/*<Autocomplete*/}
-                        {/*    id="location"*/}
-                        {/*    size="small"*/}
-                        {/*    name="location"*/}
-                        {/*    clearOnEscape*/}
-                        {/*    value={userLocation}*/}
-                        {/*    disabled={role === "DIRECTOR"}*/}
-                        {/*    onChange={handleLocationChange}*/}
-                        {/*    options={locations.filter(location => location.locationType === "WAREHOUSE").map((option) =>*/}
-                        {/*        option.identifier.toString())}*/}
-                        {/*    renderInput={(params) => (*/}
-                        {/*        <TextField {...params}*/}
-                        {/*                   fullWidth={true}*/}
-                        {/*                   label="Location"*/}
-                        {/*                   margin="dense"*/}
-                        {/*                   variant="outlined"*/}
-                        {/*                   required/>*/}
-                        {/*    )}*/}
-                        {/*/>}*/}
-
-                        {/*{(role === "SHOP_MANAGER") &&*/}
-                        {/*<Autocomplete*/}
-                        {/*    id="location"*/}
-                        {/*    size="small"*/}
-                        {/*    name="location"*/}
-                        {/*    clearOnEscape*/}
-                        {/*    value={userLocation}*/}
-                        {/*    disabled={role === "DIRECTOR"}*/}
-                        {/*    onChange={handleLocationChange}*/}
-                        {/*    options={locations.filter(location => location.locationType === "SHOP").map((option) =>*/}
-                        {/*        option.identifier.toString())}*/}
-                        {/*    renderInput={(params) => (*/}
-                        {/*        <TextField {...params}*/}
-                        {/*                   fullWidth={true}*/}
-                        {/*                   label="Location"*/}
-                        {/*                   margin="dense"*/}
-                        {/*                   variant="outlined"*/}
-                        {/*                   required/>*/}
-                        {/*    )}*/}
-                        {/*/>}*/}
+                        {updatedUser.userRole != "DIRECTOR" && updatedUser.userRole != "ADMIN" && updatedUser.userRole != "SYSTEM_ADMIN" &&
+                        <TextField margin="dense"
+                                   size="small"
+                                   name="location"
+                                   value={updatedUser.location.identifier}
+                                   fullWidth={true}
+                                   variant="outlined"
+                                   label="Location"
+                                   disabled
+                        />
+                        }
                         <TextField margin="dense"
                                    size="small"
                                    name="login"
                                    fullWidth={true}
-                                   value={user.login}
+                                   value={updatedUser.login}
                                    variant="outlined"
                                    label="Login"
-                                   disabled/>
+                                   onChange={handleLoginChange}
+                                   error={validationResults.includes("login")}
+                                   helperText={validationResults.includes("login") ?
+                                       "Min length of login is 3 symbols." : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    name="email"
                                    fullWidth={true}
-                                   value={user.email}
+                                   value={updatedUser.email}
                                    variant="outlined"
                                    label="Email"
-                                   disabled/>
+                                   onChange={handleEmailChange}
+                                   error={validationResults.includes("email")}
+                                   helperText={validationResults.includes("email") ? "Incorrect email." : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    name="status"
@@ -191,13 +300,18 @@ export default () => {
                                    label="Status"
                                    disabled/>
 
-                    </Paper>
+                    </div>
                     <Button my={1} type="submit"
                             variant="contained">Edit profile</Button>
                 </form>
 
             </div>
             }
+            <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>
+                    {snackBar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

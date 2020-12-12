@@ -22,7 +22,7 @@ export default (props) => {
                     return res.json();
                 } else if (res.status === 401) {
                     logout();
-                };
+                }
             })
             .then(states => {
                 setStates(

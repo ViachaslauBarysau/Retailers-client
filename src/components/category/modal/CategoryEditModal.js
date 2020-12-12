@@ -4,10 +4,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
+import {validateCustomerCreation} from "../../../validation/CustomerValidator";
+import {validateCategoryEditing} from "../../../validation/CategoryValidator";
 
 const CategoryEditModal = (props) => {
     const {logout} = useContext(AuthContext);
     const [category, setCategory] = useState(null);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     function handleNameChange(e) {
         setCategory({
@@ -19,7 +22,7 @@ const CategoryEditModal = (props) => {
     function handleTaxChange(e) {
         setCategory({
             ...category,
-            categoryTax: Number(e.target.value).toFixed(2)/1
+            categoryTax: Number(e.target.value).toFixed(2) / 1
         })
     }
 
@@ -45,36 +48,37 @@ const CategoryEditModal = (props) => {
             })
     }, []);
 
-
     function editCategory(e) {
         e.preventDefault(e);
-        console.log(category)
-        fetch('/api/categories', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(category),
-            method: "PUT"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 200:
-                        props.handleOpenSnackBar("Category updated!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Name should be unique!", "warning");
-                        break;
-                }
+        setValidationResults(validateCategoryEditing(category))
+        if (validationResults.length === 0) {
+            fetch('/api/categories', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(category),
+                method: "PUT"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 200:
+                            props.handleOpenSnackBar("Category updated!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Name should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -90,8 +94,9 @@ const CategoryEditModal = (props) => {
                                    variant="outlined"
                                    onChange={handleNameChange}
                                    label="Category name"
-                                   value={category.name}
-                                   required/>
+                                   error={validationResults.includes("name")}
+                                   helperText={validationResults.includes("name") ? "Name length must be between 3 and 30 characters!" : " "}
+                                   value={category.name}/>
                         <TextField margin="dense"
                                    type="number"
                                    size="small"
@@ -100,13 +105,14 @@ const CategoryEditModal = (props) => {
                                    variant="outlined"
                                    value={category.categoryTax}
                                    label="Category tax"
+                                   error={validationResults.includes("tax")}
+                                   helperText={validationResults.includes("tax") ? "Min tax is 0!" : " "}
                                    onChange={handleTaxChange}
                                    InputProps={{
                                        inputProps: {
-                                           min: 0.01, step: 0.01
+                                           step: 0.01
                                        }
-                                   }}
-                                   required/>
+                                   }}/>
                         <br/>
                         <Button my={1} type="submit"
                                 variant="contained">Edit category</Button>

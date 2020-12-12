@@ -7,10 +7,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {AuthContext} from "../../../context/authContext";
+import {validateProductCreation} from "../../../validation/ProductValidator";
+import {validateLocationCreation} from "../../../validation/LocationValidator";
 
 const LocationCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
     const [stateId, setStateId] = useState(1);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     function updateStateSelectValue(e) {
         setStateId(e.target.value)
@@ -24,50 +27,53 @@ const LocationCreateModal = (props) => {
 
     function addLocation(e) {
         e.preventDefault();
-        fetch('/api/locations', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                identifier: e.target.identifier.value,
-                customer: user.customer,
-                address: {
-                    state:
-                        {
-                            id: stateId,
-                        },
-                    city: e.target.city.value,
-                    firstAddressLine: e.target.address1.value,
-                    secondAddressLine: e.target.address2.value
+        setValidationResults(validateLocationCreation(e))
+        if (validationResults.length === 0) {
+            fetch('/api/locations', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
                 },
-                totalCapacity: e.target.total_capacity.value,
-                availableCapacity: e.target.total_capacity.value,
-                locationType: locationType,
-                locationTax: 0,
-                status: "ACTIVE"
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Location created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                        break;
-                }
+                body: JSON.stringify({
+                    identifier: e.target.identifier.value,
+                    customer: user.customer,
+                    address: {
+                        state:
+                            {
+                                id: stateId,
+                            },
+                        city: e.target.city.value,
+                        firstAddressLine: e.target.address1.value,
+                        secondAddressLine: e.target.address2.value
+                    },
+                    totalCapacity: e.target.total_capacity.value,
+                    availableCapacity: e.target.total_capacity.value,
+                    locationType: locationType,
+                    locationTax: 0,
+                    status: "ACTIVE"
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Location created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -81,7 +87,9 @@ const LocationCreateModal = (props) => {
                                name="identifier"
                                variant="outlined"
                                label="Identifier"
-                               required/>
+                               error={validationResults.includes("identifier")}
+                               helperText={validationResults.includes("identifier") ?
+                                   "Identifier minimum length must be 3 symbols!" : ""}/>
                     <InputLabel id="state-label">State:</InputLabel>
                     <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
                     <TextField margin="dense"
@@ -90,21 +98,27 @@ const LocationCreateModal = (props) => {
                                name="city"
                                variant="outlined"
                                label="City"
-                               required/>
+                               error={validationResults.includes("city")}
+                               helperText={validationResults.includes("city") ?
+                                   "Min length 3 symbols!" : ""}
+                    />
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}
                                name="address1"
                                variant="outlined"
                                label="Address line 1"
-                               required/>
+                               error={validationResults.includes("firstAddressLine")}
+                               helperText={validationResults.includes("firstAddressLine") ?
+                                   "Min length 5 symbols!" : ""}
+                    />
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}
                                name="address2"
                                variant="outlined"
                                label="Address line 2"
-                               required/>
+                    />
                     <InputLabel id="type-label">Type:</InputLabel>
                     <Select
                         variant="outlined"
@@ -130,7 +144,9 @@ const LocationCreateModal = (props) => {
                                name="total_capacity"
                                variant="outlined"
                                label="Total capacity"
-                               required/>
+                               error={validationResults.includes("totalCapacity")}
+                               helperText={validationResults.includes("totalCapacity") ?
+                                   "Must be greater than 0!" : ""}/>
                     <Button my={1} fullWidth={false}
                             type="submit"
                             variant="contained">Add location</Button>

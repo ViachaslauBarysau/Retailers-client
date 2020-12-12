@@ -8,12 +8,14 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../context/authContext";
+import {validateUserCreation} from "../../../validation/UserValidator";
 
 const UserCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
     const [stateId, setStateId] = useState(1);
     const [role, setRole] = useState("DIRECTOR");
     const [locations, setLocations] = useState(null);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     function updateStateSelectValue(e) {
         setStateId(e.target.value)
@@ -44,58 +46,56 @@ const UserCreateModal = (props) => {
 
     function addUser(e) {
         e.preventDefault();
-        let location;
-        if (role === "DIRECTOR") {
-            location = null;
-        } else {
-            location = locations.filter(location => location.identifier === e.target.location.value)[0];
-        }
-        fetch('http://localhost:8080/api/users', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                firstName: e.target.name.value,
-                lastName: e.target.surname.value,
-                email: e.target.email.value,
-                userRole: [role],
-                birthday: e.target.date_of_birth.value,
-                userStatus: "ACTIVE",
-                location: location,
-                login: e.target.login.value,
-                customer: user.customer,
-                address: {
-                    state:
-                        {
-                            id: stateId,
-                        },
-                    city: e.target.city.value,
-                    firstAddressLine: e.target.address1.value,
-                    secondAddressLine: e.target.address2.value
+        let location = role === "DIRECTOR" ? null : locations.filter(location => location.identifier === e.target.location.value)[0];
+        setValidationResults(validateUserCreation(e))
+        if (validationResults.length === 0) {
+            fetch('http://localhost:8080/api/users', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
                 },
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("User created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Login and email should be unique!", "warning");
-                        break;
-                }
+                body: JSON.stringify({
+                    firstName: e.target.name.value,
+                    lastName: e.target.surname.value,
+                    email: e.target.email.value,
+                    userRole: [role],
+                    birthday: e.target.date_of_birth.value,
+                    userStatus: "ACTIVE",
+                    location: location,
+                    login: e.target.login.value,
+                    customer: user.customer,
+                    address: {
+                        state:
+                            {
+                                id: stateId,
+                            },
+                        city: e.target.city.value,
+                        firstAddressLine: e.target.address1.value,
+                        secondAddressLine: e.target.address2.value
+                    },
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("User created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Login and email should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -110,18 +110,21 @@ const UserCreateModal = (props) => {
                                    name="name"
                                    fullWidth={true}
                                    variant="outlined"
-                                   label="Name"
-                                   required/>
-
-                        <br/>
+                                   label="First name"
+                                   error={validationResults.includes("name")}
+                                   helperText={validationResults.includes("name") ?
+                                       "First name minimum length 2 symbols." : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    id="surname"
                                    fullWidth={true}
                                    variant="outlined"
-                                   label="Surname"
-                                   required/>
-                        <br/>
+                                   label="Last name"
+                                   error={validationResults.includes("surname")}
+                                   helperText={validationResults.includes("surname") ?
+                                       "Last name minimum length 2 symbols." : ""}
+                        />
                         <TextField
                             variant="outlined"
                             margin="dense"
@@ -132,6 +135,9 @@ const UserCreateModal = (props) => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            error={validationResults.includes("birthday")}
+                            helperText={validationResults.includes("birthday") ?
+                                "User's age must be between 18 and 100 years." : ""}
                         />
                         <InputLabel id="state-label">State:</InputLabel>
                         <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
@@ -142,7 +148,10 @@ const UserCreateModal = (props) => {
                                    fullWidth={true}
                                    variant="outlined"
                                    label="City"
-                                   required/>
+                                   error={validationResults.includes("city")}
+                                   helperText={validationResults.includes("city") ?
+                                       "Min length 3 symbols." : ""}
+                        />
 
                         <TextField margin="dense"
                                    size="small"
@@ -150,7 +159,10 @@ const UserCreateModal = (props) => {
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Address line 1"
-                                   required/>
+                                   error={validationResults.includes("firstAddressLine")}
+                                   helperText={validationResults.includes("firstAddressLine") ?
+                                       "Min length 5 symbols." : ""}
+                        />
 
                         <TextField margin="dense"
                                    size="small"
@@ -163,6 +175,7 @@ const UserCreateModal = (props) => {
                         <Select MenuProps={{autoFocus: true}}
                                 variant="outlined"
                                 labelId="role-label"
+                                name="role"
                                 id="role"
                                 value={role}
                                 onChange={handleRoleChange}
@@ -187,7 +200,10 @@ const UserCreateModal = (props) => {
                                            label="Location"
                                            margin="dense"
                                            variant="outlined"
-                                           required/>
+                                           error={validationResults.includes("location")}
+                                           helperText={validationResults.includes("location") ?
+                                               "Choose location." : ""}
+                                />
                             )}
                         />
                         }
@@ -207,7 +223,10 @@ const UserCreateModal = (props) => {
                                            label="Location"
                                            margin="dense"
                                            variant="outlined"
-                                           required/>
+                                           error={validationResults.includes("location")}
+                                           helperText={validationResults.includes("location") ?
+                                               "Choose location." : ""}
+                                />
                             )}
                         />
                         }
@@ -218,7 +237,10 @@ const UserCreateModal = (props) => {
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Login"
-                                   required/>
+                                   error={validationResults.includes("login")}
+                                   helperText={validationResults.includes("login") ?
+                                       "Min length of login is 3 symbols." : ""}
+                        />
 
                         <TextField margin="dense"
                                    size="small"
@@ -226,7 +248,9 @@ const UserCreateModal = (props) => {
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Email"
-                                   required/>
+                                   error={validationResults.includes("email")}
+                                   helperText={validationResults.includes("email") ? "Incorrect email." : ""}
+                        />
 
                         <Button my={1} type="submit"
                                 variant="contained">Add user</Button>

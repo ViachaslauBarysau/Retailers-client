@@ -4,11 +4,13 @@ import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {AuthContext} from "../../../context/authContext";
+import {validateProductCreation, validateProductEditing} from "../../../validation/ProductValidator";
 
 const ProductEditModal = (props) => {
     const {logout} = useContext(AuthContext);
-    let [product, setProduct] = useState(null);
-    let [categories, setCategories] = useState(null);
+    const [product, setProduct] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     let handleCategoryChange = (value) => setProduct(
         (prevState) => {
@@ -65,27 +67,31 @@ const ProductEditModal = (props) => {
 
     function editProduct(e) {
         e.preventDefault();
-        fetch('/api/products', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(product),
-            method: "PUT"
-        })
-            .then(res => {
-                if (res.ok) {
-                    props.handleOpenSnackBar("Product updated!", "success");
-                    props.onCloseModal();
-                    props.needrefresh();
-                } else if (res.status === 401) {
-                    logout();
-                };
+        setValidationResults(validateProductEditing(product))
+        if (validationResults.length === 0) {
+            fetch('/api/products', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(product),
+                method: "PUT"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    if (res.ok) {
+                        props.handleOpenSnackBar("Product updated!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
+                    } else if (res.status === 401) {
+                        logout();
+                    }
+                    ;
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     return (
@@ -111,7 +117,10 @@ const ProductEditModal = (props) => {
                                    variant="outlined"
                                    label="Label"
                                    onChange={handleLabelChange}
-                                   required/>
+                                   error={validationResults.includes("label")}
+                                   helperText={validationResults.includes("label") ?
+                                       "Label length must be between 3 and 30 characters!" : ""}
+                                   />
                         <Autocomplete
                             id="category"
                             size="small"
@@ -125,7 +134,11 @@ const ProductEditModal = (props) => {
                                            label="Category"
                                            margin="normal"
                                            variant="outlined"
-                                           required/>
+                                           onKeyUp={(e) => handleCategoryChange(e.target.value)}
+                                           error={validationResults.includes("categoryName")}
+                                           helperText={validationResults.includes("categoryName") ?
+                                               "Category name length must be between 3 and 30 characters!" : ""}
+                                           />
                             )}
                         />
                         <TextField margin="dense"

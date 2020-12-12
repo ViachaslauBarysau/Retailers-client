@@ -1,46 +1,51 @@
 import '../../Modal.css';
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useState, useMemo} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
+import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
 
 const CustomerCreateModal = (props) => {
     const {logout} = useContext(AuthContext);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     function addCustomer(e) {
         e.preventDefault();
-        fetch('/api/customers', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                customerStatus: "ACTIVE",
-                name: e.target.name.value,
-                email: e.target.email.value,
-                registrationDate: dateTime
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Customer created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Email should be unique!", "warning");
-                        break;
-                }
+        setValidationResults(validateCustomerCreation(e))
+        if (validationResults.length === 0) {
+            fetch('/api/customers', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    customerStatus: "ACTIVE",
+                    name: e.target.name.value,
+                    email: e.target.email.value,
+                    registrationDate: dateTime
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Customer created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Email should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     let dateTime = useMemo(() => new Date(), [])
@@ -51,21 +56,21 @@ const CustomerCreateModal = (props) => {
                  className={"modal-backdrop"}/>
             <div className={"modal-box"}>
                 <form onSubmit={addCustomer}>
-                    <TextField margin="dense"
-                               size="small"
+                    <TextField size="small"
                                fullWidth={true}
                                id="name"
                                variant="outlined"
-                               label="Name"
-                               required/>
-                    <TextField type="email"
-                               margin="dense"
+                               error={validationResults.includes("name")}
+                               helperText={validationResults.includes("name") ? "Name length must be between 4 and 40 characters!" : " "}
+                               label="Name"/>
+                    <TextField
                                size="small"
                                fullWidth={true}
                                id="email"
                                variant="outlined"
-                               label="Email"
-                               required/>
+                               error={validationResults.includes("email")}
+                               helperText={validationResults.includes("email") ? "Incorrect email!" : " "}
+                               label="Email"/>
                     <Button my={1} fullWidth={false}
                             type="submit"
                             variant="contained">Add customer</Button>

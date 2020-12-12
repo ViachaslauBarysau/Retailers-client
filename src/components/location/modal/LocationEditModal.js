@@ -1,14 +1,16 @@
 import '../../Modal.css';
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import InputLabel from "@material-ui/core/InputLabel";
 import StateSelect from "../../StateSelect";
 import {AuthContext} from "../../../context/authContext";
+import {validateLocationEditing} from "../../../validation/LocationValidator";
 
 const LocationEditModal = (props) => {
     const {logout} = useContext(AuthContext);
     const [location, setLocation] = useState(null);
+    const [validationResults, setValidationResults] = useState(["errors"]);
 
     let updateStateSelectValue = (e) => setLocation(
         (prevState) => {
@@ -93,33 +95,36 @@ const LocationEditModal = (props) => {
 
     function editLocation(e) {
         e.preventDefault();
-        fetch('/api/locations', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify(location),
-            method: "PUT"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 200:
-                        props.handleOpenSnackBar("Location updated!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                        break;
-                }
+        setValidationResults(validateLocationEditing(location))
+        if (validationResults.length === 0) {
+            fetch('/api/locations', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(location),
+                method: "PUT"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 200:
+                            props.handleOpenSnackBar("Location updated!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
 
@@ -137,7 +142,10 @@ const LocationEditModal = (props) => {
                                    label="Identifier"
                                    value={location.identifier}
                                    onChange={handleIdentifierChange}
-                                   required/>
+                                   error={validationResults.includes("identifier")}
+                                   helperText={validationResults.includes("identifier") ?
+                                       "Identifier minimum length must be 3 symbols!" : ""}
+                        />
                         <InputLabel id="state-label">State:</InputLabel>
                         <StateSelect onChangeState={updateStateSelectValue} value={location.address.state.id}/>
                         <TextField margin="dense"
@@ -147,7 +155,10 @@ const LocationEditModal = (props) => {
                                    variant="outlined"
                                    label="City"
                                    onChange={handleCityChange}
-                                   required/>
+                                   error={validationResults.includes("city")}
+                                   helperText={validationResults.includes("city") ?
+                                       "Min length 3 symbols!" : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
@@ -155,7 +166,10 @@ const LocationEditModal = (props) => {
                                    variant="outlined"
                                    label="Address line 1"
                                    onChange={handleAddressFirstChange}
-                                   required/>
+                                   error={validationResults.includes("firstAddressLine")}
+                                   helperText={validationResults.includes("firstAddressLine") ?
+                                       "Min length 5 symbols!" : ""}
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
@@ -163,7 +177,7 @@ const LocationEditModal = (props) => {
                                    variant="outlined"
                                    label="Address line 2"
                                    onChange={handleAddressSecondChange}
-                                   required/>
+                        />
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
