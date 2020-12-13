@@ -7,7 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../context/authContext";
-import {validateUserCreation, validateUserEditingByAdmin} from "../../../validation/UserValidator";
+import {validateUserEditingByAdmin} from "../../../validation/UserValidator";
 
 const UserEditModal = (props) => {
     const {logout} = useContext(AuthContext);

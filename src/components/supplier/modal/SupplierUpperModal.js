@@ -26,7 +26,6 @@ const SupplierUpperModal = (props) => {
         }
     }, []);
 
-
     function handleStateChange(e) {
         setWarehouse((prevState) => ({
                 ...prevState,

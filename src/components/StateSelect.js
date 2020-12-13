@@ -6,7 +6,7 @@ import {AuthContext} from "../context/authContext";
 export default (props) => {
     const { logout } = useContext(AuthContext);
     const [states, setStates] = useState(
-        null
+        []
     );
     const [state, setState] = useState(props.value)
 
@@ -40,14 +40,12 @@ export default (props) => {
 
     return (
         <div>
-            {states &&
             <Select id="state" variant="outlined" required
-                    value={state}
+                    defaultValue={state}
                     onChange={updateSelect}
             >
                 {states.map(state => <MenuItem key={state.id} value={state.id}>{state.name}</MenuItem>)}
             </Select>
-            }
         </div>
     )
 }
