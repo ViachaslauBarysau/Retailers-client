@@ -34,8 +34,8 @@ export default (props) => {
                                    margin="normal"
                                    variant="outlined"
                                    value={props.item.upc}
-                                   error={props.item.error}
-                                   required/>
+                                   error={props.item.upcError}
+                        />
                     )}
                 />
             </Grid>
@@ -48,12 +48,13 @@ export default (props) => {
                            label="Amount"
                            InputProps={{
                                inputProps: {
-                                   min: 1
+                                   step: 1
                                }
                            }}
                            value={props.item.amount}
                            onChange={changeRecord}
-                           required />
+                           error={props.item.amountError}
+                />
             </Grid>
             <Grid item xs={2}>
                 <TextField margin="normal"
@@ -64,12 +65,13 @@ export default (props) => {
                            label="Cost"
                            InputProps={{
                                inputProps: {
-                                   min: 0.01, step: 0.01
+                                   step: 0.01
                                }
                            }}
                            value={props.item.cost}
                            onChange={changeRecord}
-                           required/>
+                           error={props.item.costError}
+                />
             </Grid>
             <Grid item xs={1}>
                 <IconButton aria-label="delete"

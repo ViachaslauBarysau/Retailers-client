@@ -6,6 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../../context/authContext";
 import EditableApplicationRecord from "./record/EditableApplicationRecord";
+import {validateSupplierAppItems} from "../../../../validation/ItemRecordValidator";
+import {validateSupplierAppCreation} from "../../../../validation/ApplicationValidator";
 
 const SupplierAppCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
@@ -15,9 +17,14 @@ const SupplierAppCreateModal = (props) => {
             upc: 0,
             amount: 0,
             cost: 0,
-            error: false
+            upcError: false,
+            amountError: false,
+            costError: false
+
         }]
     });
+
+    const [validationResults, setValidationResults] = useState([]);
     const [products, setProducts] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
 
@@ -69,9 +76,11 @@ const SupplierAppCreateModal = (props) => {
                 let newRow = {
                     key: new Date().getTime(),
                     upc: 0,
-                    amount: 1,
+                    amount: 0,
                     cost: 0,
-                    error: false
+                    upcError: false,
+                    amountError: false,
+                    costError: false
                 };
                 newItems.push(newRow);
                 return ({
@@ -154,45 +163,55 @@ const SupplierAppCreateModal = (props) => {
 
     const createApplication = (e) => {
         e.preventDefault(e);
-        fetch('/api/supplier_applications', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                applicationNumber: Number(e.target.appNumber.value),
-                supplier: suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0],
-                destinationLocation: user.location,
-                creator: user,
-                updater: user,
-                registrationDateTime: dateTime,
-                updatingDateTime: dateTime,
-                applicationStatus: "OPEN",
-                recordsList: getRecordsList(),
-                totalProductAmount: calculateAmount(),
-                totalUnitNumber: calculateVolume()
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Application created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Application number should be unique!", "warning");
-                        break;
-                }
+        let validatedItems = validateSupplierAppItems(itemRows.items);
+        let validResults = validateSupplierAppCreation(e);
+        if (validatedItems.filter(item => item.upcError === true).length === 0 &&
+            validatedItems.filter(item => item.amountError === true).length === 0 &&
+            validResults.length === 0) {
+            fetch('/api/supplier_applications', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    applicationNumber: Number(e.target.appNumber.value),
+                    supplier: suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0],
+                    destinationLocation: user.location,
+                    creator: user,
+                    updater: user,
+                    registrationDateTime: dateTime,
+                    updatingDateTime: dateTime,
+                    applicationStatus: "OPEN",
+                    recordsList: getRecordsList(),
+                    totalProductAmount: calculateAmount(),
+                    totalUnitNumber: calculateVolume()
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Application created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Application number should be unique!", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
+        setItemRows({
+            items: validatedItems
+        });
+        setValidationResults(validResults);
     }
 
     return (
@@ -207,12 +226,9 @@ const SupplierAppCreateModal = (props) => {
                                    variant="outlined"
                                    label="Application number"
                                    type="number"
-                                   InputProps={{
-                                       inputProps: {
-                                           min: 1, max: 2147483647, step: 1
-                                       }
-                                   }}
-                                   required/>
+                                   error={validationResults.includes("appNumber")}
+                                   helperText={validationResults.includes("appNumber") ?
+                                       "Application number must be between 1 and 999999999." : ""}/>
 
                         <Autocomplete
                             id="supplier"

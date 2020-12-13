@@ -19,8 +19,6 @@ export default (props) => {
         changeRecord(state);
     }
 
-
-    console.log(props.item.upc)
     return (
         <Grid container>
             <Grid item xs={5}>
@@ -37,7 +35,8 @@ export default (props) => {
                                    margin="normal"
                                    variant="outlined"
                                    value={props.item.upc}
-                                   required/>
+                                   error={props.item.upcError}
+                        />
                     )}
                 />
             </Grid>
@@ -51,13 +50,14 @@ export default (props) => {
                            label="Amount"
                            value={props.item.amount}
                            onChange={changeRecord}
-                           helperText={props.item.upc ? "Available: " + props.item.max : "Product not chosen"}
                            InputProps={{
                                inputProps: {
-                                   min: 1, max: props.item.max, step: 1
+                                   step: 1
                                }
                            }}
-                           required/>
+                           error={props.item.amountError}
+                           helperText={props.item.upc ? "Available: " + props.item.max : "Product not chosen."}
+                />
             </Grid>
             <Grid item xs={2}>
                 <TextField margin="normal"
@@ -69,7 +69,7 @@ export default (props) => {
                            label="Cost"
                            InputProps={{
                                inputProps: {
-                                   min: 0.01, step: 0.01
+                                   step: 0.01
                                }
                            }}
                            value={props.item.cost}

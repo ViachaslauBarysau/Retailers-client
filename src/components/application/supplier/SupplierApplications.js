@@ -6,16 +6,14 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {StyledTableRow} from "../../Table"
-import {StyledTableCell} from "../../Table"
+import {StyledTableCell, StyledTableRow} from "../../Table"
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import {AuthContext} from "../../../context/authContext";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import DateAndTime, {editToLocalTimeAndGet} from "../../../util/DateAndTime"
+import {editToLocalTimeAndGet} from "../../../util/DateAndTime"
 import TablePagination from "@material-ui/core/TablePagination";
 
 export default () => {
@@ -152,7 +150,7 @@ export default () => {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <SupplierAppCreateModal handleOpenSnackBar={(message, severity) =>
-                                                                handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                            needrefresh={() => setNeedRefresh(!needRefresh)}
                                                            onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierAppEditModal appId={displayEditModal.appId}

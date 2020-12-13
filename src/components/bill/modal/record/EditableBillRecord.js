@@ -23,7 +23,7 @@ export default (props) => {
 
     return (
         <Grid container>
-            <Grid item xs={5}>
+            <Grid item xs={4}>
                 <Autocomplete
                     size="small"
                     componentName="upc"
@@ -37,12 +37,12 @@ export default (props) => {
                                    margin="normal"
                                    variant="outlined"
                                    value={props.item.upc}
-                                   error={props.item.error}
-                                   required/>
+                                   error={props.item.upcError}
+                        />
                     )}
                 />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
                 <TextField margin="normal"
                            type="number"
                            size="small"
@@ -52,14 +52,16 @@ export default (props) => {
                            label="Amount"
                            InputProps={{
                                inputProps: {
-                                   min: 1, max: props.item.max, step: 1
+                                   step: 1
                                }
                            }}
                            value={props.item.amount}
                            onChange={changeRecord}
-                           required/>
+                           error={props.item.amountError}
+                           helperText={props.item.upc ? "Available: " + props.item.max : "Product not chosen."}
+                />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <TextField margin="normal"
                            type="number"
                            size="small"
