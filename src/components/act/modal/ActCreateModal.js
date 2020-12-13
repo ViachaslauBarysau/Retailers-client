@@ -4,9 +4,9 @@ import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 import Grid from "@material-ui/core/Grid";
 import EditableActRecord from "./record/EditableActRecord";
-import { makeStyles } from '@material-ui/core/styles';
-import { useStyles } from '../../../App.styles';
 import TextField from "@material-ui/core/TextField";
+import {validateActCreating} from "../../../validation/ActValidator";
+import {validateItems} from "../../../validation/ItemRecordValidator";
 
 const ActCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
@@ -16,11 +16,13 @@ const ActCreateModal = (props) => {
             upc: 0,
             max: 0,
             amount: 0,
-            reason: "",
-            error: false
+            reason: "DAMAGED",
+            upcError: false,
+            amountError: false
         }]
     });
-    const [locationProducts, setLocationProducts] = useState(null);
+    const [validationResults, setValidationResults] = useState([]);
+    const [locationProducts, setLocationProducts] = useState([]);
 
     useEffect(() => {
         fetch('/api/location_products?size=100000', {
@@ -40,7 +42,7 @@ const ActCreateModal = (props) => {
                 setLocationProducts(locationProducts.content)
             })
             .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
+                props.handleOpenSnackBar("Error happens.", "error");
             })
     }, []);
 
@@ -53,8 +55,9 @@ const ActCreateModal = (props) => {
                     upc: 0,
                     max: 0,
                     amount: 0,
-                    reason: "",
-                    error: false
+                    reason: "DAMAGED",
+                    upcError: false,
+                    amountError: false
                 };
                 newItems.push(newRow);
                 return ({
@@ -74,7 +77,9 @@ const ActCreateModal = (props) => {
                 }
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, upc: e.value, max} : item),
+                        items: itemRows.items.map(item => item.key === key ? {
+                            ...item, upc: e.value, max
+                        } : item),
                     })
                 );
                 break;
@@ -124,7 +129,7 @@ const ActCreateModal = (props) => {
         let recordsList = itemRows.items.map((item) => (
             {
                 product: locationProducts.filter((locationProduct) => (locationProduct.product.upc
-                        === Number(item.upc)))[0].product,
+                    === Number(item.upc)))[0].product,
                 amount: item.amount,
                 reason: item.reason
             }
@@ -136,41 +141,51 @@ const ActCreateModal = (props) => {
 
     const createAct = (e) => {
         e.preventDefault(e);
-        fetch('/api/write_off_acts', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                writeOffActNumber: Number(e.target.actNumber.value),
-                customer: user.customer,
-                location: user.location,
-                actDateTime: dateTime,
-                writeOffActRecords: getRecordsList(),
-                totalProductAmount: calculateAmount(),
-                totalProductSum: calculateCost()
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Act created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                        break;
-                }
+        let validatedItems = validateItems(itemRows.items);
+        let validResults = validateActCreating(e);
+        if (validatedItems.filter(item => item.upcError === true).length === 0 &&
+            validatedItems.filter(item => item.amountError === true).length === 0 &&
+            validResults.length === 0) {
+            fetch('/api/write_off_acts', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    writeOffActNumber: Number(e.target.actNumber.value),
+                    customer: user.customer,
+                    location: user.location,
+                    actDateTime: dateTime,
+                    writeOffActRecords: getRecordsList(),
+                    totalProductAmount: calculateAmount(),
+                    totalProductSum: calculateCost()
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Act created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Act number should be unique.", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
+        setItemRows({
+            items: validatedItems
+        });
+        setValidationResults(validResults);
     }
 
     return (
@@ -178,7 +193,7 @@ const ActCreateModal = (props) => {
             {locationProducts &&
             <div className={"modal-wrapper"}>
                 <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
-                <div className={"modal-box"}>
+                <div className={"modal-box act-modal"}>
                     <form onSubmit={createAct}>
                         <TextField margin="dense"
                                    name="actNumber"
@@ -186,8 +201,11 @@ const ActCreateModal = (props) => {
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Write-off act number"
-                                   required/>
-                        <div className="scrollable-box">
+                                   error={validationResults.includes("actNumber")}
+                                   helperText={validationResults.includes("actNumber") ?
+                                       "Write-off act number must be between 1 and 999999999." : ""}
+                        />
+                        <div className="scrollable-box act-box-modal">
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
                                     {itemRows.items.map((item) => (

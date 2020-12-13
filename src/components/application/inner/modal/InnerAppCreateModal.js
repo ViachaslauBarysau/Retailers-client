@@ -7,6 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {AuthContext} from "../../../../context/authContext";
 import EditableApplicationRecord from "./record/EditableApplicationRecord";
+import {validateInnerAppCreation} from "../../../../validation/ApplicationValidator";
+import {validateItems} from "../../../../validation/ItemRecordValidator";
 
 
 const InnerAppCreateModal = (props) => {
@@ -18,9 +20,12 @@ const InnerAppCreateModal = (props) => {
             max: 0,
             amount: 0,
             cost: 0,
-            error: false
+            upcError: false,
+            amountError: false
         }]
     });
+
+    const [validationResults, setValidationResults] = useState([]);
     const [locationProducts, setLocationProducts] = useState([]);
     const [locations, setLocations] = useState([]);
 
@@ -75,7 +80,8 @@ const InnerAppCreateModal = (props) => {
                     max: 0,
                     amount: 0,
                     cost: 0,
-                    error: false
+                    upcError: false,
+                    amountError: false
                 };
                 newItems.push(newRow);
                 return ({
@@ -108,15 +114,9 @@ const InnerAppCreateModal = (props) => {
                 );
                 break;
             case "amount":
-                let amount;
-                if (e.value < 1) {
-                    amount = 1;
-                } else if (e.value > itemRows.items.filter(item => item.key === key)[0].max) {
-                    amount = itemRows.items.filter(item => item.key === key)[0].max;
-                }
                 setItemRows((prevState) => ({
                         ...prevState,
-                        items: itemRows.items.map(item => item.key === key ? {...item, amount} : item)
+                        items: itemRows.items.map(item => item.key === key ? {...item, amount: e.value} : item)
                     })
                 );
                 break;
@@ -174,46 +174,55 @@ const InnerAppCreateModal = (props) => {
 
     const createApplication = (e) => {
         e.preventDefault(e);
-        console.log(e.target.location.value)
-        fetch('/api/inner_applications', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                applicationNumber: Number(e.target.appNumber.value),
-                sourceLocation: user.location,
-                destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0],
-                creator: user,
-                updater: user,
-                registrationDateTime: dateTime,
-                updatingDateTime: dateTime,
-                applicationStatus: "OPEN",
-                recordsList: getRecordsList(),
-                totalProductAmount: calculateAmount(),
-                totalUnitNumber: calculateVolume()
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Application created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Application number should be unique!", "warning");
-                        break;
-                }
+        let validatedItems = validateItems(itemRows.items);
+        let validResults = validateInnerAppCreation(e);
+        if (validatedItems.filter(item => item.upcError === true).length === 0 &&
+            validatedItems.filter(item => item.amountError === true).length === 0 &&
+            validResults.length === 0) {
+            fetch('/api/inner_applications', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    applicationNumber: Number(e.target.appNumber.value),
+                    sourceLocation: user.location,
+                    destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0],
+                    creator: user,
+                    updater: user,
+                    registrationDateTime: dateTime,
+                    updatingDateTime: dateTime,
+                    applicationStatus: "OPEN",
+                    recordsList: getRecordsList(),
+                    totalProductAmount: calculateAmount(),
+                    totalUnitNumber: calculateVolume()
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Application created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Application number should be unique.", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
+        setItemRows({
+            items: validatedItems
+        });
+        setValidationResults(validResults);
     }
 
     return (
@@ -228,8 +237,11 @@ const InnerAppCreateModal = (props) => {
                                    id="appNumber"
                                    variant="outlined"
                                    label="Application number"
-                                   required/>
-
+                                   type="number"
+                                   error={validationResults.includes("appNumber")}
+                                   helperText={validationResults.includes("appNumber") ?
+                                       "Application number must be between 1 and 999999999." : ""}
+                        />
                         <TextField margin={"dense"}
                                    size="small"
                                    fullWidth={true}
@@ -245,8 +257,14 @@ const InnerAppCreateModal = (props) => {
                             clearOnEscape
                             options={locations.map((option) => option.identifier.toString())}
                             renderInput={(params) => (
-                                <TextField {...params} fullWidth={true} label="Destination location" margin="dense"
-                                           variant="outlined" required/>
+                                <TextField {...params} fullWidth={true}
+                                           label="Destination location"
+                                           margin="dense"
+                                           variant="outlined"
+                                           error={validationResults.includes("location")}
+                                           helperText={validationResults.includes("location") ?
+                                               "Choose location." : ""}
+                                />
                             )}
                         />
 
@@ -268,7 +286,7 @@ const InnerAppCreateModal = (props) => {
 
                         <div className="scrollable-box">
                             <Grid container spacing={1}>
-                                <Grid item xs={12} >
+                                <Grid item xs={12}>
                                     {itemRows.items.map((item) => (
                                         <EditableApplicationRecord item={item}
                                                                    products={locationProducts}

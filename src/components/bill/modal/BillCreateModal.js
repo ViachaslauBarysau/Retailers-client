@@ -6,6 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import EditableBillRecord from "./record/EditableBillRecord";
 
 import {AuthContext} from "../../../context/authContext";
+import {validateItems} from "../../../validation/ItemRecordValidator";
+import {validateBillCreating} from "../../../validation/BillValidator";
 
 const BillCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
@@ -16,10 +18,12 @@ const BillCreateModal = (props) => {
             max: 0,
             amount: 0,
             price: 0,
-            error: false
+            upcError: false,
+            amountError: false
         }]
     });
 
+    const [validationResults, setValidationResults] = useState([]);
     const [locationProducts, setLocationProducts] = useState([]);
 
     useEffect(() => {
@@ -53,7 +57,8 @@ const BillCreateModal = (props) => {
                     upc: 0,
                     amount: 0,
                     price: 0,
-                    error: false
+                    upcError: false,
+                    amountError: false
                 };
                 newItems.push(newRow);
                 return ({
@@ -89,8 +94,6 @@ const BillCreateModal = (props) => {
                             } : item)
                     })
                 );
-
-
                 break;
             case "amount":
                 setItemRows((prevState) => ({
@@ -149,44 +152,53 @@ const BillCreateModal = (props) => {
 
     const createBill = (e) => {
         e.preventDefault(e);
-
-        fetch('/api/bills', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                billNumber: Number(e.target.billNumber.value),
-                customer: user.customer,
-                location: user.location,
-                shopManager: user,
-                registrationDateTime: dateTime,
-                recordList: getRecordsList(),
-                totalProductAmount: calculateAmount(),
-                totalPrice: calculatePrice(),
-                totalCost: calculateCost()
-            }),
-            method: "POST"
-        })
-            .then(res => {
-                switch (res.status) {
-                    case 201:
-                        props.handleOpenSnackBar("Act created!", "success");
-                        props.onCloseModal();
-                        props.needrefresh();
-                        break;
-                    case 401:
-                        logout();
-                        break;
-                    case 451:
-                        props.handleOpenSnackBar("Identifier should be unique!", "warning");
-                        break;
-                }
+        let validatedItems = validateItems(itemRows.items);
+        let validResults = validateBillCreating(e);
+        if (validatedItems.filter(item => item.upcError === true).length === 0 &&
+            validatedItems.filter(item => item.amountError === true).length === 0 &&
+            validResults.length === 0) {
+            fetch('/api/bills', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    billNumber: Number(e.target.billNumber.value),
+                    customer: user.customer,
+                    location: user.location,
+                    shopManager: user,
+                    registrationDateTime: dateTime,
+                    recordList: getRecordsList(),
+                    totalProductAmount: calculateAmount(),
+                    totalPrice: calculatePrice(),
+                    totalCost: calculateCost()
+                }),
+                method: "POST"
             })
-            .catch(e => {
-                props.handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Act created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Bill number should be unique.", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens.", "error");
+                });
+        }
+        setItemRows({
+            items: validatedItems
+        });
+        setValidationResults(validResults);
     }
 
     return (
@@ -201,7 +213,10 @@ const BillCreateModal = (props) => {
                                id="billNumber"
                                variant="outlined"
                                label="Bill number"
-                               required/>
+                               error={validationResults.includes("billNumber")}
+                               helperText={validationResults.includes("billNumber") ?
+                                   "Bill number must be between 1 and 999999999." : ""}
+                    />
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}

@@ -37,8 +37,8 @@ export default (props) => {
                                    margin="normal"
                                    variant="outlined"
                                    value={props.item.upc}
-                                   error={props.item.error}
-                                   required/>
+                                   error={props.item.upcError}
+                        />
                     )}
                 />
             </Grid>
@@ -53,10 +53,12 @@ export default (props) => {
                            onChange={changeRecord}
                            InputProps={{
                                inputProps: {
-                                   min: 1, max: props.item.max, step: 1
+                                   step: 1
                                }
                            }}
-                           required/>
+                           error={props.item.amountError}
+                           helperText={props.item.upc ? "Available: " + props.item.max : "Product not chosen."}
+                />
             </Grid>
             <Grid item xs={3}>
                 <InputLabel id="reason-label">Reason:</InputLabel>
@@ -68,15 +70,12 @@ export default (props) => {
                         variant="outlined"
                         value={props.item.reason}
                         onChange={changeRecord}
-                        required
                 >
                     <MenuItem value={"DAMAGED"}>Damaged</MenuItem>
                     <MenuItem value={"SPOILED"}>Spoiled</MenuItem>
                     <MenuItem value={"LOST"}>Lost</MenuItem>
                     <MenuItem value={"STOLEN"}>Stolen</MenuItem>
                 </Select>
-                {/*<TextField margin="normal" type="number" size="small" required name="cost" variant="outlined"*/}
-                {/*           label="Cost"  onChange={changeRecord}/>*/}
             </Grid>
             <Grid item xs={1}>
                 <IconButton aria-label="delete"

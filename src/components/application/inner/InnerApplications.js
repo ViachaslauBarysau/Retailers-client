@@ -5,12 +5,10 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Button from '../../Button';
 import TableContainer from "@material-ui/core/TableContainer";
-import {StyledTableRow} from "../../Table"
-import {StyledTableCell} from "../../Table"
+import {StyledTableCell, StyledTableRow} from "../../Table"
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import {AuthContext} from "../../../context/authContext";
 import Alert from "@material-ui/lab/Alert";
@@ -153,7 +151,7 @@ export default () => {
             }
             {!isLoading && error && 'Error happens'}
             {displayCreateModal && <InnerAppCreateModal handleOpenSnackBar={(message, severity) =>
-                                                            handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}
                                                         onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <InnerAppEditModal appId={displayEditModal.appId}
@@ -185,8 +183,10 @@ export default () => {
                 <StyledTableCell align="right">{application.sourceLocation.identifier}</StyledTableCell>
                 <StyledTableCell align="right">{application.destinationLocation.identifier}</StyledTableCell>
                 <StyledTableCell align="right">{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
-                <StyledTableCell align="right">{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
-                <StyledTableCell align="right">{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
+                <StyledTableCell
+                    align="right">{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
+                <StyledTableCell
+                    align="right">{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
             </StyledTableRow>
         )
     }
