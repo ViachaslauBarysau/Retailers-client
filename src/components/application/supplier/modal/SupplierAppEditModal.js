@@ -4,7 +4,6 @@ import {TextField} from '@material-ui/core'
 import Button from '../../../Button';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Paper from "@material-ui/core/Paper";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Table from "@material-ui/core/Table";
@@ -80,8 +79,7 @@ const SupplierAppEditModal = (props) => {
                 .then(res => {
                     if (res.ok) {
                         props.handleOpenSnackBar("Products accepted!", "success");
-                    }
-                    else if (res.status === 401) {
+                    } else if (res.status === 401) {
                         logout();
                     } else if (res.status === 451) {
                         props.handleOpenSnackBar("No enough space!", "warning");
@@ -110,8 +108,7 @@ const SupplierAppEditModal = (props) => {
             .then(res => {
                 if (res.ok) {
                     props.handleOpenSnackBar("Application forwarded!", "success");
-                }
-                else if (res.status === 401) {
+                } else if (res.status === 401) {
                     logout();
                 }
             })

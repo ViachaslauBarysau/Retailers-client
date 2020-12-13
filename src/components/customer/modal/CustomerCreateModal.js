@@ -7,12 +7,12 @@ import {validateCustomerCreation, validateCustomerEdition} from "../../../valida
 
 const CustomerCreateModal = (props) => {
     const {logout} = useContext(AuthContext);
-    const [validationResults, setValidationResults] = useState(["errors"]);
+    const [validationResults, setValidationResults] = useState([]);
 
     function addCustomer(e) {
         e.preventDefault();
-        setValidationResults(validateCustomerCreation(e))
-        if (validationResults.length === 0) {
+        let validResults = validateCustomerCreation(e);
+        if (validResults.length === 0) {
             fetch('/api/customers', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -46,6 +46,7 @@ const CustomerCreateModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     let dateTime = useMemo(() => new Date(), [])

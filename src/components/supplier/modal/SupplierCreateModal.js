@@ -42,7 +42,8 @@ const SupplierCreateModal = (props) => {
     }
 
     function handleEditWarehouse(warehouse) {
-        setEditedWarehouse(warehouse)
+        setEditedWarehouse(warehouse);
+        setDisplayCreateModal(true);
     }
 
     return (

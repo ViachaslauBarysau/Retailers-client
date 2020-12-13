@@ -95,7 +95,7 @@ const LocationEditModal = (props) => {
 
     function editLocation(e) {
         e.preventDefault();
-        setValidationResults(validateLocationEditing(location))
+        setValidationResults(validateLocationEditing(location));
         if (validationResults.length === 0) {
             fetch('/api/locations', {
                 headers: {
