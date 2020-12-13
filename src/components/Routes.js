@@ -17,6 +17,7 @@ import SupplierApplications from "./application/supplier/SupplierApplications";
 import Category from './category/Category';
 import InnerApplications from "./application/inner/InnerApplications";
 import LocationProducts from "./locationProducts/LocationProducts";
+import LocationTax from "./locationTax/LocationTax";
 import Suppliers from "./supplier/Suppliers";
 import UserProfilePage from "./userProfile/UserProfilePage";
 
@@ -43,6 +44,7 @@ export default () => {
                                 <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
                                 <Route path={'/location_products'} component={withAuth(LocationProducts)} />
                                 <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
+                                <Route path={'/location_tax'} component={withAuth(LocationTax)} />
                                 <Route path={'/profile'} component={withAuth(UserProfilePage)} />
                                 <Route component={Index} />
                             </Switch>

@@ -16,7 +16,7 @@ const LocationCreateModal = (props) => {
     const [validationResults, setValidationResults] = useState(["errors"]);
 
     function updateStateSelectValue(e) {
-        setStateId(e.target.value)
+            setStateId(e.target.value)
     }
 
     const [locationType, setLocationType] = useState("WAREHOUSE");
@@ -129,7 +129,6 @@ const LocationCreateModal = (props) => {
                         <MenuItem value={"WAREHOUSE"}>Warehouse</MenuItem>
                         <MenuItem value={"SHOP"}>Shop</MenuItem>
                     </Select>
-                    <br/>
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}
@@ -137,7 +136,6 @@ const LocationCreateModal = (props) => {
                                InputProps={{
                                    inputProps:
                                        {
-                                           min: 1,
                                            step: 1
                                        }
                                }}

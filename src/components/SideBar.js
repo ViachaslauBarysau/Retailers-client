@@ -64,6 +64,10 @@ export default () => {
                             <ListItemIcon>{<AssignmentIcon />}</ListItemIcon>
                             <ListItemText primary={"Suppliers"}/>
                         </ListItem>
+                        <ListItem button component={Link} to="/location_tax">
+                            <ListItemIcon>{<AssignmentIcon />}</ListItemIcon>
+                            <ListItemText primary={"Location tax"}/>
+                        </ListItem>
                         <Divider/>
                         <ListItem button onClick={logout}>
                             <ListItemIcon>{<ExitToAppIcon />}</ListItemIcon>

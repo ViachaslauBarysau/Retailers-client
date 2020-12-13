@@ -29,6 +29,8 @@ export default (props) => {
                     states.content
                 );
             })
+            .catch(e => {
+            });
     }, []);
 
     function updateSelect(e) {

@@ -4,7 +4,6 @@ import {TextField} from '@material-ui/core';
 import Button from '../../../Button';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Paper from "@material-ui/core/Paper";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Table from "@material-ui/core/Table";
@@ -19,7 +18,6 @@ const SupplierAppEditModal = (props) => {
     const [application, setApplication] = useState(null)
     const [locations, setLocations] = useState(null)
 
-
     useEffect(() => {
         fetch('/api/inner_applications/' + props.appId, {
             headers: {
@@ -29,39 +27,68 @@ const SupplierAppEditModal = (props) => {
             },
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(application => {
                 setApplication(application);
             })
             .catch(e => {
-                //TODO: Add logic
+                props.handleOpenSnackBar("Error happens!", "error");
             });
-        fetch('/api/locations/shops', {
+        fetch('/api/locations/shops?size=1000', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
             method: "GET"
-        }).then(res => res.json())
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
             .then(locations => {
-                setLocations(locations);
+                setLocations(locations.content);
             })
             .catch(e => {
-                //TODO: Add logic
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 
     const acceptProducts = () => {
-        fetch('/api/inner_applications/status/', {
-            headers: {
-                "Authorization": localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            method: "PUT",
-            body: JSON.stringify(props.appId)
-        });
+        if (application.totalUnitNumber > application.destinationLocation.availableCapacity) {
+            props.handleOpenSnackBar("No enough space!", "warning");
+        } else {
+            fetch('/api/inner_applications/status/', {
+                headers: {
+                    "Authorization": localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(props.appId),
+                method: "PUT"
+            })
+                .then(res => {
+                    if (res.ok) {
+                        props.handleOpenSnackBar("Products accepted!", "success");
+                    } else if (res.status === 401) {
+                        logout();
+                    } else if (res.status === 451) {
+                        props.handleOpenSnackBar("No enough space!", "warning");
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     const forwardApplication = (e) => {
@@ -73,13 +100,15 @@ const SupplierAppEditModal = (props) => {
                 Accept: 'application/json'
             },
             body: JSON.stringify({
-                    ...application,
-                    destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0]
-                }),
+                ...application,
+                destinationLocation: locations.filter(location => location.identifier === e.target.location.value)[0]
+            }),
             method: "PUT"
         })
             .then(res => {
-                if (res.status === 401) {
+                if (res.ok) {
+                    props.handleOpenSnackBar("Application forwarded!", "success");
+                } else if (res.status === 401) {
                     logout();
                 }
             })

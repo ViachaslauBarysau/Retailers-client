@@ -1,41 +1,36 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Button from '../../Button';
-import SupplierAppCreateModal from './modal/SupplierAppCreateModal';
-import SupplierAppEditModal from "./modal/SupplierAppEditModal";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {StyledTableRow} from "../../Table"
-import {StyledTableCell} from "../../Table"
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
-import {AuthContext} from "../../../context/authContext";
-import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import DateAndTime, {editToLocalTimeAndGet} from "../../../util/DateAndTime"
+import Snackbar from "@material-ui/core/Snackbar";
+import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
+import {StyledTableCell, StyledTableRow} from "../Table";
+import LocationTaxEditModal from "./modal/LocationTaxEditModal";
 
 export default () => {
     const {logout} = useContext(AuthContext);
-    const [applicationsData, setData] = useState({
+    const [locationsData, setLocationsData] = useState({
         isLoading: false,
         error: null,
-        applications: [],
+        locations: [],
     });
 
-    const [elementsOnPage, setElementsOnPage] = useState(10);
-    const [pageNumber, setPageNumber] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+    const [elementsOnPage, setElementsOnPage] = useState(5);
+    const [pageNumber, setPageNumber] = useState(0);
+
 
     const [needRefresh, setNeedRefresh] = useState(false);
 
-    const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displayEditModal, setDisplayEditModal] = useState({
         displayModal: false,
-        appId: null
+        locationId: null
     });
 
     const [snackBar, setSnackBar] = useState({
@@ -72,10 +67,10 @@ export default () => {
     };
 
     useEffect(() => {
-        setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/supplier_applications?page=' + pageNumber + '&size=' + elementsOnPage, {
+        setLocationsData(prevState => ({...prevState, isLoading: true}));
+        fetch('/api/locations/shops?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
-                "Authorization": localStorage.getItem("token"),
+                'Authorization': localStorage.getItem("token"),
                 'Content-Type': 'application/json',
                 Accept: 'application/json'
             },
@@ -88,19 +83,19 @@ export default () => {
                     logout();
                 }
             })
-            .then(applicationsPage => {
-                setData((prevState) => ({
+            .then(locationsPage => {
+                setLocationsData((prevState) => ({
                     ...prevState,
                     isLoading: false,
-                    applications: applicationsPage.content
+                    locations: locationsPage.content
                 }));
-                setTotalElements(applicationsPage.totalElements)
-                if (pageNumber > applicationsPage.totalPages === 0 && applicationsPage.totalPages - 1) {
+                setTotalElements(locationsPage.totalElements)
+                if (pageNumber > locationsPage.totalPages === 0 && locationsPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })
             .catch(e => {
-                setData((prevState) => ({
+                setLocationsData((prevState) => ({
                     ...prevState,
                     isLoading: false,
                     error: e
@@ -108,30 +103,33 @@ export default () => {
             })
     }, [pageNumber, needRefresh, elementsOnPage]);
 
-    const {isLoading, error, applications} = applicationsData;
+    const {isLoading, error, locations} = locationsData;
 
     return (
         <div>
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             <form>
-                {(applications.length !== 0
+                {(locations.length !== 0
                     ? <TableContainer component={Paper}>
                         <Table size="small"
                                aria-label="a dense table">
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Application number</StyledTableCell>
-                                    <StyledTableCell>Supplier identifier</StyledTableCell>
-                                    <StyledTableCell>Destination location</StyledTableCell>
-                                    <StyledTableCell>Update date and time</StyledTableCell>
-                                    <StyledTableCell>Last updated by</StyledTableCell>
-                                    <StyledTableCell align="center">Status</StyledTableCell>
+                                    <StyledTableCell>Identifier</StyledTableCell>
+                                    <StyledTableCell>State tax rate</StyledTableCell>
+                                    <StyledTableCell>Location tax rate</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {applications.map(application => <SupplierApplications application={application}
-                                                                                       key={application.id}/>)}
+                                {locations.map(location => <Location
+                                    key={location.id}
+                                    location={location}
+                                    onClick={() => setDisplayEditModal({
+                                        displayModal: true,
+                                        locationId: location.id
+                                    })}
+                                />)}
                             </TableBody>
                         </Table>
                         <TablePagination
@@ -145,23 +143,16 @@ export default () => {
                         />
                     </TableContainer>
                     : 'Empty list')}
-                <Button my={1} variant="contained"
-                        onClick={() => setDisplayCreateModal(true)}>
-                    Add application</Button>
             </form>
             }
             {!isLoading && error && 'Error happens'}
-            {displayCreateModal && <SupplierAppCreateModal handleOpenSnackBar={(message, severity) =>
-                                                                handleOpenSnackBar(message, severity)}
-                                                           needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                           onCloseModal={() => setDisplayCreateModal(false)}/>}
-            {displayEditModal.displayModal && <SupplierAppEditModal appId={displayEditModal.appId}
+            {displayEditModal.displayModal && <LocationTaxEditModal locationId={displayEditModal.locationId}
                                                                     handleOpenSnackBar={(message, severity) =>
                                                                         handleOpenSnackBar(message, severity)}
                                                                     needrefresh={() => setNeedRefresh(!needRefresh)}
                                                                     onCloseModal={() => setDisplayEditModal({
                                                                         displayModal: false,
-                                                                        appId: null
+                                                                        locationId: null
                                                                     })}
             />}
             <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
@@ -171,23 +162,15 @@ export default () => {
             </Snackbar>
         </div>
     );
+}
 
-    function SupplierApplications({application}) {
-        return (
-            <StyledTableRow key={application.applicationNumber}>
-                <StyledTableCell component="th" scope="row">
-                    <a href="#" onClick={() => setDisplayEditModal({
-                        displayModal: true,
-                        appId: application.id
-                    })}>{application.applicationNumber}</a>
-                </StyledTableCell>
-                <StyledTableCell>{application.supplier.identifier}</StyledTableCell>
-                <StyledTableCell>{application.destinationLocation.identifier}</StyledTableCell>
-                <StyledTableCell>{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
-                <StyledTableCell>{application.updater.firstName} {application.updater.lastName}</StyledTableCell>
-                <StyledTableCell>{application.applicationStatus === "OPEN" ? "Open" : "Finished processing"}</StyledTableCell>
-            </StyledTableRow>
-        )
-    }
+function Location(props) {
+    return (
+        <StyledTableRow key={props.location.identifier}>
+            <StyledTableCell><a href="#" onClick={props.onClick}>{props.location.identifier}</a></StyledTableCell>
+            <StyledTableCell>{props.location.address.state.stateTax}</StyledTableCell>
+            <StyledTableCell>{props.location.locationTax}</StyledTableCell>
+        </StyledTableRow>
+    )
 }
 

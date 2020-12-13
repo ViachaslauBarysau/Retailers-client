@@ -104,7 +104,7 @@ export default () => {
                     products: productsPage.content
                 }));
                 setTotalElements(productsPage.totalElements)
-                if (pageNumber > productsPage.totalPages - 1) {
+                if (pageNumber > productsPage.totalPages === 0 && productsPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })

@@ -41,7 +41,7 @@ const SupplierAppEditModal = (props) => {
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
             });
-        fetch('/api/locations/warehouses', {
+        fetch('/api/locations/warehouses?size=1000', {
             headers: {
                 "Authorization": localStorage.getItem("token"),
                 'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const SupplierAppEditModal = (props) => {
                 }
             })
             .then(locations => {
-                setLocations(locations);
+                setLocations(locations.content);
             })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
@@ -65,15 +65,32 @@ const SupplierAppEditModal = (props) => {
     }, []);
 
     const acceptProducts = () => {
-        fetch('/api/supplier_applications/status/', {
-            headers: {
-                "Authorization": localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            method: "PUT",
-            body: JSON.stringify(props.appId)
-        });
+        if (application.totalUnitNumber > application.destinationLocation.availableCapacity) {
+            props.handleOpenSnackBar("No enough space!", "warning");
+        } else {
+            fetch('/api/supplier_applications/status/', {
+                headers: {
+                    "Authorization": localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify(props.appId),
+                method: "PUT"
+            })
+                .then(res => {
+                    if (res.ok) {
+                        props.handleOpenSnackBar("Products accepted!", "success");
+                    }
+                    else if (res.status === 401) {
+                        logout();
+                    } else if (res.status === 451) {
+                        props.handleOpenSnackBar("No enough space!", "warning");
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens!", "error");
+                });
+        }
     }
 
     const forwardApplication = (e) => {
@@ -91,7 +108,10 @@ const SupplierAppEditModal = (props) => {
             method: "PUT"
         })
             .then(res => {
-                if (res.status === 401) {
+                if (res.ok) {
+                    props.handleOpenSnackBar("Application forwarded!", "success");
+                }
+                else if (res.status === 401) {
                     logout();
                 }
             })

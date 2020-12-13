@@ -91,7 +91,7 @@ export default () => {
                     categories: categoriesPage.content
                 }));
                 setTotalElements(categoriesPage.totalElements)
-                if (pageNumber > categoriesPage.totalPages - 1) {
+                if (pageNumber > categoriesPage.totalPages === 0 && categoriesPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })

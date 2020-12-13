@@ -4,19 +4,19 @@
     bottom: 0;
     left: 0;
     right: 0;
-  }
+}
 
-  .modal-backdrop {
+.modal-backdrop {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1210;
-    background-color: rgba(0,0,0,0.3);
-  }
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.3);
+}
 
-  .modal-box {
+.modal-box {
     position: absolute;
     display: block;
     top: 50%;
@@ -26,25 +26,40 @@
     width: 600px;
     overflow-y: auto;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.25);
-    z-index: 1211;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    z-index: 101;
     padding: 40px;
-    /*overflow: scroll;*/
-  }
+}
 
-  .scrollable-box {
+.scrollable-box {
     padding: 10px;
     background-color: #eaf2f8;
     width: 520px;
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
-  }
-
-.scrollable-box-edit-modal {
-  width: 520px;
-  max-height: 300px;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
+.scrollable-box-edit-modal {
+    width: 520px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.upper-modal-backdrop {
+    z-index: 102;
+}
+
+.upper-modal-box {
+    width: 550px;
+    z-index: 103;
+}
+
+.supplier-box-modal {
+    width: 720px;
+}
+
+.supplier-modal {
+    width: 800px;
+}
