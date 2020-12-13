@@ -41,6 +41,9 @@ const UserCreateModal = (props) => {
             })
             .then(locations => {
                 setLocations(locations.content)
+            })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
             });
     }, []);
 

@@ -90,7 +90,7 @@ export default () => {
                     locProducts: locProductsPage.content
                 }));
                 setTotalElements(locProductsPage.totalElements)
-                if (pageNumber > locProductsPage.totalPages - 1) {
+                if (pageNumber > locProductsPage.totalPages === 0 && locProductsPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })

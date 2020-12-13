@@ -105,7 +105,7 @@ export default () => {
                     suppliers: suppliersPage.content
                 }));
                 setTotalElements(suppliersPage.totalElements)
-                if (pageNumber > suppliersPage.totalPages - 1) {
+                if (pageNumber > suppliersPage.totalPages === 0 && suppliersPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })

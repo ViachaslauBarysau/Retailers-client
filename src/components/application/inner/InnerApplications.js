@@ -96,7 +96,7 @@ export default () => {
                     applications: applicationsPage.content
                 }));
                 setTotalElements(applicationsPage.totalElements)
-                if (pageNumber > applicationsPage.totalPages - 1) {
+                if (pageNumber > applicationsPage.totalPages === 0 && applicationsPage.totalPages - 1) {
                     setPageNumber(pageNumber - 1);
                 }
             })

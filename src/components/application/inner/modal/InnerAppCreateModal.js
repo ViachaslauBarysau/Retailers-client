@@ -44,7 +44,7 @@ const InnerAppCreateModal = (props) => {
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
             });
-        fetch('/api/locations/shops', {
+        fetch('/api/locations/shops?size=1000', {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -58,7 +58,7 @@ const InnerAppCreateModal = (props) => {
                 }
             })
             .then(locations => {
-                setLocations(locations)
+                setLocations(locations.content)
             })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
