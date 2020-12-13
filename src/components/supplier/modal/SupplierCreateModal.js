@@ -2,7 +2,6 @@ import '../../Modal.css';
 import React, {useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
-import SupplierUpperModal from "./SupplierUpperModal";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -12,6 +11,8 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
+import SupplierUpperModal from "./SupplierUpperModal";
+import SupplierEditModal from "./SupplierEditModal";
 
 const SupplierCreateModal = (props) => {
     const [warehouseRows, setWarehouseRows] = useState({
@@ -21,6 +22,7 @@ const SupplierCreateModal = (props) => {
     const [editedWarehouse, setEditedWarehouse] = useState(null);
 
     const [displayUpperModal, setDisplayCreateModal] = useState(false);
+    const [displayEditModal, setDisplayEditModal] = useState(false);
 
     const handleAddWarehouse = (warehouse) => {
         setWarehouseRows((prevState) => {
@@ -33,17 +35,28 @@ const SupplierCreateModal = (props) => {
         })
     }
 
+    const handleChangeWarehouse = (warehouse) => {
+        setWarehouseRows((prevState) => {
+            let newWarehouseList = prevState.warehouses;
+            newWarehouseList = newWarehouseList.filter(value => value.key !== warehouse.key);
+            newWarehouseList.push(warehouse)
+            return ({
+                warehouses: newWarehouseList
+            })
+        })
+    }
+
     function handleDeleteWarehouse(key) {
         setWarehouseRows((prevState) => ({
                 ...prevState,
-            warehouses: prevState.warehouses.filter((warehouse) => (warehouse.key !== key))
+                warehouses: prevState.warehouses.filter((warehouse) => (warehouse.key !== key))
             })
         );
     }
 
     function handleEditWarehouse(warehouse) {
         setEditedWarehouse(warehouse);
-        setDisplayCreateModal(true);
+        setDisplayEditModal(true);
     }
 
     return (
@@ -82,8 +95,10 @@ const SupplierCreateModal = (props) => {
                                         <TableRow key={warehouse}>
                                             <TableCell>{warehouse.name}</TableCell>
                                             <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.address1}</TableCell>
-                                            <TableCell align="right"><EditIcon onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
-                                            <TableCell align="right"><HighlightOffIcon onClick={() => handleDeleteWarehouse(warehouse.key)}/></TableCell>
+                                            <TableCell align="right"><EditIcon
+                                                onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
+                                            <TableCell align="right"><HighlightOffIcon
+                                                onClick={() => handleDeleteWarehouse(warehouse.key)}/></TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -100,8 +115,17 @@ const SupplierCreateModal = (props) => {
                             variant="contained">Close</Button>
                 </form>
                 {displayUpperModal && <SupplierUpperModal editedWarehouse={editedWarehouse}
-                                                          onClose={() => {setDisplayCreateModal(false); setEditedWarehouse(null)}}
+                                                          onClose={() => {
+                                                              setDisplayCreateModal(false);
+                                                              setEditedWarehouse(null)
+                                                          }}
                                                           addWarehouse={handleAddWarehouse}/>}
+                {displayEditModal && <SupplierEditModal editedWarehouse={editedWarehouse}
+                                                        onClose={() => {
+                                                            setDisplayEditModal(false);
+                                                            setEditedWarehouse(null)
+                                                        }}
+                                                        addWarehouse={handleChangeWarehouse}/>}
             </div>
 
         </div>
