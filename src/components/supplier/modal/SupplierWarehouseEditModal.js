@@ -48,7 +48,7 @@ const SupplierWarehouseEditModal = (props) => {
                 ...prevState,
                 address: {
                     ...prevState.address,
-                    address1: e.target.value
+                    firstAddressLine: e.target.value
                 }
             })
         )
@@ -59,7 +59,7 @@ const SupplierWarehouseEditModal = (props) => {
                 ...prevState,
                 address: {
                     ...prevState.address,
-                    address2: e.target.value
+                    secondAddressLine: e.target.value
                 }
             })
         )
@@ -115,7 +115,7 @@ const SupplierWarehouseEditModal = (props) => {
                                name="address1"
                                variant="outlined"
                                label="Address line 1"
-                               value={warehouse.address.address1}
+                               value={warehouse.address.firstAddressLine}
                                onChange={handleFirstAddressLineChange}
                                error={validationResults.includes("firstAddressLine")}
                                helperText={validationResults.includes("firstAddressLine") ?
@@ -127,7 +127,7 @@ const SupplierWarehouseEditModal = (props) => {
                                name="address2"
                                variant="outlined"
                                label="Address line 2"
-                               value={warehouse.address.address2}
+                               value={warehouse.address.secondAddressLine}
                                onChange={handleSecondAddressLineChange}
                     />
 

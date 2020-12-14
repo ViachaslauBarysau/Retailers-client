@@ -136,8 +136,7 @@ export default () => {
         );
     }
 
-    function editUser(e) {
-        e.preventDefault();
+    function editUser() {
         let validResults = validateUserEditingByUser(updatedUser);
         if (validResults.length === 0) {
             fetch('/api/users', {
@@ -166,11 +165,39 @@ export default () => {
         setValidationResults(validResults);
     }
 
+
+    function updatePassword(e) {
+        e.preventDefault();
+        fetch('/api/users/updatePassword', {
+            headers: {
+                'Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify({
+                ...updatedUser,
+                password: e.target.password.value
+            }),
+            method: "PUT"
+        })
+            .then(res => {
+                if (res.ok) {
+                    handleOpenSnackBar("Password updated!", "success");
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
+            .catch(e => {
+                handleOpenSnackBar("Error happens!", "error");
+            });
+    }
+
+
     return (
         <div>
             {updatedUser &&
             <div className={classes.root}>
-                <form onSubmit={editUser}>
+                <form onSubmit={updatePassword}>
                     <div>
                         <TextField margin="dense"
                                    size="small"
@@ -258,7 +285,9 @@ export default () => {
                                    disabled
                         />
 
-                        {updatedUser.userRole != "DIRECTOR" && updatedUser.userRole != "ADMIN" && updatedUser.userRole != "SYSTEM_ADMIN" &&
+                        {updatedUser.userRole !== "DIRECTOR" &&
+                        updatedUser.userRole !== "ADMIN" &&
+                        updatedUser.userRole !== "SYSTEM_ADMIN" &&
                         <TextField margin="dense"
                                    size="small"
                                    name="location"
@@ -287,18 +316,30 @@ export default () => {
                                    label="Email"
                                    onChange={handleEmailChange}
                                    disabled/>
-                        <TextField margin="dense"
-                                   size="small"
-                                   name="status"
-                                   fullWidth={true}
-                                   value={user.userStatus}
-                                   variant="outlined"
-                                   label="Status"
-                                   disabled/>
 
                     </div>
-                    <Button my={1} type="submit"
+                    <Button my={1} onClick={editUser}
                             variant="contained">Edit profile</Button>
+                    <br/>
+                    Change password:
+                    <TextField margin="dense"
+                               size="small"
+                               name="password"
+                               fullWidth={true}
+                               variant="outlined"
+                               type="password"
+                               placeholder="Enter new password"
+                    />
+                    <TextField margin="dense"
+                               size="small"
+                               name="confirmedPassword"
+                               fullWidth={true}
+                               variant="outlined"
+                               type="password"
+                               placeholder="Confirm new password"
+                    />
+                    <Button my={1} type="submit"
+                            variant="contained">Update password</Button>
                 </form>
 
             </div>
@@ -309,7 +350,7 @@ export default () => {
                 </Alert>
             </Snackbar>
         </div>
-    );
+    )
 }
 
 

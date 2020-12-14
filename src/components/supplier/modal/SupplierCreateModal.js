@@ -63,12 +63,9 @@ const SupplierCreateModal = (props) => {
         setDisplayEditModal(true);
     }
 
-    function getWarehouseList() {
-        return warehouseRows.warehouses.map(warehouse => {
-            delete warehouse.key;
-            return warehouse
-        })
-    }
+    // function getWarehouseList() {
+    //     return warehouseRows.warehouses;
+    // }
 
     const createSupplier = (e) => {
         e.preventDefault(e);
@@ -85,7 +82,7 @@ const SupplierCreateModal = (props) => {
                     identifier: e.target.identifier.value,
                     customer: user.customer,
                     supplierStatus: "ACTIVE",
-                    wareHouseList: getWarehouseList(),
+                    wareHouseList: warehouseRows.warehouses,
                 }),
                 method: "POST"
             })
@@ -146,15 +143,15 @@ const SupplierCreateModal = (props) => {
                                     <TableRow>
                                         <TableCell>Name</TableCell>
                                         <TableCell align="center">Address</TableCell>
-                                        <TableCell align="right" width={5}></TableCell>
-                                        <TableCell align="right" width={5}></TableCell>
+                                        <TableCell align="right" width={5}/>
+                                        <TableCell align="right" width={5}/>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
                                         <TableRow key={warehouse}>
                                             <TableCell>{warehouse.name}</TableCell>
-                                            <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.address1}</TableCell>
+                                            <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
                                             <TableCell align="right"><EditIcon
                                                 onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
                                             <TableCell align="right"><HighlightOffIcon

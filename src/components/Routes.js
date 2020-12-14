@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import { Switch, Route } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 
 import withAuth from "../hoc/withAuth";
 
@@ -22,7 +22,7 @@ import Suppliers from "./supplier/Suppliers";
 import UserProfilePage from "./userProfile/UserProfilePage";
 
 export default () => {
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     const [currentUser, setCurrentUser] = useState(user);
     if (user) {
         switch (user.userRole[0]) {
@@ -31,22 +31,22 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={withAuth(Customers)} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/category'} component={withAuth(Category)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route path={'/locations'} component={withAuth(Locations)} />
-                                <Route path={'/suppliers'} component={withAuth(Suppliers)} />
-                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
-                                <Route path={'/location_products'} component={withAuth(LocationProducts)} />
-                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)} />
-                                <Route path={'/location_tax'} component={withAuth(LocationTax)} />
-                                <Route path={'/profile'} component={withAuth(UserProfilePage)} />
-                                <Route component={Index} />
+                                <Route path={'/'} component={withAuth(Customers)} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/category'} component={withAuth(Category)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
+                                <Route path={'/locations'} component={withAuth(Locations)}/>
+                                <Route path={'/suppliers'} component={withAuth(Suppliers)}/>
+                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)}/>
+                                <Route path={'/location_products'} component={withAuth(LocationProducts)}/>
+                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)}/>
+                                <Route path={'/location_tax'} component={withAuth(LocationTax)}/>
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                                <Route component={Index}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -55,13 +55,13 @@ export default () => {
                 return (
                     <React.Fragment>
                         <div><Switch>
-                            <Route path={'/'} component={Index} exact={true} />
-                            <Route path={'/login'} component={Login} />
-                            <Route path={'/users'} component={withAuth(Users)} />
-                            <Route path={'/customers'} component={withAuth(Customers)} />
-                            <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                            <Route path={'/products'} component={withAuth(Products)} />
-                            <Route path={'/bills'} component={withAuth(Bills)} />
+                            <Route path={'/'} component={Index} exact={true}/>
+                            <Route path={'/login'} component={Login}/>
+                            <Route path={'/users'} component={withAuth(Users)}/>
+                            <Route path={'/customers'} component={withAuth(Customers)}/>
+                            <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                            <Route path={'/products'} component={withAuth(Products)}/>
+                            <Route path={'/bills'} component={withAuth(Bills)}/>
                             {/*<Route component={Index} />*/}
                         </Switch>
                         </div>
@@ -72,13 +72,13 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
+                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
                                 {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
@@ -89,13 +89,13 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
+                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
                                 {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
@@ -106,13 +106,13 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
+                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
                                 {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
@@ -123,13 +123,13 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
+                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
                                 {/*<Route component={Index} />*/}
                             </Switch>
                         </div>
@@ -140,15 +140,15 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true} />
-                                <Route path={'/login'} component={Login} />
-                                <Route path={'/users'} component={withAuth(Users)} />
-                                <Route path={'/customers'} component={withAuth(Customers)} />
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)} />
-                                <Route path={'/products'} component={withAuth(Products)} />
-                                <Route path={'/locations'} component={withAuth(Locations)} />
-                                <Route path={'/bills'} component={withAuth(Bills)} />
-                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)} />
+                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/login'} component={Login}/>
+                                <Route path={'/users'} component={withAuth(Users)}/>
+                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
+                                <Route path={'/products'} component={withAuth(Products)}/>
+                                <Route path={'/locations'} component={withAuth(Locations)}/>
+                                <Route path={'/bills'} component={withAuth(Bills)}/>
+                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -157,12 +157,12 @@ export default () => {
     } else {
         return (
             <React.Fragment>
-                        <div>
-                            <Switch>
-                                <Route component={Login} />
-                            </Switch>
-                        </div>
-                    </React.Fragment>
+                <div>
+                    <Switch>
+                        <Route component={Login}/>
+                    </Switch>
+                </div>
+            </React.Fragment>
         );
     }
 }

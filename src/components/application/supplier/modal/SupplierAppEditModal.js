@@ -136,9 +136,9 @@ const SupplierAppEditModal = (props) => {
                         <TextField margin="dense"
                                    size="small"
                                    fullWidth={true}
-                                   value={application.supplier.fullName}
+                                   value={application.supplierWarehouse.name}
                                    variant="outlined"
-                                   label="Supplier"
+                                   label="Supplier warehouse"
                                    disabled/>
                         <Autocomplete
                             size="small"

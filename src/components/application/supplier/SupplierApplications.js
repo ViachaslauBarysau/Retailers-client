@@ -179,7 +179,7 @@ export default () => {
                         appId: application.id
                     })}>{application.applicationNumber}</a>
                 </StyledTableCell>
-                <StyledTableCell>{application.supplier.identifier}</StyledTableCell>
+                <StyledTableCell>{application.supplierWarehouse.name}</StyledTableCell>
                 <StyledTableCell>{application.destinationLocation.identifier}</StyledTableCell>
                 <StyledTableCell>{editToLocalTimeAndGet(application.updatingDateTime)}</StyledTableCell>
                 <StyledTableCell>{application.updater.firstName} {application.updater.lastName}</StyledTableCell>

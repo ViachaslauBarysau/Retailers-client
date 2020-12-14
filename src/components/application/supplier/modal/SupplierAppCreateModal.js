@@ -62,7 +62,8 @@ const SupplierAppCreateModal = (props) => {
                 }
             })
             .then(suppliers => {
-                setSuppliers(suppliers.content)
+                setSuppliers(suppliers.content.flatMap(supplier => supplier.wareHouseList)
+                    .filter(warehouse => warehouse.status === "ACTIVE"))
             })
             .catch(e => {
                 props.handleOpenSnackBar("Error happens!", "error");
@@ -165,8 +166,8 @@ const SupplierAppCreateModal = (props) => {
         e.preventDefault(e);
         let validatedItems = validateSupplierAppItems(itemRows.items);
         let validResults = validateSupplierAppCreation(e);
-        if (validatedItems.filter(item => item.upcError === true).length === 0 &&
-            validatedItems.filter(item => item.amountError === true).length === 0 &&
+        if (validatedItems.filter(item => item.upcError === true ||
+            item.amountError === true || item.costError === true).length === 0 &&
             validResults.length === 0) {
             fetch('/api/supplier_applications', {
                 headers: {
@@ -176,7 +177,7 @@ const SupplierAppCreateModal = (props) => {
                 },
                 body: JSON.stringify({
                     applicationNumber: Number(e.target.appNumber.value),
-                    supplier: suppliers.filter(supplier => supplier.identifier === e.target.supplier.value)[0],
+                    supplierWarehouse: suppliers.filter(supplier => supplier.name === e.target.supplierWarehouse.value)[0],
                     destinationLocation: user.location,
                     creator: user,
                     updater: user,
@@ -233,13 +234,13 @@ const SupplierAppCreateModal = (props) => {
                         <Autocomplete
                             id="supplier"
                             size="small"
-                            name="supplier"
+                            name="supplierWarehouse"
                             clearOnEscape
-                            options={suppliers.map((option) => option.identifier.toString())}
+                            options={suppliers.map((option) => option.name.toString())}
                             renderInput={(params) => (
                                 <TextField {...params}
                                            fullWidth={true}
-                                           label="Supplier"
+                                           label="Supplier warehouse"
                                            margin="dense"
                                            variant="outlined"
                                            required/>

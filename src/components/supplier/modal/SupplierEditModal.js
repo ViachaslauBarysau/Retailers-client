@@ -14,11 +14,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import SupplierWarehouseCreateModal from "./SupplierWarehouseCreateModal";
 import SupplierWarehouseEditModal from "./SupplierWarehouseEditModal";
 import {AuthContext} from "../../../context/authContext";
-import {
-    validateSupplier,
-    validateSupplierCreation,
-    validateSupplierEditing
-} from "../../../validation/SupplierValidator";
+import {validateSupplier} from "../../../validation/SupplierValidator";
 
 const SupplierEditModal = (props) => {
     const {logout} = useContext(AuthContext)
@@ -115,13 +111,6 @@ const SupplierEditModal = (props) => {
         setDisplayEditModal(true);
     }
 
-    function getWarehouseList() {
-        return warehouseRows.warehouses.map(warehouse => {
-            delete warehouse.key;
-            return warehouse
-        })
-    }
-
     const editSupplier = (e) => {
         e.preventDefault(e);
         let validResults = validateSupplier(e);
@@ -134,7 +123,7 @@ const SupplierEditModal = (props) => {
                 },
                 body: JSON.stringify({
                     ...supplier,
-                    wareHouseList: getWarehouseList()
+                    wareHouseList: warehouseRows.warehouses
                 }),
                 method: "PUT"
             })
@@ -217,15 +206,15 @@ const SupplierEditModal = (props) => {
                                         <TableRow>
                                             <TableCell>Name</TableCell>
                                             <TableCell align="center">Address</TableCell>
-                                            <TableCell align="right" width={5}></TableCell>
-                                            <TableCell align="right" width={5}></TableCell>
+                                            <TableCell align="right" width={5}/>
+                                            <TableCell align="right" width={5}/>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
                                             <TableRow key={warehouse}>
                                                 <TableCell>{warehouse.name}</TableCell>
-                                                <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.address1}</TableCell>
+                                                <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
                                                 <TableCell align="right"><EditIcon
                                                     onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
                                                 <TableCell align="right"><HighlightOffIcon
