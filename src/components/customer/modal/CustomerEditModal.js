@@ -4,6 +4,7 @@ import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
 import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
+import {validateActCreating} from "../../../validation/ActValidator";
 
 
 const CustomerEditModal = (props) => {
@@ -35,8 +36,8 @@ const CustomerEditModal = (props) => {
 
     function editCustomer(e) {
         e.preventDefault();
-        setValidationResults(validateCustomerEdition(customer))
-        if (validationResults.length === 0) {
+        let validResults = validateCustomerEdition(customer);
+        if (validResults.length === 0) {
             fetch('/api/customers', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -59,6 +60,7 @@ const CustomerEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     let handleChange = (e) => setCustomer(

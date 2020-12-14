@@ -76,8 +76,8 @@ const UserEditModal = (props) => {
     function editUser(e) {
         e.preventDefault();
         let location = role === "DIRECTOR" ? null : locations.filter(location => location.identifier === e.target.location.value)[0];
-        setValidationResults(validateUserEditingByAdmin(e))
-        if (validationResults.length === 0) {
+        let validResults = validateUserEditingByAdmin(e);
+        if (validResults.length === 0) {
             fetch('/api/users', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -104,6 +104,7 @@ const UserEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (

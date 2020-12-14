@@ -117,7 +117,6 @@ const BillCreateModal = (props) => {
     const calculatePrice = () => {
         let totalPrice = 0;
         itemRows.items.forEach((item) => totalPrice += item.price * item.amount);
-        console.log(totalPrice)
         return totalPrice;
     }
 
@@ -137,7 +136,7 @@ const BillCreateModal = (props) => {
     }
 
     const getRecordsList = () => {
-        let recordsList = itemRows.items.map((item) => (
+        return itemRows.items.map((item) => (
             {
                 product: locationProducts.filter((locationProducts) => (locationProducts.product.upc
                     === Number(item.upc)))[0].product,
@@ -145,7 +144,6 @@ const BillCreateModal = (props) => {
                 productPrice: item.price
             }
         ));
-        return recordsList;
     }
 
     let dateTime = useMemo(() => new Date(), [])

@@ -1,144 +1,267 @@
 import '../../Modal.css';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
-import InputLabel from "@material-ui/core/InputLabel";
-import StateSelect from "../../StateSelect";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import EditIcon from '@material-ui/icons/Edit';
+import SupplierWarehouseCreateModal from "./SupplierWarehouseCreateModal";
+import SupplierWarehouseEditModal from "./SupplierWarehouseEditModal";
+import {AuthContext} from "../../../context/authContext";
+import {
+    validateSupplier,
+    validateSupplierCreation,
+    validateSupplierEditing
+} from "../../../validation/SupplierValidator";
 
 const SupplierEditModal = (props) => {
-    const [warehouse, setWarehouse] = useState(props.editedWarehouse);
+    const {logout} = useContext(AuthContext)
+    const [supplier, setSupplier] = useState(null)
+    const [validationResults, setValidationResults] = useState([]);
+    const [warehouseRows, setWarehouseRows] = useState({
+        warehouses: []
+    });
 
-    // useEffect(() => {
-    //     if (props.editedWarehouse) {
-    //         setWarehouse(props.editedWarehouse);
-    //     }
-    // }, []);
+    const [editedWarehouse, setEditedWarehouse] = useState(null);
 
-    function handleStateChange(e) {
-        setWarehouse((prevState) => ({
+    const [displayUpperModal, setDisplayCreateModal] = useState(false);
+    const [displayEditModal, setDisplayEditModal] = useState(false);
+
+    const handleAddWarehouse = (warehouse) => {
+        setWarehouseRows((prevState) => {
+            let newWarehouseList = prevState.warehouses;
+            newWarehouseList.push(warehouse)
+            return ({
                 ...prevState,
-                address: {
-                    ...prevState.address,
-                    state: {
-                        ...prevState.address.state,
-                        id: e.target.value
+                warehouses: newWarehouseList
+            })
+        })
+    }
+
+    useEffect(() => {
+        fetch('/api/suppliers/' + props.supplierId, {
+            headers: {
+                "Authorization": localStorage.getItem("token")
+            },
+            method: "GET"
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else if (res.status === 401) {
+                    logout();
+                }
+            })
+            .then(supplier => {
+                setSupplier(supplier);
+                setWarehouseRows({
+                        warehouses: supplier.wareHouseList.map(warehouse => {
+                            {
+                                return {
+                                    ...warehouse,
+                                    key: new Date().getTime()
+                                }
+                            }
+                        })
                     }
-                }
+                )
             })
+            .catch(e => {
+                props.handleOpenSnackBar("Error happens!", "error");
+            })
+    }, []);
+
+
+    const handleChangeWarehouse = (warehouse) => {
+        setWarehouseRows((prevState) => {
+            let newWarehouseList = prevState.warehouses;
+            newWarehouseList = newWarehouseList.filter(value => value.key !== warehouse.key);
+            newWarehouseList.push(warehouse)
+            return ({
+                warehouses: newWarehouseList
+            })
+        })
+    }
+
+    function handleDeleteWarehouse(key) {
+        if (warehouseRows.warehouses.filter((warehouse) => (warehouse.key === key))[0].id == null) {
+            setWarehouseRows((prevState) => ({
+                    ...prevState,
+                    warehouses: prevState.warehouses.filter((warehouse) => (warehouse.key !== key))
+                })
+            )
+        } else {
+            setWarehouseRows((prevState) => {
+                let newWarehouseList = prevState.warehouses;
+                let deletedWarehouse = warehouseRows.warehouses.filter((warehouse) => (warehouse.key === key))[0];
+                deletedWarehouse = {...deletedWarehouse, status: deletedWarehouse.status = "DELETED"}
+                newWarehouseList = newWarehouseList.filter(value => value.key !== key);
+                newWarehouseList.push(deletedWarehouse)
+                return ({
+                    warehouses: newWarehouseList
+                })
+            })
+        }
+    }
+
+    function handleEditWarehouse(warehouse) {
+        setEditedWarehouse(warehouse);
+        setDisplayEditModal(true);
+    }
+
+    function getWarehouseList() {
+        return warehouseRows.warehouses.map(warehouse => {
+            delete warehouse.key;
+            return warehouse
+        })
+    }
+
+    const editSupplier = (e) => {
+        e.preventDefault(e);
+        let validResults = validateSupplier(e);
+        if (validResults.length === 0) {
+            fetch('/api/suppliers', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    ...supplier,
+                    wareHouseList: getWarehouseList()
+                }),
+                method: "PUT"
+            })
+                .then(res => {
+                    switch (res.status) {
+                        case 200:
+                            props.handleOpenSnackBar("Supplier updated.", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Supplier number should be unique.", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens.", "error");
+                });
+        }
+        setValidationResults(validResults);
+    }
+
+    function handleChangeName(e) {
+        setSupplier({
+                ...supplier,
+                fullName: e.target.value
+            }
         )
     }
 
-    function handleNameChange(e) {
-        setWarehouse((prevState) => ({
-                ...prevState,
-                name: e.target.value
-            })
+    function handleChangeIdentifier(e) {
+        setSupplier({
+                ...supplier,
+                identifier: e.target.value
+            }
         )
-    }
-
-    function handleCityChange(e) {
-        setWarehouse((prevState) => ({
-                ...prevState,
-                address: {
-                    ...prevState.address,
-                    city: e.target.value
-                }
-            })
-        )
-    }
-
-    function handleFirstAddressLineChange(e) {
-        setWarehouse((prevState) => ({
-                ...prevState,
-                address: {
-                    ...prevState.address,
-                    address1: e.target.value
-                }
-            })
-        )
-    }
-
-    function handleSecondAddressLineChange(e) {
-        setWarehouse((prevState) => ({
-                ...prevState,
-                address: {
-                    ...prevState.address,
-                    address2: e.target.value
-                }
-            })
-        )
-    }
-
-    function changeRecord(e) {
-        e.preventDefault();
-        props.addWarehouse(warehouse);
-        props.onClose();
     }
 
     return (
-        <div className={"modal-wrapper"}>
-            <div onClick={props.onClose} className={"modal-backdrop upper-modal-backdrop"}/>
-            <div className={"modal-box upper-modal-box"}>
-                <form>
-                    <TextField margin="dense"
-                               size="small"
-                               fullWidth={true}
-                               id="fullName"
-                               name="fullName"
-                               variant="outlined"
-                               label="Name"
-                               value={warehouse.name}
-                               onChange={handleNameChange}
-                    />
-                    <InputLabel id="state-label">State:</InputLabel>
-                    <StateSelect onChangeState={handleStateChange}
-                                 value={warehouse.address.state.id}
-                    />
-                    <TextField margin="dense"
-                               size="small"
-                               fullWidth={true}
-                               name="city"
-                               variant="outlined"
-                               label="City"
-                               value={warehouse.address.city}
-                               onChange={handleCityChange}
-                        // error={validationResults.includes("city")}
-                        // helperText={validationResults.includes("city") ?
-                        //     "Min length 3 symbols!" : ""}
-                    />
-                    <TextField margin="dense"
-                               size="small"
-                               fullWidth={true}
-                               name="address1"
-                               variant="outlined"
-                               label="Address line 1"
-                               value={warehouse.address.address1}
-                               onChange={handleFirstAddressLineChange}
-                        // error={validationResults.includes("firstAddressLine")}
-                        // helperText={validationResults.includes("firstAddressLine") ?
-                        //     "Min length 5 symbols!" : ""}
-                    />
-                    <TextField margin="dense"
-                               size="small"
-                               fullWidth={true}
-                               name="address2"
-                               variant="outlined"
-                               label="Address line 2"
-                               value={warehouse.address.address2}
-                               onChange={handleSecondAddressLineChange}
-                    />
-
-                    <Button my={1} onClick={changeRecord} variant="contained">Change record</Button>
-                    {/*<br/>*/}
-                    {/*<Button my={1} type="submit"*/}
-                    {/*        variant="contained">Add supplier</Button>*/}
-                    <Button m={1} id="closeButton"
-                            onClick={props.onClose}
-                            variant="contained">Close</Button>
-                </form>
+        <div>
+            {supplier &&
+            <div className={"modal-wrapper"}>
+                <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
+                <div className={"modal-box supplier-modal"}>
+                    <form onSubmit={editSupplier}>
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   id="fullName"
+                                   name="fullName"
+                                   variant="outlined"
+                                   value={supplier.fullName}
+                                   label="Full name"
+                                   onChange={handleChangeName}
+                                   error={validationResults.includes("fullName")}
+                                   helperText={validationResults.includes("fullName") ?
+                                       "Name must be between 3 and 40 symbols." : ""}
+                        />
+                        <TextField margin="dense"
+                                   size="small"
+                                   fullWidth={true}
+                                   type="number"
+                                   id="identifier"
+                                   value={supplier.identifier}
+                                   variant="outlined"
+                                   label="Identifier"
+                                   onChange={handleChangeIdentifier}
+                                   error={validationResults.includes("identifier")}
+                                   helperText={validationResults.includes("identifier") ?
+                                       "Identifier value must be between 1 and 999999999." : ""}
+                        />
+                        <div className="scrollable-box supplier-box-modal">
+                            <TableContainer component={Paper}>
+                                <Table size="small"
+                                       aria-label="a dense table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Name</TableCell>
+                                            <TableCell align="center">Address</TableCell>
+                                            <TableCell align="right" width={5}></TableCell>
+                                            <TableCell align="right" width={5}></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
+                                            <TableRow key={warehouse}>
+                                                <TableCell>{warehouse.name}</TableCell>
+                                                <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.address1}</TableCell>
+                                                <TableCell align="right"><EditIcon
+                                                    onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
+                                                <TableCell align="right"><HighlightOffIcon
+                                                    onClick={() => handleDeleteWarehouse(warehouse.key)}/></TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <Button my={1} onClick={() => setDisplayCreateModal(true)}
+                                variant="contained">Add warehouse</Button>
+                        <br/>
+                        <Button my={1} type="submit"
+                                variant="contained">Edit supplier</Button>
+                        <Button m={1} id="closeButton"
+                                onClick={props.onCloseModal}
+                                variant="contained">Close</Button>
+                    </form>
+                    {displayUpperModal && <SupplierWarehouseCreateModal editedWarehouse={editedWarehouse}
+                                                                        onClose={() => {
+                                                                            setDisplayCreateModal(false);
+                                                                            setEditedWarehouse(null)
+                                                                        }}
+                                                                        addWarehouse={handleAddWarehouse}/>}
+                    {displayEditModal && <SupplierWarehouseEditModal editedWarehouse={editedWarehouse}
+                                                                     onClose={() => {
+                                                                         setDisplayEditModal(false);
+                                                                         setEditedWarehouse(null)
+                                                                     }}
+                                                                     addWarehouse={handleChangeWarehouse}/>}
+                </div>
             </div>
-
+            }
         </div>
+
     )
 }
 

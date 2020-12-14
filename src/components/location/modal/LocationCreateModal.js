@@ -7,8 +7,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {AuthContext} from "../../../context/authContext";
-import {validateProductCreation} from "../../../validation/ProductValidator";
 import {validateLocationCreation} from "../../../validation/LocationValidator";
+import {validateCustomerCreation} from "../../../validation/CustomerValidator";
 
 const LocationCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);
@@ -16,7 +16,7 @@ const LocationCreateModal = (props) => {
     const [validationResults, setValidationResults] = useState(["errors"]);
 
     function updateStateSelectValue(e) {
-            setStateId(e.target.value)
+        setStateId(e.target.value)
     }
 
     const [locationType, setLocationType] = useState("WAREHOUSE");
@@ -27,8 +27,8 @@ const LocationCreateModal = (props) => {
 
     function addLocation(e) {
         e.preventDefault();
-        setValidationResults(validateLocationCreation(e))
-        if (validationResults.length === 0) {
+        let validResults = validateLocationCreation(e);
+        if (validResults.length === 0) {
             fetch('/api/locations', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -74,6 +74,7 @@ const LocationCreateModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (

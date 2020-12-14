@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default () => {
     const {user, logout, setUser} = useContext(AuthContext);
-    const [validationResults, setValidationResults] = useState(["errors"]);
+    const [validationResults, setValidationResults] = useState([]);
     const classes = useStyles();
     const [updatedUser, setUpdatedUser] = useState(user)
 
@@ -138,8 +138,8 @@ export default () => {
 
     function editUser(e) {
         e.preventDefault();
-        setValidationResults(validateUserEditingByUser(updatedUser))
-        if (validationResults.length === 0) {
+        let validResults = validateUserEditingByUser(updatedUser);
+        if (validResults.length === 0) {
             fetch('/api/users', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -163,6 +163,7 @@ export default () => {
                     handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (
@@ -276,10 +277,7 @@ export default () => {
                                    variant="outlined"
                                    label="Login"
                                    onChange={handleLoginChange}
-                                   error={validationResults.includes("login")}
-                                   helperText={validationResults.includes("login") ?
-                                       "Min length of login is 3 symbols." : ""}
-                        />
+                                   disabled/>
                         <TextField margin="dense"
                                    size="small"
                                    name="email"
@@ -288,9 +286,7 @@ export default () => {
                                    variant="outlined"
                                    label="Email"
                                    onChange={handleEmailChange}
-                                   error={validationResults.includes("email")}
-                                   helperText={validationResults.includes("email") ? "Incorrect email." : ""}
-                        />
+                                   disabled/>
                         <TextField margin="dense"
                                    size="small"
                                    name="status"

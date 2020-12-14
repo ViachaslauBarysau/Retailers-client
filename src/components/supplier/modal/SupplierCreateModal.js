@@ -1,5 +1,5 @@
 import '../../Modal.css';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import Paper from "@material-ui/core/Paper";
@@ -11,10 +11,14 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import EditIcon from '@material-ui/icons/Edit';
-import SupplierUpperModal from "./SupplierUpperModal";
-import SupplierEditModal from "./SupplierEditModal";
+import SupplierWarehouseCreateModal from "./SupplierWarehouseCreateModal";
+import SupplierWarehouseEditModal from "./SupplierWarehouseEditModal";
+import {AuthContext} from "../../../context/authContext";
+import {validateSupplier} from "../../../validation/SupplierValidator";
 
 const SupplierCreateModal = (props) => {
+    const {user, logout} = useContext(AuthContext);
+    const [validationResults, setValidationResults] = useState([]);
     const [warehouseRows, setWarehouseRows] = useState({
         warehouses: []
     });
@@ -59,24 +63,80 @@ const SupplierCreateModal = (props) => {
         setDisplayEditModal(true);
     }
 
+    function getWarehouseList() {
+        return warehouseRows.warehouses.map(warehouse => {
+            delete warehouse.key;
+            return warehouse
+        })
+    }
+
+    const createSupplier = (e) => {
+        e.preventDefault(e);
+        let validResults = validateSupplier(e);
+        if (validResults.length === 0) {
+            fetch('/api/suppliers', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    fullName: e.target.fullName.value,
+                    identifier: e.target.identifier.value,
+                    customer: user.customer,
+                    supplierStatus: "ACTIVE",
+                    wareHouseList: getWarehouseList(),
+                }),
+                method: "POST"
+            })
+                .then(res => {
+                    switch (res.status) {
+                        case 201:
+                            props.handleOpenSnackBar("Supplier created!", "success");
+                            props.onCloseModal();
+                            props.needrefresh();
+                            break;
+                        case 401:
+                            logout();
+                            break;
+                        case 451:
+                            props.handleOpenSnackBar("Supplier number should be unique.", "warning");
+                            break;
+                    }
+                })
+                .catch(e => {
+                    props.handleOpenSnackBar("Error happens.", "error");
+                });
+        }
+        setValidationResults(validResults);
+    }
+
     return (
         <div className={"modal-wrapper"}>
             <div onClick={props.onCloseModal} className={"modal-backdrop"}/>
             <div className={"modal-box supplier-modal"}>
-                <form>
+                <form onSubmit={createSupplier}>
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}
-                               id="billNumber"
+                               id="fullName"
+                               name="fullName"
                                variant="outlined"
                                label="Full name"
+                               error={validationResults.includes("fullName")}
+                               helperText={validationResults.includes("fullName") ?
+                                   "Name must be between 3 and 40 symbols." : ""}
                     />
                     <TextField margin="dense"
                                size="small"
+                               type="number"
                                fullWidth={true}
-                               id="locationId"
+                               id="identifier"
                                variant="outlined"
                                label="Identifier"
+                               error={validationResults.includes("identifier")}
+                               helperText={validationResults.includes("identifier") ?
+                                   "Identifier value must be between 1 and 999999999." : ""}
                     />
                     <div className="scrollable-box supplier-box-modal">
                         <TableContainer component={Paper}>
@@ -91,7 +151,7 @@ const SupplierCreateModal = (props) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {warehouseRows.warehouses.map((warehouse) => (
+                                    {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
                                         <TableRow key={warehouse}>
                                             <TableCell>{warehouse.name}</TableCell>
                                             <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.address1}</TableCell>
@@ -114,18 +174,18 @@ const SupplierCreateModal = (props) => {
                             onClick={props.onCloseModal}
                             variant="contained">Close</Button>
                 </form>
-                {displayUpperModal && <SupplierUpperModal editedWarehouse={editedWarehouse}
-                                                          onClose={() => {
-                                                              setDisplayCreateModal(false);
-                                                              setEditedWarehouse(null)
-                                                          }}
-                                                          addWarehouse={handleAddWarehouse}/>}
-                {displayEditModal && <SupplierEditModal editedWarehouse={editedWarehouse}
-                                                        onClose={() => {
-                                                            setDisplayEditModal(false);
-                                                            setEditedWarehouse(null)
-                                                        }}
-                                                        addWarehouse={handleChangeWarehouse}/>}
+                {displayUpperModal && <SupplierWarehouseCreateModal editedWarehouse={editedWarehouse}
+                                                                    onClose={() => {
+                                                                        setDisplayCreateModal(false);
+                                                                        setEditedWarehouse(null)
+                                                                    }}
+                                                                    addWarehouse={handleAddWarehouse}/>}
+                {displayEditModal && <SupplierWarehouseEditModal editedWarehouse={editedWarehouse}
+                                                                 onClose={() => {
+                                                                     setDisplayEditModal(false);
+                                                                     setEditedWarehouse(null)
+                                                                 }}
+                                                                 addWarehouse={handleChangeWarehouse}/>}
             </div>
 
         </div>

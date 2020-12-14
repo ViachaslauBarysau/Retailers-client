@@ -44,8 +44,8 @@ const LocationTaxEditModal = (props) => {
 
     function editLocation(e) {
         e.preventDefault();
-        setValidationResults(validateLocationTaxEditing(location))
-        if (validationResults.length === 0) {
+        let validResults = validateLocationTaxEditing(location)
+        if (validResults.length === 0) {
             fetch('/api/locations', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -74,6 +74,7 @@ const LocationTaxEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
 

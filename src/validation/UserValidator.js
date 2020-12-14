@@ -58,11 +58,7 @@ export function validateUserEditingByUser(user) {
 
     (!firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
 
-    (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) && validationResults.push("email");
-
     (new Date() - age < EIGHTEEN_YEARS_OLD || new Date() - age > HUNDRED_YEARS_OLD) && validationResults.push("birthday");
-
-    (!login || login.length < 3) && validationResults.push("login");
 
     return validationResults;
 }

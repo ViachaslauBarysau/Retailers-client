@@ -50,8 +50,8 @@ const UserCreateModal = (props) => {
     function addUser(e) {
         e.preventDefault();
         let location = role === "DIRECTOR" ? null : locations.filter(location => location.identifier === e.target.location.value)[0];
-        setValidationResults(validateUserCreation(e))
-        if (validationResults.length === 0) {
+        let validResults = validateUserCreation(e);
+        if (validResults.length === 0) {
             fetch('http://localhost:8080/api/users', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -99,6 +99,7 @@ const UserCreateModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (

@@ -1,9 +1,9 @@
 import '../../Modal.css';
-import React, {useContext, useState, useMemo} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
-import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
+import {validateCustomerCreation} from "../../../validation/CustomerValidator";
 
 const CustomerCreateModal = (props) => {
     const {logout} = useContext(AuthContext);
@@ -65,13 +65,13 @@ const CustomerCreateModal = (props) => {
                                helperText={validationResults.includes("name") ? "Name length must be between 4 and 40 characters!" : " "}
                                label="Name"/>
                     <TextField
-                               size="small"
-                               fullWidth={true}
-                               id="email"
-                               variant="outlined"
-                               error={validationResults.includes("email")}
-                               helperText={validationResults.includes("email") ? "Incorrect email!" : " "}
-                               label="Email"/>
+                        size="small"
+                        fullWidth={true}
+                        id="email"
+                        variant="outlined"
+                        error={validationResults.includes("email")}
+                        helperText={validationResults.includes("email") ? "Incorrect email!" : " "}
+                        label="Email"/>
                     <Button my={1} fullWidth={false}
                             type="submit"
                             variant="contained">Add customer</Button>

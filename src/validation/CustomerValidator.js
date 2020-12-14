@@ -3,7 +3,7 @@ export function validateCustomerCreation(e) {
     let validationResults = []
     let name = e.target.name.value;
     let email = e.target.email.value;
-    debugger;
+
     (name.length < 4 || name.length > 40) && validationResults.push("name");
     (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) && validationResults.push("email");
 

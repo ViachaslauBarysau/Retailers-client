@@ -4,7 +4,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
-import {validateCustomerCreation} from "../../../validation/CustomerValidator";
+import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
 import {validateCategoryEditing} from "../../../validation/CategoryValidator";
 
 const CategoryEditModal = (props) => {
@@ -50,8 +50,8 @@ const CategoryEditModal = (props) => {
 
     function editCategory(e) {
         e.preventDefault(e);
-        setValidationResults(validateCategoryEditing(category))
-        if (validationResults.length === 0) {
+        let validResults = validateCategoryEditing(category);
+        if (validResults.length === 0) {
             fetch('/api/categories', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -79,6 +79,7 @@ const CategoryEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (

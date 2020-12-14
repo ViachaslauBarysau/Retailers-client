@@ -4,11 +4,13 @@ import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import InputLabel from "@material-ui/core/InputLabel";
 import StateSelect from "../../StateSelect";
+import {validateSupplierWarehouse} from "../../../validation/SupplierWarehouseValidator";
 
-const SupplierUpperModal = (props) => {
+const SupplierWarehouseCreateModal = (props) => {
+    const [validationResults, setValidationResults] = useState([]);
     const [warehouse, setWarehouse] = useState({
         key: new Date().getTime(),
-        id: 0,
+        id: null,
         name: "",
         address: {
             state: {
@@ -17,7 +19,8 @@ const SupplierUpperModal = (props) => {
             city: "",
             address1: "",
             address2: ""
-        }
+        },
+        status: "ACTIVE"
     });
 
     useEffect(() => {
@@ -83,24 +86,31 @@ const SupplierUpperModal = (props) => {
 
     function addWarehouse(e) {
         e.preventDefault();
-        props.addWarehouse(warehouse);
-        props.onClose();
+        let validResults = validateSupplierWarehouse(e);
+        if(validResults.length === 0) {
+            props.addWarehouse(warehouse);
+            props.onClose();
+        }
+        setValidationResults(validResults);
     }
 
     return (
         <div className={"modal-wrapper"}>
             <div onClick={props.onClose} className={"modal-backdrop upper-modal-backdrop"}/>
             <div className={"modal-box upper-modal-box"}>
-                <form>
+                <form onSubmit={addWarehouse}>
                     <TextField margin="dense"
                                size="small"
                                fullWidth={true}
-                               id="fullName"
-                               name="fullName"
+                               id="name"
+                               name="name"
                                variant="outlined"
                                label="Name"
                                value={warehouse.name}
                                onChange={handleNameChange}
+                               error={validationResults.includes("name")}
+                               helperText={validationResults.includes("name") ?
+                                   "Name length must be between 2  and 30 symbols." : ""}
                     />
                     <InputLabel id="state-label">State:</InputLabel>
                     <StateSelect onChangeState={handleStateChange}
@@ -114,9 +124,9 @@ const SupplierUpperModal = (props) => {
                                label="City"
                                value={warehouse.address.city}
                                onChange={handleCityChange}
-                        // error={validationResults.includes("city")}
-                        // helperText={validationResults.includes("city") ?
-                        //     "Min length 3 symbols!" : ""}
+                               error={validationResults.includes("city")}
+                               helperText={validationResults.includes("city") ?
+                                   "City min length is 3 symbols." : ""}
                     />
                     <TextField margin="dense"
                                size="small"
@@ -126,9 +136,9 @@ const SupplierUpperModal = (props) => {
                                label="Address line 1"
                                value={warehouse.address.address1}
                                onChange={handleFirstAddressLineChange}
-                        // error={validationResults.includes("firstAddressLine")}
-                        // helperText={validationResults.includes("firstAddressLine") ?
-                        //     "Min length 5 symbols!" : ""}
+                               error={validationResults.includes("firstAddressLine")}
+                               helperText={validationResults.includes("firstAddressLine") ?
+                                   "Address min length is 5 symbols." : ""}
                     />
                     <TextField margin="dense"
                                size="small"
@@ -140,10 +150,7 @@ const SupplierUpperModal = (props) => {
                                onChange={handleSecondAddressLineChange}
                     />
 
-                    <Button my={1} onClick={addWarehouse} variant="contained">Add warehouse</Button>
-                    {/*<br/>*/}
-                    {/*<Button my={1} type="submit"*/}
-                    {/*        variant="contained">Add supplier</Button>*/}
+                    <Button my={1} type="submit" variant="contained">Add warehouse</Button>
                     <Button m={1} id="closeButton"
                             onClick={props.onClose}
                             variant="contained">Close</Button>
@@ -154,4 +161,4 @@ const SupplierUpperModal = (props) => {
     )
 }
 
-export default SupplierUpperModal;
+export default SupplierWarehouseCreateModal;

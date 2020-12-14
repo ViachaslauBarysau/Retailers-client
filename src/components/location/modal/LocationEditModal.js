@@ -95,8 +95,8 @@ const LocationEditModal = (props) => {
 
     function editLocation(e) {
         e.preventDefault();
-        setValidationResults(validateLocationEditing(location));
-        if (validationResults.length === 0) {
+        let validResults = validateLocationEditing(location);
+        if (validResults.length === 0) {
             fetch('/api/locations', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -109,7 +109,7 @@ const LocationEditModal = (props) => {
                 .then(res => {
                     switch (res.status) {
                         case 200:
-                            props.handleOpenSnackBar("Location updated!", "success");
+                            props.handleOpenSnackBar("Location updated.", "success");
                             props.onCloseModal();
                             props.needrefresh();
                             break;
@@ -117,7 +117,7 @@ const LocationEditModal = (props) => {
                             logout();
                             break;
                         case 451:
-                            props.handleOpenSnackBar("Identifier should be unique!", "warning");
+                            props.handleOpenSnackBar("Identifier should be unique.", "warning");
                             break;
                     }
                 })
@@ -125,6 +125,7 @@ const LocationEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
 
