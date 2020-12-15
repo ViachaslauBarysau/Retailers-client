@@ -26,7 +26,7 @@ export function validateUserCreation(e) {
 
     (new Date() - age < EIGHTEEN_YEARS_OLD || new Date() - age > HUNDRED_YEARS_OLD) && validationResults.push("birthday");
 
-    (!login || login.length < 3) && validationResults.push("login");
+    (!login || login.length < 3 || login.length > 20) && validationResults.push("login");
 
     return validationResults;
 }
@@ -54,7 +54,7 @@ export function validateUserEditingByUser(user) {
 
     (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
 
-    (!firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
+    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
 
     (new Date() - age < EIGHTEEN_YEARS_OLD || new Date() - age > HUNDRED_YEARS_OLD) && validationResults.push("birthday");
 

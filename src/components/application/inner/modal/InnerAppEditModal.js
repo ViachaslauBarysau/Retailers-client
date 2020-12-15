@@ -79,6 +79,8 @@ const SupplierAppEditModal = (props) => {
                 .then(res => {
                     if (res.ok) {
                         props.handleOpenSnackBar("Products accepted!", "success");
+                        props.onCloseModal();
+                        props.needrefresh();
                     } else if (res.status === 401) {
                         logout();
                     } else if (res.status === 451) {
@@ -108,6 +110,8 @@ const SupplierAppEditModal = (props) => {
             .then(res => {
                 if (res.ok) {
                     props.handleOpenSnackBar("Application forwarded!", "success");
+                    props.onCloseModal();
+                    props.needrefresh();
                 } else if (res.status === 401) {
                     logout();
                 }
@@ -148,7 +152,7 @@ const SupplierAppEditModal = (props) => {
                                 <TextField {...params} fullWidth={true} label="Destination location" margin="normal"
                                            name="location"
                                            variant="outlined"
-                                           required/>
+                                           />
                             )}
                         />
                         <TextField margin={"dense"}

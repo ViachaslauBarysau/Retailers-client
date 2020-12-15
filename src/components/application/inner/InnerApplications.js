@@ -18,7 +18,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Typography from "@material-ui/core/Typography";
 
 export default () => {
-    const {logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
 
     const [applicationsData, setData] = useState({
         isLoading: false,
@@ -154,8 +154,10 @@ export default () => {
                     >
                         No records.
                     </Typography>)}
+                {user.userRole[0] !== "SHOP_MANAGER" &&
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add application</Button>
+                }
             </form>
             }
             {!isLoading && error &&

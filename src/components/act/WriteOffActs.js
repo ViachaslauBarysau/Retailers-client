@@ -72,7 +72,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/write_off_acts/' + (user.userRole === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page='
+        fetch('/api/write_off_acts/' + (user.userRole[0] === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page='
             + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
@@ -148,9 +148,11 @@ export default () => {
                         No records.
                     </Typography>
             )}
+            {user.userRole[0] !== "DIRECTOR" &&
             <Button mt={1} variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act</Button>
+            }
             {!isLoading && error &&
             <Typography
                 style={{

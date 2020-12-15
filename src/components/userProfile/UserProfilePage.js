@@ -176,7 +176,7 @@ export default () => {
         e.preventDefault();
         let validResults = validatePassword(e);
         if (validResults.length === 0) {
-            fetch('/api/users/updatePassword', {
+            fetch('/api/users/updatepassword', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
                     'Content-Type': 'application/json',

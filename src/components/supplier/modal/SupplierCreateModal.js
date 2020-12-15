@@ -125,6 +125,11 @@ const SupplierCreateModal = (props) => {
                                type="number"
                                fullWidth={true}
                                id="identifier"
+                               InputProps={{
+                                   inputProps: {
+                                       step: 1
+                                   }
+                               }}
                                variant="outlined"
                                label="Identifier"
                                error={validationResults.includes("identifier")}
@@ -147,7 +152,7 @@ const SupplierCreateModal = (props) => {
                                     {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
                                         <TableRow key={warehouse}>
                                             <TableCell>{warehouse.name}</TableCell>
-                                            <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
+                                            <TableCell>{warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
                                             <TableCell align="right"><EditIcon
                                                 onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
                                             <TableCell align="right"><HighlightOffIcon

@@ -72,8 +72,7 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/bills/' + (user.userRole === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page='
-            + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/bills/' + (user.userRole[0] === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page=' + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },

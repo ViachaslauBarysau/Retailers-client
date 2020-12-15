@@ -67,8 +67,8 @@ const ProductEditModal = (props) => {
 
     function editProduct(e) {
         e.preventDefault();
-        setValidationResults(validateProductEditing(product))
-        if (validationResults.length === 0) {
+        let validResults = validateProductEditing(product);
+        if (validResults.length === 0) {
             fetch('/api/products', {
                 headers: {
                     'Authorization': localStorage.getItem("token"),
@@ -92,6 +92,7 @@ const ProductEditModal = (props) => {
                     props.handleOpenSnackBar("Error happens!", "error");
                 });
         }
+        setValidationResults(validResults);
     }
 
     return (

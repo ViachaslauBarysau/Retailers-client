@@ -89,7 +89,7 @@ export default () => {
                     locProducts: locProductsPage.content
                 }));
                 setTotalElements(locProductsPage.totalElements)
-                if (pageNumber > locProductsPage.totalPages === 0 && locProductsPage.totalPages - 1) {
+                if (pageNumber > locProductsPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })
@@ -145,7 +145,7 @@ export default () => {
                         No records.
                     </Typography>)}
                 <Button my={1} variant="contained"
-                        onClick={() => setDisplayCreateModal(true)}> Create write-off act</Button>
+                        onClick={() => setDisplayCreateModal(true)}> Add write-off act</Button>
             </div>
             }
             {!isLoading && error && <Typography

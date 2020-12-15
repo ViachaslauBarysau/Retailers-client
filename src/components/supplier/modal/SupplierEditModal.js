@@ -93,15 +93,13 @@ const SupplierEditModal = (props) => {
                 })
             )
         } else {
+
             setWarehouseRows((prevState) => {
-                let newWarehouseList = prevState.warehouses;
                 let deletedWarehouse = warehouseRows.warehouses.filter((warehouse) => (warehouse.key === key))[0];
                 deletedWarehouse = {...deletedWarehouse, status: deletedWarehouse.status = "DELETED"}
-                newWarehouseList = newWarehouseList.filter(value => value.key !== key);
-                newWarehouseList.push(deletedWarehouse)
-                return ({
-                    warehouses: newWarehouseList
-                })
+                // let newWarehouseList = warehouseRows.warehouses.filter(value => value.key !== key);
+                // newWarehouseList.push(deletedWarehouse)
+                return (warehouseRows)
             })
         }
     }
@@ -214,7 +212,7 @@ const SupplierEditModal = (props) => {
                                         {warehouseRows.warehouses.filter(warehouse => warehouse.status === "ACTIVE").map((warehouse) => (
                                             <TableRow key={warehouse}>
                                                 <TableCell>{warehouse.name}</TableCell>
-                                                <TableCell>{warehouse.address.state.id}, {warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
+                                                <TableCell>{warehouse.address.city}, {warehouse.address.firstAddressLine}</TableCell>
                                                 <TableCell align="right"><EditIcon
                                                     onClick={() => handleEditWarehouse(warehouse)}/></TableCell>
                                                 <TableCell align="right"><HighlightOffIcon

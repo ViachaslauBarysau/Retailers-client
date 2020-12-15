@@ -7,7 +7,7 @@ export function validateLocationCreation(e) {
 
     (!identifier || identifier.length < 3 || identifier.length > 30) && validationResults.push("identifier");
     (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
-    (!firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
+    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
     (totalCapacity < 1) && validationResults.push("totalCapacity");
 
     return validationResults;
@@ -21,7 +21,7 @@ export function validateLocationEditing(location) {
 
     (!identifier || identifier.length < 3 || identifier.length > 30) && validationResults.push("identifier");
     (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
-    (!firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
+    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
 
     return validationResults;
 }

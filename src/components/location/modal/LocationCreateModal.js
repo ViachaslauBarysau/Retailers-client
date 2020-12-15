@@ -90,7 +90,7 @@ const LocationCreateModal = (props) => {
                                label="Identifier"
                                error={validationResults.includes("identifier")}
                                helperText={validationResults.includes("identifier") ?
-                                   "Identifier minimum length must be 3 symbols!" : ""}/>
+                                   "Identifier length must be between 3 and 30 symbols." : ""}/>
                     <InputLabel id="state-label">State:</InputLabel>
                     <StateSelect onChangeState={updateStateSelectValue} value={stateId}/>
                     <TextField margin="dense"

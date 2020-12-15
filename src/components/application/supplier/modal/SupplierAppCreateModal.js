@@ -243,7 +243,7 @@ const SupplierAppCreateModal = (props) => {
                                            label="Supplier warehouse"
                                            margin="dense"
                                            variant="outlined"
-                                           required/>
+                                           />
                             )}
                         />
                         <TextField margin="dense"
