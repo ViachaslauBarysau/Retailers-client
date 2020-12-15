@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
 import {Route, Switch} from "react-router-dom";
 
-import withAuth from "../hoc/withAuth";
+import withAuth from "../auth/withAuth";
 
-import Index from './Index';
+import ForbiddenPage from './ForbiddenPage';
 import Login from './Login';
 import Users from './user/Users';
 import Customers from './customer/Customers';
@@ -23,7 +23,6 @@ import UserProfilePage from "./userProfile/UserProfilePage";
 
 export default () => {
     const {user} = useContext(AuthContext);
-    const [currentUser, setCurrentUser] = useState(user);
     if (user) {
         switch (user.userRole[0]) {
             case "SYSTEM_ADMIN":
@@ -33,20 +32,9 @@ export default () => {
                             <Switch>
                                 <Route path={'/'} component={withAuth(Customers)} exact={true}/>
                                 <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/category'} component={withAuth(Category)}/>
                                 <Route path={'/customers'} component={withAuth(Customers)}/>
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                                <Route path={'/products'} component={withAuth(Products)}/>
-                                <Route path={'/bills'} component={withAuth(Bills)}/>
-                                <Route path={'/locations'} component={withAuth(Locations)}/>
-                                <Route path={'/suppliers'} component={withAuth(Suppliers)}/>
-                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)}/>
-                                <Route path={'/location_products'} component={withAuth(LocationProducts)}/>
-                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)}/>
-                                <Route path={'/location_tax'} component={withAuth(LocationTax)}/>
                                 <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
-                                <Route component={Index}/>
+                                <Route component={ForbiddenPage}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -55,14 +43,13 @@ export default () => {
                 return (
                     <React.Fragment>
                         <div><Switch>
-                            <Route path={'/'} component={Index} exact={true}/>
+                            <Route path={'/'} component={withAuth(Users)} exact={true}/>
                             <Route path={'/login'} component={Login}/>
                             <Route path={'/users'} component={withAuth(Users)}/>
-                            <Route path={'/customers'} component={withAuth(Customers)}/>
-                            <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                            <Route path={'/products'} component={withAuth(Products)}/>
-                            <Route path={'/bills'} component={withAuth(Bills)}/>
-                            {/*<Route component={Index} />*/}
+                            <Route path={'/locations'} component={withAuth(Locations)}/>
+                            <Route path={'/suppliers'} component={withAuth(Suppliers)}/>
+                            <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                            <Route component={ForbiddenPage}/>
                         </Switch>
                         </div>
                     </React.Fragment>
@@ -72,14 +59,15 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/'} component={withAuth(SupplierApplications)} exact={true}/>
                                 <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/customers'} component={withAuth(Customers)}/>
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
                                 <Route path={'/products'} component={withAuth(Products)}/>
                                 <Route path={'/bills'} component={withAuth(Bills)}/>
-                                {/*<Route component={Index} />*/}
+                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)}/>
+                                <Route path={'/location_products'} component={withAuth(LocationProducts)}/>
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                                <Route component={ForbiddenPage}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -89,14 +77,13 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/'} component={withAuth(InnerApplications)} exact={true}/>
                                 <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/customers'} component={withAuth(Customers)}/>
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                                <Route path={'/products'} component={withAuth(Products)}/>
-                                <Route path={'/bills'} component={withAuth(Bills)}/>
-                                {/*<Route component={Index} />*/}
+                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)}/>
+                                <Route path={'/location_products'} component={withAuth(LocationProducts)}/>
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                                <Route component={ForbiddenPage}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -106,14 +93,14 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/'} component={withAuth(InnerApplications)} exact={true}/>
                                 <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/customers'} component={withAuth(Customers)}/>
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                                <Route path={'/products'} component={withAuth(Products)}/>
                                 <Route path={'/bills'} component={withAuth(Bills)}/>
-                                {/*<Route component={Index} />*/}
+                                <Route path={'/location_products'} component={withAuth(LocationProducts)}/>
+                                <Route path={'/innerapplications'} component={withAuth(InnerApplications)}/>
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                                <Route component={ForbiddenPage}/>
                             </Switch>
                         </div>
                     </React.Fragment>
@@ -123,32 +110,14 @@ export default () => {
                     <React.Fragment>
                         <div>
                             <Switch>
-                                <Route path={'/'} component={Index} exact={true}/>
+                                <Route path={'/'} component={withAuth(Bills)} exact={true}/>
                                 <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/customers'} component={withAuth(Customers)}/>
+                                <Route path={'/category'} component={withAuth(Category)}/>
                                 <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                                <Route path={'/products'} component={withAuth(Products)}/>
                                 <Route path={'/bills'} component={withAuth(Bills)}/>
-                                {/*<Route component={Index} />*/}
-                            </Switch>
-                        </div>
-                    </React.Fragment>
-                );
-            default:
-                return (
-                    <React.Fragment>
-                        <div>
-                            <Switch>
-                                <Route path={'/'} component={Index} exact={true}/>
-                                <Route path={'/login'} component={Login}/>
-                                <Route path={'/users'} component={withAuth(Users)}/>
-                                <Route path={'/customers'} component={withAuth(Customers)}/>
-                                <Route path={'/writeoffacts'} component={withAuth(WriteOffActs)}/>
-                                <Route path={'/products'} component={withAuth(Products)}/>
-                                <Route path={'/locations'} component={withAuth(Locations)}/>
-                                <Route path={'/bills'} component={withAuth(Bills)}/>
-                                <Route path={'/supplierapplications'} component={withAuth(SupplierApplications)}/>
+                                <Route path={'/location_tax'} component={withAuth(LocationTax)}/>
+                                <Route path={'/profile'} component={withAuth(UserProfilePage)}/>
+                                <Route component={ForbiddenPage}/>
                             </Switch>
                         </div>
                     </React.Fragment>

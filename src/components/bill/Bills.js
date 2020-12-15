@@ -15,9 +15,10 @@ import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import {AuthContext} from "../../context/authContext";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
-    const {logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [billsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -71,7 +72,8 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/bills?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/bills/' + (user.userRole === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page='
+            + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -140,17 +142,34 @@ export default () => {
                     </TableContainer>
 
                 </div>
-                : 'Empty list')}
+                : <Typography
+                    style={{
+                        textAlign: 'center',
+                        margin: '10px'
+                    }}
+                    variant='h6'
+                >
+                    No records.
+                </Typography>)}
             <Button my={1} variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add bill</Button>
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                No records.
+            </Typography>}
             {displayCreateModal && <BillCreateModal handleOpenSnackBar={(message, severity) =>
-                                                        handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                     needrefresh={() => setNeedRefresh(!needRefresh)}
                                                     onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <BillEditModal handleOpenSnackBar={(message, severity) =>
-                                                                handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                              needrefresh={() => setNeedRefresh(!needRefresh)}
                                                              billId={displayEditModal.billId}
                                                              onCloseModal={() => setDisplayEditModal({

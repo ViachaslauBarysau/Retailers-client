@@ -12,13 +12,13 @@ import TableContainer from "@material-ui/core/TableContainer";
 import {editToLocalTimeAndGet} from "../../util/DateAndTime";
 import TablePagination from "@material-ui/core/TablePagination";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import LocationCreateModal from "../location/modal/LocationCreateModal";
 import {AuthContext} from "../../context/authContext";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
-    const {logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const [actsData, setData] = useState({
         isLoading: false,
         error: null,
@@ -72,7 +72,8 @@ export default () => {
 
     useEffect(() => {
         setData(prevState => ({...prevState, isLoading: true}));
-        fetch('/api/write_off_acts?page=' + pageNumber + '&size=' + elementsOnPage, {
+        fetch('/api/write_off_acts/' + (user.userRole === "DIRECTOR" ? 'by_customer' : 'by_location') + '?page='
+            + pageNumber + '&size=' + elementsOnPage, {
             headers: {
                 "Authorization": localStorage.getItem("token")
             },
@@ -112,38 +113,56 @@ export default () => {
             {isLoading && <LinearProgress/>}
             {!isLoading && !error &&
             (acts.length != 0
-                ? <TableContainer component={Paper}>
-                    <Table size="small"
-                           aria-label="a dense table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>Identifier</StyledTableCell>
-                                <StyledTableCell>Date and Time</StyledTableCell>
-                                <StyledTableCell>Total amount of products</StyledTableCell>
-                                <StyledTableCell>Total price of products</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {acts.map(act => <Acts act={act} key={act.id}/>)}
-                        </TableBody>
-                    </Table>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 20]}
-                        component="div"
-                        count={totalElements}
-                        page={pageNumber}
-                        onChangePage={handleChangePage}
-                        rowsPerPage={elementsOnPage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
-                </TableContainer>
-                : 'Empty list')}
+                    ? <TableContainer component={Paper}>
+                        <Table size="small"
+                               aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Identifier</StyledTableCell>
+                                    <StyledTableCell>Date and Time</StyledTableCell>
+                                    <StyledTableCell>Total amount of products</StyledTableCell>
+                                    <StyledTableCell>Total price of products</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {acts.map(act => <Acts act={act} key={act.id}/>)}
+                            </TableBody>
+                        </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 20]}
+                            component="div"
+                            count={totalElements}
+                            page={pageNumber}
+                            onChangePage={handleChangePage}
+                            rowsPerPage={elementsOnPage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                    </TableContainer>
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>
+            )}
             <Button mt={1} variant="contained"
                     onClick={() => setDisplayCreateModal(true)}>
                 Add write-off act</Button>
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <ActCreateModal handleOpenSnackBar={(message, severity) =>
-                                                        handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                    needrefresh={() => setNeedRefresh(!needRefresh)}
                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <ActEditModal actId={displayEditModal.actId}

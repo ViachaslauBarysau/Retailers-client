@@ -6,16 +6,15 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -197,7 +196,15 @@ export default () => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add user</Button>
                 <Button m={1} variant="contained"
@@ -205,7 +212,16 @@ export default () => {
                         disabled={selectedUsersNumber === 0}>Enable/Disable</Button>
             </form>
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <UserCreateModal handleOpenSnackBar={(message, severity) =>
                 handleOpenSnackBar(message, severity)}
                                                     needrefresh={() => setNeedRefresh(!needRefresh)}
@@ -237,7 +253,8 @@ function User(props) {
                        name={"users"}
                        onChange={props.onChange}/>
             </StyledTableCell>
-            <StyledTableCell><a href="#" onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></StyledTableCell>
+            <StyledTableCell><a href="#"
+                                onClick={props.onClick}>{props.user.firstName} {props.user.lastName}</a></StyledTableCell>
             <StyledTableCell>{props.user.birthday}</StyledTableCell>
             <StyledTableCell>{String(props.user.userRole).toLowerCase().replace("_", " ")}</StyledTableCell>
         </StyledTableRow>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,8 +9,10 @@ import SideBar from "./components/SideBar";
 import UserProfile from "./components/UserProfile";
 import Routes from "./components/Routes";
 import {useStyles} from './App.styles';
+import {AuthContext} from "./context/authContext";
 
 export default function ClippedDrawer() {
+    const {user} = useContext(AuthContext);
     const classes = useStyles();
 
     return (
@@ -26,7 +28,7 @@ export default function ClippedDrawer() {
                     </div>
                 </Toolbar>
             </AppBar>
-            <Drawer
+            {user && <Drawer
                 className={classes.drawer}
                 variant="permanent"
                 classes={{
@@ -39,7 +41,7 @@ export default function ClippedDrawer() {
                         <SideBar/>
                     </List>
                 </div>
-            </Drawer>
+            </Drawer>}
             <main className={classes.content}>
                 <Toolbar/>
                 <Routes/>

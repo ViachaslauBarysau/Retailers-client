@@ -16,6 +16,7 @@ import Alert from "@material-ui/lab/Alert";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -200,7 +201,15 @@ export default () => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add product</Button>
                 <Button m={1} variant="contained"
@@ -208,7 +217,15 @@ export default () => {
                         disabled={selectedProductsNumber === 0}>Remove product</Button>
             </form>
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error && <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <ProductCreateModal handleOpenSnackBar={(message, severity) =>
                 handleOpenSnackBar(message, severity)}
                                                        needrefresh={() => setNeedRefresh(!needRefresh)}

@@ -63,10 +63,6 @@ const SupplierCreateModal = (props) => {
         setDisplayEditModal(true);
     }
 
-    // function getWarehouseList() {
-    //     return warehouseRows.warehouses;
-    // }
-
     const createSupplier = (e) => {
         e.preventDefault(e);
         let validResults = validateSupplier(e);

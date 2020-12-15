@@ -12,6 +12,7 @@ import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
 import LocationTaxEditModal from "./modal/LocationTaxEditModal";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -142,10 +143,27 @@ export default () => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
             </form>
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayEditModal.displayModal && <LocationTaxEditModal locationId={displayEditModal.locationId}
                                                                     handleOpenSnackBar={(message, severity) =>
                                                                         handleOpenSnackBar(message, severity)}

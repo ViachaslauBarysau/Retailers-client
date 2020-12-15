@@ -15,6 +15,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
 import {AuthContext} from "../../context/authContext";
 import SupplierEditModal from "./modal/SupplierEditModal";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -192,7 +193,15 @@ export default () => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>Add supplier</Button>
                 <Button m={1} variant="contained"
@@ -200,7 +209,15 @@ export default () => {
                         disabled={selectedSuppliersNumber === 0}>Enable/Disable</Button>
             </form>
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error && <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <SupplierCreateModal handleOpenSnackBar={(message, severity) =>
                                                             handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}

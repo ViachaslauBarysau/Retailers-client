@@ -232,7 +232,7 @@ const SupplierAppCreateModal = (props) => {
                                        "Application number must be between 1 and 999999999." : ""}/>
 
                         <Autocomplete
-                            id="supplier"
+                            id="supplierWarehouse"
                             size="small"
                             name="supplierWarehouse"
                             clearOnEscape

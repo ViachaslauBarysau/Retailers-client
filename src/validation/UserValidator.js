@@ -45,9 +45,7 @@ export function validateUserEditingByUser(user) {
     let firstName = user.firstName;
     let lastName = user.lastName;
     let city = user.address.city;
-    let firstAddressLine = user.address.city;
-    let login = user.login;
-    let email = user.email;
+    let firstAddressLine = user.address.firstAddressLine;
     let age = new Date(user.birthday).getTime();
 
     (!firstName || (firstName.length < 2 || firstName.length > 20)) && validationResults.push("name");

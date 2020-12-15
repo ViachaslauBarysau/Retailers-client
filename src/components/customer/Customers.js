@@ -6,16 +6,15 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {StyledTableRow} from "../Table"
-import {StyledTableCell} from "../Table"
+import {StyledTableCell, StyledTableRow} from "../Table"
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import {AuthContext} from "../../context/authContext";
 import TablePagination from "@material-ui/core/TablePagination";
+import Typography from "@material-ui/core/Typography";
 
 export default function Customers() {
     const {logout} = useContext(AuthContext);
@@ -96,7 +95,8 @@ export default function Customers() {
                     return res.json();
                 } else if (res.status === 401) {
                     logout();
-                };
+                }
+                ;
             })
             .then(customersPage => {
                 setData((prevState) => ({
@@ -196,7 +196,15 @@ export default function Customers() {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}>
                     Add customer
@@ -209,7 +217,16 @@ export default function Customers() {
             </form>
 
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <CustomerCreateModal handleOpenSnackBar={(message, severity) =>
                 handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}

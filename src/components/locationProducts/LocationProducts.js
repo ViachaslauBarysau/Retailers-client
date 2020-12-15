@@ -4,16 +4,15 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import ActCreateModal from "../act/modal/ActCreateModal";
 import LocationProductEditModal from "./modal/LocationProductEditModal";
-import Pagination from "@material-ui/lab/Pagination";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import TablePagination from "@material-ui/core/TablePagination";
 import {StyledTableCell, StyledTableRow} from "../Table";
 import {AuthContext} from "../../context/authContext";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -136,14 +135,30 @@ export default () => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
                     </TableContainer>
-                    : 'Empty list')}
+                    : <Typography
+                        style={{
+                            textAlign: 'center',
+                            margin: '10px'
+                        }}
+                        variant='h6'
+                    >
+                        No records.
+                    </Typography>)}
                 <Button my={1} variant="contained"
                         onClick={() => setDisplayCreateModal(true)}> Create write-off act</Button>
             </div>
             }
-            {!isLoading && error && 'Error happens'}
+            {!isLoading && error && <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayCreateModal && <ActCreateModal handleOpenSnackBar={(message, severity) =>
-                                                        handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                    onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <LocationProductEditModal locProductId={displayEditModal.locProductId}
                                                                         onCloseModal={() => setDisplayEditModal({

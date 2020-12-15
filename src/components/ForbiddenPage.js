@@ -11,7 +11,7 @@ export default () => {
                 }}
                 variant='h3'
             >
-                Forbidden!
+                Forbidden.
             </Typography>
         </div>
     )

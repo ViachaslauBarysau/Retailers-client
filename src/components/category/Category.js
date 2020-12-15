@@ -3,10 +3,8 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import {StyledTableRow} from "../Table"
-import {StyledTableCell} from "../Table"
+import {StyledTableCell, StyledTableRow} from "../Table"
 import TableContainer from "@material-ui/core/TableContainer";
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import CategoryEditModal from './modal/CategoryEditModal';
@@ -14,6 +12,7 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import TablePagination from "@material-ui/core/TablePagination";
 import {AuthContext} from "../../context/authContext";
+import Typography from "@material-ui/core/Typography";
 
 export default () => {
     const {logout} = useContext(AuthContext);
@@ -134,8 +133,25 @@ export default () => {
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                 </TableContainer>
-                : 'Empty list')}
-            {!isLoading && error && 'Error happens'}
+                : <Typography
+                    style={{
+                        textAlign: 'center',
+                        margin: '10px'
+                    }}
+                    variant='h6'
+                >
+                    No records.
+                </Typography>)}
+            {!isLoading && error &&
+            <Typography
+                style={{
+                    textAlign: 'center',
+                    margin: '10px'
+                }}
+                variant='h6'
+            >
+                Error happens.
+            </Typography>}
             {displayEditModal.displayModal && <CategoryEditModal categoryId={displayEditModal.categoryId}
                                                                  handleOpenSnackBar={(message, severity) =>
                                                                      handleOpenSnackBar(message, severity)}

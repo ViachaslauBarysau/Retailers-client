@@ -13,7 +13,6 @@ import Alert from "@material-ui/lab/Alert";
 
 export default (props) => {
     const {user, setUser} = useContext(AuthContext);
-    const prevPageLocation = props?.history?.location?.state?.from || '/';
 
     const [snackBar, setSnackBar] = useState({
         display: false,
@@ -126,5 +125,5 @@ export default (props) => {
         </div>
     )
 
-    return user ? <Redirect to={prevPageLocation}/> : loginForm;
+    return user ? <Redirect to={'/'}/> : loginForm;
 }

@@ -15,9 +15,11 @@ export default function AuthContextProvider({ children }) {
                 localStorage.setItem('user', JSON.stringify(null));
                 localStorage.setItem('token', JSON.stringify(null));
                 setUser(null);
-                fetch('http://localhost:8080/api/logout', {
+                fetch('/api/logout', {
                     headers: {
-                        "Authorization": localStorage.getItem("token")
+                        "Authorization": localStorage.getItem("token"),
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
                     },
                     method: "post"
                 });

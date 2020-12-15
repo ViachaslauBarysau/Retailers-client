@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
-import {Button, TextField} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Button from '../Button';
 import {AuthContext} from "../../context/authContext";
 import {makeStyles} from '@material-ui/core/styles';
 import StateSelect from "../StateSelect";
@@ -7,6 +8,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import {validateUserEditingByUser} from "../../validation/UserValidator";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import Typography from "@material-ui/core/Typography";
+import {validatePassword} from "../../validation/PasswordValidator";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
     const {user, logout, setUser} = useContext(AuthContext);
     const [validationResults, setValidationResults] = useState([]);
+    const [passwordValidationResults, setPasswordValidationResults] = useState([]);
     const classes = useStyles();
     const [updatedUser, setUpdatedUser] = useState(user)
 
@@ -138,6 +142,7 @@ export default () => {
 
     function editUser() {
         let validResults = validateUserEditingByUser(updatedUser);
+        debugger;
         if (validResults.length === 0) {
             fetch('/api/users', {
                 headers: {
@@ -163,33 +168,38 @@ export default () => {
                 });
         }
         setValidationResults(validResults);
+
     }
 
 
     function updatePassword(e) {
         e.preventDefault();
-        fetch('/api/users/updatePassword', {
-            headers: {
-                'Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            body: JSON.stringify({
-                ...updatedUser,
-                password: e.target.password.value
-            }),
-            method: "PUT"
-        })
-            .then(res => {
-                if (res.ok) {
-                    handleOpenSnackBar("Password updated!", "success");
-                } else if (res.status === 401) {
-                    logout();
-                }
+        let validResults = validatePassword(e);
+        if (validResults.length === 0) {
+            fetch('/api/users/updatePassword', {
+                headers: {
+                    'Authorization': localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    ...updatedUser,
+                    password: e.target.password.value
+                }),
+                method: "PUT"
             })
-            .catch(e => {
-                handleOpenSnackBar("Error happens!", "error");
-            });
+                .then(res => {
+                    if (res.ok) {
+                        handleOpenSnackBar("Password updated!", "success");
+                    } else if (res.status === 401) {
+                        logout();
+                    }
+                })
+                .catch(e => {
+                    handleOpenSnackBar("Error happens!", "error");
+                });
+        }
+        setPasswordValidationResults(validResults);
     }
 
 
@@ -199,6 +209,11 @@ export default () => {
             <div className={classes.root}>
                 <form onSubmit={updatePassword}>
                     <div>
+                        <Typography
+                            variant='h6'
+                        >
+                            Profile information:
+                        </Typography>
                         <TextField margin="dense"
                                    size="small"
                                    name="name"
@@ -285,9 +300,9 @@ export default () => {
                                    disabled
                         />
 
-                        {updatedUser.userRole !== "DIRECTOR" &&
-                        updatedUser.userRole !== "ADMIN" &&
-                        updatedUser.userRole !== "SYSTEM_ADMIN" &&
+                        {(user.userRole[0] !== "DIRECTOR" &&
+                            user.userRole[0] !== "ADMIN" &&
+                            user.userRole[0] !== "SYSTEM_ADMIN") &&
                         <TextField margin="dense"
                                    size="small"
                                    name="location"
@@ -320,8 +335,11 @@ export default () => {
                     </div>
                     <Button my={1} onClick={editUser}
                             variant="contained">Edit profile</Button>
-                    <br/>
-                    Change password:
+                    <Typography
+                        variant='h6'
+                    >
+                        Change password:
+                    </Typography>
                     <TextField margin="dense"
                                size="small"
                                name="password"
@@ -329,6 +347,9 @@ export default () => {
                                variant="outlined"
                                type="password"
                                placeholder="Enter new password"
+                               error={passwordValidationResults.includes("password")}
+                               helperText={passwordValidationResults.includes("password") ?
+                                   "Min length 4 symbols. Spaces not allowed." : ""}
                     />
                     <TextField margin="dense"
                                size="small"
@@ -337,9 +358,12 @@ export default () => {
                                variant="outlined"
                                type="password"
                                placeholder="Confirm new password"
+                               error={passwordValidationResults.includes("confirmedPassword")}
+                               helperText={passwordValidationResults.includes("confirmedPassword") ?
+                                   "Min length 4 symbols. Spaces not allowed." : ""}
                     />
                     <Button my={1} type="submit"
-                            variant="contained">Update password</Button>
+                            variant="contained">Change password</Button>
                 </form>
 
             </div>

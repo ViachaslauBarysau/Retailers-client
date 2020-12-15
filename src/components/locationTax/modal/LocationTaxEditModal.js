@@ -123,6 +123,7 @@ const LocationTaxEditModal = (props) => {
                                    fullWidth={true}
                                    value={location.address.secondAddressLine}
                                    variant="outlined"
+                                   label="Address line 2"
                                    disabled
                         />
                         <TextField margin="dense"
