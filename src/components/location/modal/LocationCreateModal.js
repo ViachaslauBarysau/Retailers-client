@@ -8,7 +8,6 @@ import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {AuthContext} from "../../../context/authContext";
 import {validateLocationCreation} from "../../../validation/LocationValidator";
-import {validateCustomerCreation} from "../../../validation/CustomerValidator";
 
 const LocationCreateModal = (props) => {
     const {user, logout} = useContext(AuthContext);

@@ -92,7 +92,7 @@ export default () => {
                     bills: billsPage.content
                 }));
                 setTotalElements(billsPage.totalElements)
-                if (pageNumber > billsPage.totalPages === 0 && billsPage.totalPages - 1) {
+                if (pageNumber > billsPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

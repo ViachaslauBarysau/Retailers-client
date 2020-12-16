@@ -61,7 +61,7 @@ const SupplierEditModal = (props) => {
                             {
                                 return {
                                     ...warehouse,
-                                    key: new Date().getTime()
+                                    key: new Date().getTime() + (Math.random() * 100 + 1)
                                 }
                             }
                         })
@@ -93,13 +93,12 @@ const SupplierEditModal = (props) => {
                 })
             )
         } else {
-
-            setWarehouseRows((prevState) => {
-                let deletedWarehouse = warehouseRows.warehouses.filter((warehouse) => (warehouse.key === key))[0];
-                deletedWarehouse = {...deletedWarehouse, status: deletedWarehouse.status = "DELETED"}
-                // let newWarehouseList = warehouseRows.warehouses.filter(value => value.key !== key);
-                // newWarehouseList.push(deletedWarehouse)
-                return (warehouseRows)
+            setWarehouseRows({
+                warehouses: warehouseRows.warehouses.map((warehouse) => (warehouse.key === key ? {
+                        ...warehouse,
+                        status: "DELETED"
+                    } : warehouse)
+                )
             })
         }
     }

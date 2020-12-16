@@ -237,7 +237,6 @@ const InnerAppCreateModal = (props) => {
                                    id="appNumber"
                                    variant="outlined"
                                    label="Application number"
-                                   type="number"
                                    error={validationResults.includes("appNumber")}
                                    helperText={validationResults.includes("appNumber") ?
                                        "Application number must be between 1 and 999999999." : ""}

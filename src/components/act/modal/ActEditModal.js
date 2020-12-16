@@ -48,6 +48,7 @@ const ActEditModal = (props) => {
                         <TextField margin="dense"
                                    name="actNumber"
                                    size="small"
+                                   type="number"
                                    fullWidth={true}
                                    value={act.writeOffActNumber}
                                    variant="outlined"

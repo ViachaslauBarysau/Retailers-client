@@ -4,7 +4,7 @@ import Select from '@material-ui/core/Select';
 import {AuthContext} from "../context/authContext";
 
 export default (props) => {
-    const { logout } = useContext(AuthContext);
+    const {logout} = useContext(AuthContext);
     const [states, setStates] = useState(
         []
     );

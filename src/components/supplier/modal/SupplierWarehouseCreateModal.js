@@ -87,7 +87,7 @@ const SupplierWarehouseCreateModal = (props) => {
     function addWarehouse(e) {
         e.preventDefault();
         let validResults = validateSupplierWarehouse(e);
-        if(validResults.length === 0) {
+        if (validResults.length === 0) {
             props.addWarehouse(warehouse);
             props.onClose();
         }

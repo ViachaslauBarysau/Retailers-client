@@ -3,7 +3,7 @@ export function validateInnerAppCreation(e) {
     let appNumber = e.target.appNumber.value;
     let location = e.target.location.value;
 
-    (!appNumber || appNumber < 1 || appNumber > 999999999) && validationResults.push("appNumber");
+    (!(/\d+/.test(appNumber)) || !appNumber || appNumber < 1 || appNumber > 999999999) && validationResults.push("appNumber");
 
     (!location) && validationResults.push("location");
 
@@ -13,8 +13,9 @@ export function validateInnerAppCreation(e) {
 export function validateSupplierAppCreation(e) {
     let validationResults = []
     let appNumber = e.target.appNumber.value;
-
-    (!appNumber || appNumber < 1 || appNumber > 999999999) && validationResults.push("appNumber");
+    let supplierWarehouse = e.target.supplierWarehouse.value;
+    (!(/\d+/.test(appNumber)) || !appNumber || appNumber < 1 || appNumber > 999999999) && validationResults.push("appNumber");
+    (!supplierWarehouse) && validationResults.push("supplierWarehouse");
 
     return validationResults;
 }

@@ -77,7 +77,6 @@ const ProductCreateModal = (props) => {
                     <form onSubmit={addProduct}>
                         <TextField margin="dense"
                                    size="small"
-                                   type="number"
                                    fullWidth={true}
                                    id="upc"
                                    variant="outlined"

@@ -6,10 +6,8 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import Pagination from '@material-ui/lab/Pagination';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
@@ -105,7 +103,7 @@ export default () => {
                     products: productsPage.content
                 }));
                 setTotalElements(productsPage.totalElements)
-                if (pageNumber > productsPage.totalPages === 0 && productsPage.totalPages - 1) {
+                if (pageNumber > productsPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

@@ -202,7 +202,6 @@ export default () => {
         setPasswordValidationResults(validResults);
     }
 
-
     return (
         <div>
             {updatedUser &&
@@ -254,12 +253,12 @@ export default () => {
                                 "User's age must be between 18 and 100 years." : "  "}
                         />
                         <InputLabel id="state-label">State:</InputLabel>
-                        <StateSelect onChangeState={updateStateSelectValue} value={updatedUser.address.state.id}/>
+                        <StateSelect onChangeState={updateStateSelectValue} value={updatedUser?.address?.state?.id}/>
                         <TextField margin="dense"
                                    size="small"
                                    name="city"
                                    fullWidth={true}
-                                   value={updatedUser.address.city}
+                                   value={updatedUser?.address?.city}
                                    variant="outlined"
                                    label="City"
                                    onChange={handleCityChange}
@@ -270,7 +269,7 @@ export default () => {
                         <TextField margin="dense"
                                    size="small"
                                    name="address1"
-                                   value={updatedUser.address.firstAddressLine}
+                                   value={updatedUser?.address?.firstAddressLine}
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Address line 1"
@@ -283,7 +282,7 @@ export default () => {
                         <TextField margin="dense"
                                    size="small"
                                    name="address2"
-                                   value={updatedUser.address.secondAddressLine}
+                                   value={updatedUser?.address?.secondAddressLine}
                                    fullWidth={true}
                                    variant="outlined"
                                    label="Address line 2"

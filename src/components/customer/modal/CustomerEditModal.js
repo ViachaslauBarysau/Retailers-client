@@ -3,12 +3,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
-import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
-import {validateActCreating} from "../../../validation/ActValidator";
+import {validateCustomerEdition} from "../../../validation/CustomerValidator";
 
 
 const CustomerEditModal = (props) => {
-    const { logout } = useContext(AuthContext);
+    const {logout} = useContext(AuthContext);
     const [customer, setCustomer] = useState(null)
     const [validationResults, setValidationResults] = useState(["errors"]);
 
@@ -24,7 +23,7 @@ const CustomerEditModal = (props) => {
                     return res.json();
                 } else if (res.status === 401) {
                     logout();
-                };
+                }
             })
             .then(customer => {
                 setCustomer(customer);
@@ -54,7 +53,8 @@ const CustomerEditModal = (props) => {
                         props.needrefresh();
                     } else if (res.status === 401) {
                         logout();
-                    };
+                    }
+                    ;
                 })
                 .catch(e => {
                     props.handleOpenSnackBar("Error happens!", "error");

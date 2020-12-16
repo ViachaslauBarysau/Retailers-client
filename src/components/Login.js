@@ -10,6 +10,8 @@ import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import {validateLogin} from "../validation/LoginValidator";
+import Route from "react-router-dom/es/Route";
 
 export default (props) => {
     const {user, setUser} = useContext(AuthContext);
@@ -56,6 +58,49 @@ export default (props) => {
             }))
         };
 
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        let validResults = validateLogin(fields);
+        if (validResults.length === 0) {
+            fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                    email: fields.username,
+                    password: fields.password
+                })
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    } else if (res.status === 403) {
+                        handleOpenSnackBar("Wrong email or password!", "error");
+                        changeLoginState({
+                                user: null,
+                                loginFailed: true
+                            }
+                        )
+                        return Promise.reject(res.json());
+                    }
+                })
+                .then(data => {
+                    let prefix = "Bearer_";
+                    localStorage.setItem("token", prefix + data.token);
+                    setUser(data.user);
+                })
+        } else {
+            changeLoginState({
+                user: null,
+                loginFailed: true
+            });
+            handleOpenSnackBar("Incorrect data!", "error");
+        }
+    }
+
     const loginForm = (
         <div style={{padding: '40px'}}>
             <Container maxWidth={'sm'}>
@@ -64,7 +109,8 @@ export default (props) => {
                     <FormControl
                         fullWidth={true}>
                         <InputLabel htmlFor="username">Email</InputLabel>
-                        <Input type={"text"}
+                        <Input name={"username"}
+                               type={"text"}
                                error={loginState.loginFailed}
                                value={fields['username']}
                                onChange={handleInput('username')}/>
@@ -72,7 +118,8 @@ export default (props) => {
                     <FormControl
                         fullWidth={true}>
                         <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input type={"password"}
+                        <Input name={"password"}
+                               type={"password"}
                                error={loginState.loginFailed}
                                value={fields['password']}
                                onChange={handleInput('password')}/>
@@ -82,38 +129,7 @@ export default (props) => {
                     fullWidth={true}
                     color="primary"
                     variant="contained"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        fetch("/api/login", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Accept: 'application/json',
-                            },
-                            body: JSON.stringify({
-                                email: fields.username,
-                                password: fields.password
-                            })
-                        })
-                            .then(res => {
-                                if (res.ok) {
-                                    return res.json();
-                                } else if (res.status === 403) {
-                                    handleOpenSnackBar("Wrong email or password!", "error");
-                                    changeLoginState({
-                                            user: null,
-                                            loginFailed: true
-                                        }
-                                    )
-                                    return Promise.reject(res.json());
-                                }
-                            })
-                            .then(data => {
-                                let prefix = "Bearer_";
-                                localStorage.setItem("token", prefix + data.token);
-                                setUser(data.user);
-                            })
-                    }}>
+                    onClick={handleLogin}>
                     Login
                 </Button>
             </Container>
@@ -125,5 +141,5 @@ export default (props) => {
         </div>
     )
 
-    return user ? <Redirect to={'/'}/> : loginForm;
+    return user ? <Route path="/" component={() => (<Redirect to="/"/>)}/> : loginForm;
 }

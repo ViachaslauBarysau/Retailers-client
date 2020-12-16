@@ -93,7 +93,7 @@ export default () => {
                     acts: actsPage.content
                 }));
                 setTotalElements(actsPage.totalElements)
-                if (pageNumber > actsPage.totalPages === 0 && actsPage.totalPages - 1) {
+                if (pageNumber > actsPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

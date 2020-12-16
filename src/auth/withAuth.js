@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
-import { Redirect, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/authContext';
+import React, {useContext} from 'react';
+import {Redirect, useLocation} from 'react-router-dom';
+import {AuthContext} from '../context/authContext';
 
 export default function withAuth(Component) {
     return (props) => {

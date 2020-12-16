@@ -152,7 +152,7 @@ const SupplierAppEditModal = (props) => {
                                 <TextField {...params} fullWidth={true} label="Destination location" margin="normal"
                                            name="location"
                                            variant="outlined"
-                                           />
+                                />
                             )}
                         />
                         <TextField margin={"dense"}

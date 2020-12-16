@@ -8,8 +8,8 @@ export function validateProductCreation(e) {
     let categoryName = e.target.category.value;
 
     (!validbarcode(upc)) && validationResults.push("upc");
-    (label.length < 3 || label.length > 30) && validationResults.push("label");
-    (categoryName.length < 3 || categoryName.length > 30) && validationResults.push("categoryName");
+    (label.trim().length === 0 || label.length < 3 || label.length > 30) && validationResults.push("label");
+    (categoryName.trim().length === 0 || categoryName.length < 3 || categoryName.length > 30) && validationResults.push("categoryName");
     (!volume || volume < 0) && validationResults.push("volume");
 
     return validationResults;
@@ -20,8 +20,8 @@ export function validateProductEditing(product) {
     let label = product.label;
     let categoryName = product.category.name;
 
-    (label.length < 3 || label.length > 30) && validationResults.push("label");
-    (categoryName.length < 3 || categoryName.length > 30) && validationResults.push("categoryName");
+    (label.trim().length === 0 || label.length < 3 || label.length > 30) && validationResults.push("label");
+    (categoryName.trim().length === 0 || categoryName.length < 3 || categoryName.length > 30) && validationResults.push("categoryName");
 
     return validationResults;
 }

@@ -226,7 +226,6 @@ const SupplierAppCreateModal = (props) => {
                                    id="appNumber"
                                    variant="outlined"
                                    label="Application number"
-                                   type="number"
                                    error={validationResults.includes("appNumber")}
                                    helperText={validationResults.includes("appNumber") ?
                                        "Application number must be between 1 and 999999999." : ""}/>
@@ -243,7 +242,10 @@ const SupplierAppCreateModal = (props) => {
                                            label="Supplier warehouse"
                                            margin="dense"
                                            variant="outlined"
-                                           />
+                                           error={validationResults.includes("supplierWarehouse")}
+                                           helperText={validationResults.includes("supplierWarehouse") ?
+                                               "Choose warehouse." : ""}
+                                />
                             )}
                         />
                         <TextField margin="dense"

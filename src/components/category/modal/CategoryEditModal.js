@@ -4,7 +4,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
-import {validateCustomerCreation, validateCustomerEdition} from "../../../validation/CustomerValidator";
 import {validateCategoryEditing} from "../../../validation/CategoryValidator";
 
 const CategoryEditModal = (props) => {

@@ -12,21 +12,21 @@ export function validateUserCreation(e) {
     let age = new Date(e.target.date_of_birth.value).getTime();
     let login = e.target.login.value;
 
-    (!firstName || (firstName.length < 2 || firstName.length > 20)) && validationResults.push("name");
+    (firstName.trim().length === 0 || !firstName || (firstName.length < 2 || firstName.length > 20)) && validationResults.push("name");
 
-    (!lastName || lastName.length < 2 || lastName.length > 20) && validationResults.push("surname");
+    (lastName.trim().length === 0 || !lastName || lastName.length < 2 || lastName.length > 20) && validationResults.push("surname");
 
-    (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
+    (city.trim().length === 0 || !city || city.length < 3 || city.length > 30) && validationResults.push("city");
 
-    (!firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
+    (firstAddressLine.trim().length === 0 || !firstAddressLine || firstAddressLine.length < 5) && validationResults.push("firstAddressLine");
 
     (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) && validationResults.push("email");
 
-    (userRole != "DIRECTOR" && !e.target.location.value) && validationResults.push("location");
+    (userRole !== "DIRECTOR" && !e.target.location.value) && validationResults.push("location");
 
     (new Date() - age < EIGHTEEN_YEARS_OLD || new Date() - age > HUNDRED_YEARS_OLD) && validationResults.push("birthday");
 
-    (!login || login.length < 3 || login.length > 20) && validationResults.push("login");
+    (login.trim().length === 0 || !login || login.length < 3 || login.length > 20) && validationResults.push("login");
 
     return validationResults;
 }
@@ -35,7 +35,7 @@ export function validateUserEditingByAdmin(e) {
     let validationResults = []
     let userRole = e.target.role.value;
 
-    (userRole != "DIRECTOR" && !e.target.location.value) && validationResults.push("location");
+    (userRole !== "DIRECTOR" && !e.target.location.value) && validationResults.push("location");
 
     return validationResults;
 }
@@ -48,13 +48,16 @@ export function validateUserEditingByUser(user) {
     let firstAddressLine = user.address.firstAddressLine;
     let age = new Date(user.birthday).getTime();
 
-    (!firstName || (firstName.length < 2 || firstName.length > 20)) && validationResults.push("name");
+    (firstName.trim().length === 0 || !firstName || (firstName.length < 2 || firstName.length > 20)) &&
+    validationResults.push("name");
 
-    (!lastName || lastName.length < 2 || lastName.length > 20) && validationResults.push("surname");
+    (lastName.trim().length === 0 || !lastName || lastName.length < 2 || lastName.length > 20) &&
+    validationResults.push("surname");
 
-    (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
+    (city.trim().length === 0 || !city || city.length < 3 || city.length > 30) && validationResults.push("city");
 
-    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
+    (firstAddressLine.trim().length === 0 || !firstAddressLine || firstAddressLine.length < 5 ||
+        firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
 
     (new Date() - age < EIGHTEEN_YEARS_OLD || new Date() - age > HUNDRED_YEARS_OLD) && validationResults.push("birthday");
 

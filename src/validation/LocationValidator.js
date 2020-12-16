@@ -5,9 +5,11 @@ export function validateLocationCreation(e) {
     let firstAddressLine = e.target.address1.value;
     let totalCapacity = e.target.total_capacity.value;
 
-    (!identifier || identifier.length < 3 || identifier.length > 30) && validationResults.push("identifier");
-    (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
-    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
+    (identifier.trim().length === 0 || !identifier || identifier.length < 3 || identifier.length > 30) &&
+    validationResults.push("identifier");
+    (city.trim().length === 0 || !city || city.length < 3 || city.length > 30) && validationResults.push("city");
+    (firstAddressLine.trim().length === 0 || !firstAddressLine || firstAddressLine.length < 5 ||
+        firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
     (totalCapacity < 1) && validationResults.push("totalCapacity");
 
     return validationResults;
@@ -19,9 +21,11 @@ export function validateLocationEditing(location) {
     let city = location.address.city;
     let firstAddressLine = location.address.firstAddressLine;
 
-    (!identifier || identifier.length < 3 || identifier.length > 30) && validationResults.push("identifier");
-    (!city || city.length < 3 || city.length > 30) && validationResults.push("city");
-    (!firstAddressLine || firstAddressLine.length < 5 || firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
+    (identifier.trim().length === 0 || !identifier || identifier.length < 3 || identifier.length > 30) &&
+    validationResults.push("identifier");
+    (city.trim().length === 0 || !city || city.length < 3 || city.length > 30) && validationResults.push("city");
+    (firstAddressLine.trim().length === 0 || !firstAddressLine || firstAddressLine.length < 5 ||
+        firstAddressLine.length > 30) && validationResults.push("firstAddressLine");
 
     return validationResults;
 }

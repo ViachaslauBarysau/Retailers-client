@@ -101,7 +101,7 @@ export default () => {
                     users: usersPage.content
                 }));
                 setTotalElements(usersPage.totalElements)
-                if (pageNumber > usersPage.totalPages === 0 && usersPage.totalPages - 1) {
+                if (pageNumber > usersPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

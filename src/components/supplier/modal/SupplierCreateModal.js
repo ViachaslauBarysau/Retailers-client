@@ -122,14 +122,8 @@ const SupplierCreateModal = (props) => {
                     />
                     <TextField margin="dense"
                                size="small"
-                               type="number"
                                fullWidth={true}
                                id="identifier"
-                               InputProps={{
-                                   inputProps: {
-                                       step: 1
-                                   }
-                               }}
                                variant="outlined"
                                label="Identifier"
                                error={validationResults.includes("identifier")}

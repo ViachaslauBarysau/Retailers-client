@@ -91,7 +91,7 @@ export default () => {
                     locations: locationsPage.content
                 }));
                 setTotalElements(locationsPage.totalElements)
-                if (pageNumber > locationsPage.totalPages === 0 && locationsPage.totalPages - 1) {
+                if (pageNumber > locationsPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

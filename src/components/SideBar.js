@@ -1,5 +1,5 @@
 import {AuthContext} from '../context/authContext';
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {Link} from "react-router-dom";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -9,12 +9,12 @@ import {Divider} from "@material-ui/core";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export default () => {
-    const { user, logout } = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
 
     return (
         <React.Fragment>
-            {user && (user.userRole[0] === "DIRECTOR" ||  user.userRole[0] === "DISPATCHER" ||
-                user.userRole[0] === "SHOP_MANAGER" ||  user.userRole[0] === "WAREHOUSE_MANAGER" ) &&
+            {user && (user.userRole[0] === "DIRECTOR" || user.userRole[0] === "DISPATCHER" ||
+                user.userRole[0] === "SHOP_MANAGER" || user.userRole[0] === "WAREHOUSE_MANAGER") &&
             <ListItem button component={Link} to="/writeoffacts">
                 <ListItemIcon>{<AssignmentIcon/>}</ListItemIcon>
                 <ListItemText primary={"Write-off acts"}/>

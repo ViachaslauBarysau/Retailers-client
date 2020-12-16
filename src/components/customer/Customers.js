@@ -105,7 +105,7 @@ export default function Customers() {
                     customers: customersPage.content
                 }));
                 setTotalElements(customersPage.totalElements)
-                if (pageNumber > customersPage.totalPages === 0 && customersPage.totalPages - 1) {
+                if (pageNumber > customersPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })

@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {TextField} from "@material-ui/core";
 import Button from '../../Button';
 import {AuthContext} from "../../../context/authContext";
-import {validateLocationEditing} from "../../../validation/LocationValidator";
 import {validateLocationTaxEditing} from "../../../validation/LocationTaxValidator";
 
 const LocationTaxEditModal = (props) => {

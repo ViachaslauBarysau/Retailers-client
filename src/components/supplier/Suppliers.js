@@ -2,7 +2,6 @@ import SupplierCreateModal from './modal/SupplierCreateModal';
 import React, {useContext, useEffect, useState} from 'react';
 import Button from '../Button';
 import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
-import SupplierWarehouseEditModal from "./modal/SupplierWarehouseEditModal";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -105,7 +104,7 @@ export default () => {
                     suppliers: suppliersPage.content
                 }));
                 setTotalElements(suppliersPage.totalElements)
-                if (pageNumber > suppliersPage.totalPages === 0 && suppliersPage.totalPages - 1) {
+                if (pageNumber > suppliersPage.totalPages - 1 && pageNumber !== 0) {
                     setPageNumber(pageNumber - 1);
                 }
             })
@@ -219,17 +218,17 @@ export default () => {
                 Error happens.
             </Typography>}
             {displayCreateModal && <SupplierCreateModal handleOpenSnackBar={(message, severity) =>
-                                                            handleOpenSnackBar(message, severity)}
+                handleOpenSnackBar(message, severity)}
                                                         needrefresh={() => setNeedRefresh(!needRefresh)}
                                                         onCloseModal={() => setDisplayCreateModal(false)}/>}
             {displayEditModal.displayModal && <SupplierEditModal supplierId={displayEditModal.supplierId}
-                                                                          handleOpenSnackBar={(message, severity) =>
-                                                                              handleOpenSnackBar(message, severity)}
-                                                                          needrefresh={() => setNeedRefresh(!needRefresh)}
-                                                                          onCloseModal={() => setDisplayEditModal({
-                                                                              displayModal: false,
-                                                                              supplierId: null
-                                                                          })}
+                                                                 handleOpenSnackBar={(message, severity) =>
+                                                                     handleOpenSnackBar(message, severity)}
+                                                                 needrefresh={() => setNeedRefresh(!needRefresh)}
+                                                                 onCloseModal={() => setDisplayEditModal({
+                                                                     displayModal: false,
+                                                                     supplierId: null
+                                                                 })}
             />}
             <Snackbar open={snackBar.display} autoHideDuration={6000} onClose={handleCloseSnackBar}>
                 <Alert onClose={handleCloseSnackBar} severity={snackBar.severity}>

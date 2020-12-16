@@ -4,7 +4,7 @@ import {TextField} from '@material-ui/core';
 import Button from '../../Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {AuthContext} from "../../../context/authContext";
-import {validateProductCreation, validateProductEditing} from "../../../validation/ProductValidator";
+import {validateProductEditing} from "../../../validation/ProductValidator";
 
 const ProductEditModal = (props) => {
     const {logout} = useContext(AuthContext);
@@ -15,7 +15,8 @@ const ProductEditModal = (props) => {
     let handleCategoryChange = (value) => setProduct(
         (prevState) => {
             return (
-                {...prevState,
+                {
+                    ...prevState,
                     category: {
                         name: value,
                     },
@@ -121,7 +122,7 @@ const ProductEditModal = (props) => {
                                    error={validationResults.includes("label")}
                                    helperText={validationResults.includes("label") ?
                                        "Label length must be between 3 and 30 characters!" : ""}
-                                   />
+                        />
                         <Autocomplete
                             id="category"
                             size="small"
@@ -139,7 +140,7 @@ const ProductEditModal = (props) => {
                                            error={validationResults.includes("categoryName")}
                                            helperText={validationResults.includes("categoryName") ?
                                                "Category name length must be between 3 and 30 characters!" : ""}
-                                           />
+                                />
                             )}
                         />
                         <TextField margin="dense"
