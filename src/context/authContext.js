@@ -1,8 +1,6 @@
 import React, { createContext, useState } from 'react';
 
-export const AuthContext = createContext({
-    user: JSON.parse(localStorage.getItem('user'))
-});
+export const AuthContext = createContext(null);
 
 export default function AuthContextProvider({ children }) {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -16,7 +14,15 @@ export default function AuthContextProvider({ children }) {
             logout: () => {
                 localStorage.setItem('user', JSON.stringify(null));
                 localStorage.setItem('token', JSON.stringify(null));
-                setUser(null)
+                setUser(null);
+                fetch('/api/logout', {
+                    headers: {
+                        "Authorization": localStorage.getItem("token"),
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    method: "post"
+                });
             }
         }}>
             {children}
