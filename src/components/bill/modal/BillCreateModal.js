@@ -177,7 +177,7 @@ const BillCreateModal = (props) => {
                 .then(res => {
                     switch (res.status) {
                         case 201:
-                            props.handleOpenSnackBar("Act created!", "success");
+                            props.handleOpenSnackBar("Bill created!", "success");
                             props.onCloseModal();
                             props.needrefresh();
                             break;

@@ -141,7 +141,6 @@ export default () => {
                 }
             })
             .then(users => {
-                console.log(users)
                 if (users.length != 0) {
                     handleOpenSnackBar("Some user's status haven't been changed to ACTIVE because " +
                         "they assigned to deleted locations.", "warning");

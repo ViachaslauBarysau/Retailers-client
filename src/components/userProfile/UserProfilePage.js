@@ -348,7 +348,7 @@ export default () => {
                                placeholder="Enter new password"
                                error={passwordValidationResults.includes("password")}
                                helperText={passwordValidationResults.includes("password") ?
-                                   "Min length 4 symbols. Spaces not allowed." : ""}
+                                   "Min length 6 symbols. Spaces not allowed." : ""}
                     />
                     <TextField margin="dense"
                                size="small"
@@ -359,7 +359,7 @@ export default () => {
                                placeholder="Confirm new password"
                                error={passwordValidationResults.includes("confirmedPassword")}
                                helperText={passwordValidationResults.includes("confirmedPassword") ?
-                                   "Min length 4 symbols. Spaces not allowed." : ""}
+                                   "Confirmation error." : ""}
                     />
                     <Button my={1} type="submit"
                             variant="contained">Change password</Button>

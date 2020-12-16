@@ -121,7 +121,7 @@ export default () => {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Application number</StyledTableCell>
-                                    <StyledTableCell>Supplier identifier</StyledTableCell>
+                                    <StyledTableCell>Supplier warehouse</StyledTableCell>
                                     <StyledTableCell>Destination location</StyledTableCell>
                                     <StyledTableCell>Update date and time</StyledTableCell>
                                     <StyledTableCell>Last updated by</StyledTableCell>

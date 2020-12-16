@@ -37,8 +37,6 @@ const BillCreateModal = (props) => {
             })
     }, []);
 
-
-    console.log(props.billId)
     return (
         <div>
             {bill &&
